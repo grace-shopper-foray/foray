@@ -12,3 +12,12 @@ router.get('/', (req, res, next) => {
     .then(users => res.json(users))
     .catch(next)
 })
+
+router.post('/', (req, res, next) => {
+  const {firstName, lastName, email } = req.body
+  User.create({
+    firstName, lastName, email
+  }).then(user => {
+    res.status(204).send(user)
+  }).catch(next);
+})
