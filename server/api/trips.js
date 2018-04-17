@@ -17,6 +17,3 @@ router.get('/:id', (req, res, next) => {
   .then(selectedTrip => res.json(selectedTrip))
   .catch(next)
 })
-
-
-

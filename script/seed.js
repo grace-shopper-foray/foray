@@ -10,7 +10,7 @@
  * Now that you've got the main idea, check it out in practice below!
  */
 const db = require('../server/db')
-const {User} = require('../server/db/models')
+const {User, Trip , Order , TripOrder} = require('../server/db/models')
 
 async function seed () {
   await db.sync({force: true})
@@ -19,13 +19,41 @@ async function seed () {
   // executed until that promise resolves!
 
   const users = await Promise.all([
-    User.create({email: 'cody@email.com', password: '123'}),
-    User.create({email: 'murphy@email.com', password: '123'})
+    User.create({firstName: 'geena', lastName: 'gao' , email: 'cody@email.com', password: '123'}),
+    User.create({firstName: 'peter' , lastName: 'michael',email: 'murphy@email.com', password: '123'})
   ])
   // Wowzers! We can even `await` on the right-hand side of the assignment operator
   // and store the result that the promise resolves to in a variable! This is nice!
   console.log(`seeded ${users.length} users`)
-  console.log(`seeded successfully`)
+  console.log(`seeded user successfully`)
+
+  //create Seed for Trip
+  const trip = await Promise.all([
+    Trip.create({planetName: 'Mars', moonName: 'Phobos' , pricePerTrip: 200000 , startDate: '2016-08-09 04:05:02', duration: 24, description: 'One Way Trip', imagePath: 'TBD'}),
+    Trip.create({planetName: 'Earth', moonName: 'Moon' , pricePerTrip: 1 , startDate: '2017-08-09 04:05:02', duration: 1, description: 'One Way Trip', imagePath: 'TBD'})
+  ])
+
+  console.log(`seeded ${trip.length} trip`)
+  console.log(`seeded trip successfully`)
+
+  //create Seed for Order
+  const order = await Promise.all([
+    Order.create({isCheckedOut: false, userId: 1}),
+    Order.create({isCheckedOut: true, userId: 2})
+  ])
+
+    console.log(`seeded ${order.length} order`)
+    console.log(`seeded order successfully`)
+
+  //create Seed for tripOrder
+  const tripOrder = await Promise.all([
+    TripOrder.create({numberOfGuests: 2, orderId: 1, tripId: 1}),
+    TripOrder.create({numberOfGuests: 4, orderId: 2, tripId: 2})
+  ])
+
+  console.log(`seeded ${tripOrder.length} trip Order`)
+  console.log(`seeded trip Order successfully`)
+
 }
 
 // Execute the `seed` function
