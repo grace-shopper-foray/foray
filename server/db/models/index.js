@@ -1,7 +1,9 @@
 const User = require('./user')
 const Trip = require('./trip')
 const Order = require('./order')
-
+const Sequelize = require('sequelize')
+const db = require('../db')
+const pg = require('pg')
 /**
  * If we had any associations to make, this would be a great place to put them!
  * ex. if we had another model called BlogPost, we might say:
@@ -17,12 +19,11 @@ const Order = require('./order')
  *
  */
 
-
+Order.hasOne(User)
 User.hasMany(Order)
-Order.belongsTo(User)
 
-Order.hasMany(Trip)
 Trip.belongsToMany(Order)
+Order.hasMany(Trip)
 
 
 module.exports = {
