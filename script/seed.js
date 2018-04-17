@@ -10,9 +10,7 @@
  * Now that you've got the main idea, check it out in practice below!
  */
 const db = require('../server/db')
-const {User} = require('../server/db/models')
-const {Trip} = require('../server/db/models')
-const {Order} = require('../server/db/models')
+const {User, Trip , Order , TripOrder} = require('../server/db/models')
 
 async function seed () {
   await db.sync({force: true})
@@ -39,12 +37,23 @@ async function seed () {
   console.log(`seeded trip successfully`)
 
   //create Seed for Order
-// const order = await Promise.all([
-//   Order.create({})
-// ])
+  const order = await Promise.all([
+    Order.create({isCheckedOut: false, userId: 1}),
+    Order.create({isCheckedOut: true, userId: 2})
+  ])
 
-  // console.log(`seeded ${order.length} order`)
-  // console.log(`seeded order successfully`)
+    console.log(`seeded ${order.length} order`)
+    console.log(`seeded order successfully`)
+
+  //create Seed for tripOrder
+  const tripOrder = await Promise.all([
+    TripOrder.create({numberOfGuests: 2, orderId: 1, tripId: 1}),
+    TripOrder.create({numberOfGuests: 4, orderId: 2, tripId: 2})
+  ])
+
+  console.log(`seeded ${tripOrder.length} trip Order`)
+  console.log(`seeded trip Order successfully`)
+
 }
 
 // Execute the `seed` function
