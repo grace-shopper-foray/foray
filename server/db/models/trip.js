@@ -8,6 +8,4 @@ const Trip = db.define('trip', {
     }
 })
 
-module.exports = {
-    Trip
-}
+module.exports = Trip
