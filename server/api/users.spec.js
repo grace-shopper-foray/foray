@@ -51,7 +51,7 @@ describe('User routes', () => {
       //test put route
       it("updates a user at PUT /{{usersId}}, sending a 201 response", () => {
         return request(app)
-          .put(`/users/${geoff}`)
+          .put(`/api/users/${geoff}`)
           .send({
             email: "potus@hotmail.com"
           })
@@ -85,10 +85,15 @@ describe('User routes', () => {
           })
       })
 
-      // it("delete a user on DELETE / , responding with ", () => {
-      //   return request(app)
-      //     .delete(`api/${}`)
-      // })
+      //delete user from db with user Id
+      it("delete a user on DELETE / , responding with ", () => {
+        return request(app)
+          .delete(`/api/${geoff}`)
+          .expect(204)
+          .expect(() => {
+            expect(User.to.have.length(1));
+          })
+      })
 
     })
   }) // end describe('/api/users')
