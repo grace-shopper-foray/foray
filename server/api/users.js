@@ -41,7 +41,7 @@ router.post('/', (req, res, next) => {
 
 // Updating a users information.
 
-router.put('/:userId', (res, req, next) => {
+router.put('/:userId', (req, res, next) => {
   const id = req.params.userId
   User.findById(id)
     .then(user => {
@@ -50,4 +50,16 @@ router.put('/:userId', (res, req, next) => {
       res.status(201).send(res.json(updatedUser))
     }).catch(next);
   })
+})
+
+// Removes a user from the database
+
+router.delete('/:userId', (req, res, next) => {
+  const id = req.params.userId;
+  User.findById(id)
+  .then(user => user.destroy())
+  .then(output => {
+    res.status(204).send('No content')
+  })
+  .catch(next)
 })
