@@ -18,6 +18,6 @@ router.post('/', (req, res, next) => {
   User.create({
     firstName, lastName, email
   }).then(user => {
-    res.status(204).send(user)
+    res.status(201).send(user)
   }).catch(next);
 })
