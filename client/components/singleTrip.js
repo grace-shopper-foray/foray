@@ -21,10 +21,23 @@ class SingleTrip extends React.Component {
         <h1>{this.props.trip.moonName}</h1>
         <h2>{this.props.trip.planetName}</h2>
         <img src={this.props.trip.imagePath}/>
-        <p>{this.props.trip.pricePerTrip}</p>
-        <p>{this.props.trip.startDate}</p>
-        <p>{this.props.trip.duration}</p>
-        <p>{this.props.trip.description}</p>
+        <p>${this.props.trip.pricePerTrip}</p>
+        <p>Start Date: {this.props.trip.startDate}</p>
+        <p>Duration: {this.props.trip.duration} Nights</p>
+        <p>Description: {this.props.trip.description}</p>
+        <div>
+          <p>Number of Guests:</p>
+          <select>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+          </select>
+        </div>
+        <button>Add Trip to Cart</button>
       </div>
     )
   }
