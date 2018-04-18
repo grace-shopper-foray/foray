@@ -1,8 +1,6 @@
 const router = require('express').Router()
 const { TripOrder, Order } = require('../db/models')
 
-
-
 // User wants to see OrderHistory.
 
 // router.get('/:userId', (req, res, next) => {
@@ -30,6 +28,8 @@ const { TripOrder, Order } = require('../db/models')
 //   }
 // f})
 
+// Get a specific order.
+
 router.get('/:orderId', (req, res, next) => {
   Order.findById(req.params.orderId)
     .then(order => res.json(order))
@@ -38,6 +38,8 @@ router.get('/:orderId', (req, res, next) => {
       next(err);
     });
 })
+
+// Create a new order, i.e. user adds trip to cart.
 
 router.post('/', (req, res, next) => {
   const { userId, tripId, numberOfGuests } = req.body
