@@ -9,48 +9,64 @@ describe('User model', () => {
     return db.sync({force: true})
   })
 
-  describe('instanceMethods', () => {
-    let cody
+  after("Synchronize and clear database", () => db.sync({ force: true }));
 
-    beforeEach(() => {
-      return User.create({
-        firstName: 'mary',
-        lastName: 'kim',
-        email: 'cody@puppybook.com',
-        password: 'bones'
-      })
-        .then(user => {
-          cody = user
+  describe("Sequelize models", function() {
+    describe('instanceMethods', () => {
+      let cody
+
+      beforeEach(() => {
+        return User.create({
+          firstName: 'mary',
+          lastName: 'kim',
+          email: 'cody@puppybook.com',
+          password: 'bones'
         })
+          .then(user => {
+            cody = user
+          })
+      })
+
+      describe('correctPassword', () => {
+
+        it('returns true if the password is correct', () => {
+          expect(cody.correctPassword('bones')).to.be.equal(true)
+        })
+
+        it('returns false if the password is incorrect', () => {
+          expect(cody.correctPassword('bonez')).to.be.equal(false)
+        })
+      }) // end describe('correctPassword')
     })
 
-    describe('correctPassword', () => {
+    describe('valitation' , () => {
 
-      it('returns true if the password is correct', () => {
-        expect(cody.correctPassword('bones')).to.be.equal(true)
+      describe("definition", () => {
+        // *Assertion translation*:
+        // This assertion expects that the Message model will
+        // put a `subject` column in the messages table.
+        it("has expected schema  firstName definition", () => {
+          expect(User.attributes.firstName).to.be.an("object");
+        });
+
+        it("has expected schema lastName definition", () => {
+          expect(User.attributes.lastName).to.be.an("object");
+        });
+
+        it("has expected schema email definition", () => {
+          expect(User.attributes.email).to.be.an("object");
+        });
+      })// end describe('definitation)
+
+      describe("is Admin? ", () => {
+        it('defaults isAdmin to false', () => {
+          // .build creates an instance of a model
+          // without saving the represented data to the database.
+          const user = User.build();
+          expect(user.isAdmin).to.be.equal(false);
+        })
       })
+    })
 
-      it('returns false if the password is incorrect', () => {
-        expect(cody.correctPassword('bonez')).to.be.equal(false)
-      })
-    }) // end describe('correctPassword')
-
-    describe("definition", () => {
-      // *Assertion translation*:
-      // This assertion expects that the Message model will
-      // put a `subject` column in the messages table.
-      it("has expected schema  firstName definition", () => {
-        expect(User.attributes.firstName).to.be.an("object");
-      });
-
-      it("has expected schema lastName definition", () => {
-        expect(User.attributes.lastName).to.be.an("object");
-      });
-
-      it("has expected schema email definition", () => {
-        expect(User.attributes.email).to.be.an("object");
-      });
-    })// end describe('definitation)
-
-  }) // end describe('instanceMethods')
+  })// end describe('instanceMethods')
 }) // end describe('User model')
