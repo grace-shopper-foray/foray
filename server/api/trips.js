@@ -14,7 +14,7 @@ router.get('/', (req, res, next) => {
 // get selected trip
 
 router.get('/:id', (req, res, next) => {
-  Trip.findByID(Number(req.params.id))
+  Trip.findById(Number(req.params.id))
   .then(selectedTrip => res.json(selectedTrip))
   .catch(next)
 })
