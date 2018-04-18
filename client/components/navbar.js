@@ -6,7 +6,7 @@ import {logout} from '../store'
 
 const Navbar = ({ handleClick, isLoggedIn }) => (
   <div>
-    <h1>foray</h1>
+    <h1>FORAY</h1>
     <nav>
       Search:
       <input type="text" />
