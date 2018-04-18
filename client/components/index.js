@@ -6,5 +6,6 @@
 export {default as Navbar} from './navbar'
 export {default as Account} from './account'
 export {default as TripsHome} from './trips-home'
+export {default as Cart} from './cart'
 export {default as Footer} from './footer'
 export {Login, Signup} from './auth-form'
