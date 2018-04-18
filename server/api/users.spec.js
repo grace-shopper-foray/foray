@@ -36,7 +36,7 @@ describe('User routes', () => {
   })
 
     //test get route
-    describe("users" , ()=>{
+    describe("users", () => {
 
       it('GET /api/users', () => {
         return request(app)
@@ -88,10 +88,10 @@ describe('User routes', () => {
       //delete user from db with user Id
       it("delete a user on DELETE / , responding with ", () => {
         return request(app)
-          .delete(`/api/${geoff}`)
+          .delete(`/api/users/${geoff}`)
           .expect(204)
           .expect(() => {
-            expect(User.to.have.length(1));
+            expect(Array(User.findAll())).to.have.length(1);
           })
       })
 
