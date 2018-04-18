@@ -19,11 +19,11 @@ const pg = require('pg')
  *
  */
 
-Order.hasOne(User)
-User.hasMany(Order)
+// Order.hasOne(User)
+// User.hasMany(Order)
 
-Trip.belongsToMany(Order)
-Order.hasMany(Trip)
+// Trip.belongsToMany(Order)
+// Order.hasMany(Trip)
 
 
 module.exports = {

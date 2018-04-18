@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
+import {Link} from 'react-router-dom'
 
 import {fetchTrips} from "../store"
 
@@ -8,7 +9,7 @@ import {fetchTrips} from "../store"
  * COMPONENT
  */
 
-class Home extends React.Component {
+class TripsHome extends React.Component {
   componentDidMount() {
     this.props.fetchTripsFromServer()
   }
@@ -16,9 +17,9 @@ class Home extends React.Component {
   render() {
     return (
       <div>
-      <h1>Foray</h1>
+      <h1>Ready for liftoff?</h1>
       <ul>
-      {this.props.trips.map(trips => {
+      {this.props.trips.map(trip => {
         return (
           <li key={trip.id}>
             <Link to={`/trips/${trip.id}`}>{trip.name}</Link>
@@ -48,4 +49,4 @@ const mapDispatch = function(dispatch) {
   }
 }
 
-export default connect(mapState, mapDispatch)(Home)
+export default connect(mapState, mapDispatch)(TripsHome)
