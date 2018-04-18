@@ -23,7 +23,7 @@ class TripsHome extends React.Component {
         return (
           <li key={trip.id}>
             <Link to={`/trips/${trip.id}`}>{trip.moonName}</Link>
-            <img src="" height="42" width="42" />
+            <img src={trip.imagePath} height="42" width="42" />
           </li>
         );
       })}
