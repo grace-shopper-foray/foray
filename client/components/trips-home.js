@@ -22,7 +22,7 @@ class TripsHome extends React.Component {
       {this.props.trips.map(trip => {
         return (
           <li key={trip.id}>
-            <Link to={`/trips/${trip.id}`}>{trip.name}</Link>
+            <Link to={`/trips/${trip.id}`}>{trip.moonName}</Link>
           </li>
         );
       })}
