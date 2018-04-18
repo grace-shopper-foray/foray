@@ -26,7 +26,7 @@ const db = require('../db')
 // Order.hasMany(Trip)
 Trip.belongsToMany(Order, { through: TripOrder })
 
-Order.hasMany(Trip)
+Order.hasMany(Trip) // should only be used for one-to-many
 
 Order.belongsTo(User)
 User.hasMany(Order)

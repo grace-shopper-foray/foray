@@ -79,7 +79,7 @@ describe('User routes', () => {
             return User.findById(createdUser.id)
           })
           .then(foundUser => {
-            expect(foundUser.firstName).to.be.equal("chung")
+            expect(foundUser.firstName).to.equal("chung")
             expect(foundUser.lastName).to.be.equal("yi")
             expect(foundUser.email).to.be.equal("senior@fullstack.com")
           })
