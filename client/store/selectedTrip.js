@@ -19,12 +19,14 @@ const getTrip = trip => ({type: GET_TRIP, trip})
 /**
  * THUNK CREATORS
  */
-export const fetchTrip = (tripId) =>
-  dispatch =>
+export const fetchTrip = (tripId) => {
+  console.log('hey', tripId)
+  return dispatch =>
     axios.get(`/api/trips/${tripId}`)
       .then(res => res.data)
       .then(trip => dispatch(getTrip(trip)))
       .catch(err => console.error(err))
+}
 
 /**
  * TRIPS SUB-REDUCER

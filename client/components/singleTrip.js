@@ -1,6 +1,6 @@
-import React from 'react';
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import React from 'react'
+import {connect} from "react-redux"
+import {Link} from "react-router-dom"
 
 import {fetchTrip} from "../store"
 
@@ -11,11 +11,11 @@ import {fetchTrip} from "../store"
 class SingleTrip extends React.Component {
   componentDidMount() {
     const tripId = Number(this.props.match.params.tripId);
-    this.props.fetchTrip(tripId);
+    this.props.fetchTripFromServer(tripId);
   }
 
   render() {
-    console.log(this.props.trip)
+    console.log(this.props)
     return (
       <div>
         <h1>{this.props.trip.moonName}</h1>
@@ -41,8 +41,8 @@ const mapState = (state) => {
 
 const mapDispatch = function(dispatch) {
   return {
-    fetchTripfromServer: function() {
-      return dispatch(fetchTrip())
+    fetchTripFromServer: function(tripId) {
+      return dispatch(fetchTrip(tripId))
     }
   }
 }
