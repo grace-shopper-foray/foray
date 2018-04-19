@@ -5,31 +5,33 @@ import {Link} from 'react-router-dom'
 import {logout} from '../store'
 
 const Navbar = ({ handleClick, isLoggedIn }) => (
-  <div>
-    <h1>FORAY</h1>
-    <nav>
-      Search:
-      <input type="text" />
-      {isLoggedIn ? (
-        <div>
-          {/* The navbar will show these links after you log in */}
-          <Link to="/home">Home</Link>
-          <a href="#" onClick={handleClick}>
-            Logout
-          </a>
-        </div>
-      ) : (
-        <div>
-          {/* The navbar will show these links before you log in */}
-          <Link to="/">All Trips</Link>
-          <Link to="/login">Login</Link>
-          <Link to="/signup">Sign Up</Link>
-          <Link to="/cart">Go To Cart</Link>
-        </div>
-      )}
+    <nav className="navbar navbar-light bg-light">
+      <div className="container">
+        <a className="navbar-brand">FORAY</a>
+          {isLoggedIn ? (
+            <div>
+              {/* The navbar will show these links after you log in */}
+              <Link to="/home">Home</Link>
+              <a href="#" onClick={handleClick}>
+                Logout
+              </a>
+            </div>
+          ) : (
+            <div navbar-nav>
+              {/* The navbar will show these links before you log in */}
+              <Link to="/" className="btn btn-secondary">All Trips</Link>
+              <Link to="/login" className="btn btn-success">Login</Link>
+              <Link to="/signup" className="btn btn-danger">Sign Up</Link>
+              <Link to="/cart" className="btn btn-warning">Go To Cart</Link>
+            </div>
+          )}
+          <form className="form-inline">
+            <input className='form-control' type='search' placeholder="Search" aria-label="Search"/>
+            <button className="btn btn-outline-success my-2 my-sm-0" type='submit'>Search</button>
+          </form>
+        <hr />
+      </div>
     </nav>
-    <hr />
-  </div>
 )
 
 /**
