@@ -70,18 +70,46 @@ router.post('/:userId/orders', (req, res, next) => {
   const userId = req.params.userId
   const { tripId, numberOfGuests } = req.body
 
-  Promise.all([])
-
-  const findOrderId = Order.findOrCreate({
+  Order.findOrCreate({
     where: { userId: userId, isCheckedOut: false },
     include: [Trip, User]
   }).spread((order, created) => {
-    // console.log(order, '_________________')
-    // console.log(created, '********************')
     return TripOrder.create({ orderId: order.id, tripId, numberOfGuests })
   })
   .then(() => Trip.findById(tripId))
   .then(trip => res.status(201).json(trip) )
+  .catch(next)
+});
+
+// User wants to update the number of guests on an item in cart
+
+router.put('/:userId/orders', (req, res, next) => {
+  const userId = req.params.userId
+  const { tripId, numberOfGuests } = req.body
+  Order.findOne({
+    where: { userId: userId, isCheckedOut: false },
+    include: [Trip, User]
+  }).then(order => {
+    // TripOrder only exists on trip objects, need to filter to trip with tripId
+    const tripOrder = order.trips.filter(t => t.id === tripId)[0].tripOrder
+    return tripOrder.update({ orderId: order.id, tripId, numberOfGuests })
+  }).then(trip => res.status(200).json(trip) )
+  .catch(next)
+});
+
+// User wants to delete a trip from the cart
+
+router.delete('/:userId/orders', (req, res, next) => {
+  const userId = req.params.userId
+  const { tripId } = req.body
+  Order.findOne({
+    where: { userId: userId, isCheckedOut: false },
+    include: [Trip, User]
+  }).then(order => {
+    // TripOrder only exists on trip objects, need to filter to trip with tripId
+    const tripOrder = order.trips.filter(t => t.id === tripId)[0].tripOrder
+    return tripOrder.destroy()
+  }).then(trip => res.status(204).json(trip) )
   .catch(next)
 });
 

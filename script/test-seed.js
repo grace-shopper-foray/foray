@@ -11,6 +11,7 @@
  */
 const db = require('../server/db')
 const {User, Trip , Order , TripOrder} = require('../server/db/models')
+const bluebird = require('bluebird')
 
 async function seed () {
   await db.sync({force: true})
