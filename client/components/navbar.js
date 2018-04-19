@@ -39,17 +39,6 @@ const Navbar = ({ handleClick, isLoggedIn }) => (
           </Link>
         </div>
       )}
-      <form className="form-inline">
-        <input
-          className="form-control"
-          type="search"
-          placeholder="Search"
-          aria-label="Search"
-        />
-        <button className="btn btn-outline-success my-2 my-sm-0" type="submit">
-          Search
-        </button>
-      </form>
       <hr />
     </div>
   </nav>
