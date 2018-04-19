@@ -16,18 +16,22 @@ class TripsHome extends React.Component {
 
   render() {
     return (
-      <div>
-      <h1>Ready for liftoff?</h1>
-      <ul>
-      {this.props.trips.map(trip => {
-        return (
-          <li key={trip.id}>
-            <Link to={`/trips/${trip.id}`}>{trip.moonName}</Link>
-            <img src={trip.imagePath} height="42" width="42" />
-          </li>
-        );
-      })}
-      </ul>
+      <div className="container">
+        <h1 className="text-center">Ready for liftoff?</h1>
+        <ul className="row">
+        {this.props.trips.map(trip => {
+          return (
+            <div className="col-md-3">
+              <div className="card text-center">
+                <li key={trip.id}>
+                  <img src={trip.imagePath} height="200" width="42" className="card-img-top rounded mx-auto d-block"/>
+                  <Link to={`/trips/${trip.id}`}>{trip.moonName}</Link>
+                </li>
+              </div>
+            </div>
+          );
+        })}
+        </ul>
       </div>
     )
   }
