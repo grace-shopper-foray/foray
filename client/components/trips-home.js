@@ -12,9 +12,11 @@ import { fetchTrips } from '../store'
 class TripsHome extends React.Component {
   constructor(props) {
     super(props)
+
     this.state = {
       moonName: ''
     }
+    this.filterMoon = this.filterMoon.bind(this)
   }
 
   componentDidMount() {
@@ -62,12 +64,6 @@ class TripsHome extends React.Component {
             aria-label="Search"
             onChange={evt => this.setState({ moonName: evt.target.value })}
           />
-          <button
-            className="btn btn-outline-success my-2 my-sm-0"
-            type="submit"
-          >
-            Search
-          </button>
         </form>
       </div>
     )
@@ -75,6 +71,8 @@ class TripsHome extends React.Component {
 
   filterMoon(moon) {
     const moonMatch = new RegExp(this.state.moonName, 'i')
+
+    //return true if moonName === moonName from this.props.trips
     return moonMatch.test(moon.moonName)
   }
 }
