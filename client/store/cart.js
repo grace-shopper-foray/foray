@@ -12,37 +12,76 @@ const CHECKOUT_ORDER = 'CHECKOUT_TRIP'
 /**
  * INITIAL STATE
  */
-const defaultOrder = [
-  {tripId: 2, orderId: 1, planetName: 'Mars', moonName: 'Phobos', pricePerTrip: 1800, duration: 3, numberOfGuests: 4, isCheckedOut: false, total: 7200},
-  {tripId: 9, orderId: 1, planetName: 'Saturn', moonName: 'Dione', pricePerTrip: 800, duration: 4, numberOfGuests: 3, isCheckedOut: false, total: 2400},
-  {tripId: 4, orderId: 1, planetName: 'Jupiter', moonName: 'Io', pricePerTrip: 1400, duration: 2, numberOfGuests: 4, isCheckedOut: false, total: 2800}
-]
+const initialState = {
+  "id": 1,
+  "isCheckedOut": false,
+  "createdAt": "2018-04-18T20:39:32.316Z",
+  "updatedAt": "2018-04-18T20:39:32.316Z",
+  "userId": 1,
+  "trips": [
+  {
+  "id": 1,
+  "moonName": "default",
+  "planetName": "default",
+  "pricePerTrip": "default",
+  "startDate": "2016-08-09T08:05:02.000Z",
+  "duration": 0,
+  "description": "One Way Trip",
+  "imagePath": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Phobos_colour_2008.jpg/225px-Phobos_colour_2008.jpg",
+  "createdAt": "2018-04-18T20:39:32.296Z",
+  "updatedAt": "2018-04-18T20:39:32.296Z",
+  "tripOrder": {
+  "numberOfGuests": 0,
+  "createdAt": "2018-04-18T20:39:32.325Z",
+  "updatedAt": "2018-04-18T20:39:32.325Z",
+  "tripId": 1,
+  "orderId": 1
+  }
+  }
+  ],
+  "user": {
+  "id": 1,
+  "firstName": "geena",
+  "lastName": "gao",
+  "email": "cody@email.com",
+  "phoneNumber": null,
+  "googleId": null,
+  "facebookId": null,
+  "isAdmin": null,
+  "stripeTokenId": null,
+  "createdAt": "2018-04-18T20:39:32.266Z",
+  "updatedAt": "2018-04-18T20:39:32.266Z"
+  }
+  }
+
 
 
 /**
  * ACTION CREATORS
  */
-const getOrder = order => ({type: GET_ORDER, order})
+const getOrder = order => ({ type: GET_ORDER, order: order })
 
 
 /**
  * THUNK CREATORS
  */
-export const fetchOrder = (orderId) =>
+export const fetchOrder = (userId) =>
   dispatch =>
-    axios.get(`api/orders/${orderId}`)
+    axios.get(`/api/users/${userId}/orders?cart=active`)
       .then(res => res.data)
-      .then(order => dispatch(getOrder(order)))
+      .then(order => {
+        return dispatch(getOrder(order))
+      })
       .catch(err => console.error(err))
 
 
 /**
  * TRIPS SUB-REDUCER
  */
-export default function (state = defaultOrder, action) {
+export default function (state = initialState, action) {
   switch (action.type) {
     case GET_ORDER:
-      return action.order
+      return Object.assign({}, state, action.order)
     default:
       return state
   }

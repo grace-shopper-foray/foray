@@ -10,21 +10,20 @@ import {fetchOrder} from '../store'
  */
 export class Cart extends React.Component {
   componentDidMount() {
-    const orderId = this.props.match.params.orderId;
-    this.props.fetchOrderFromServer(orderId)
+    let userId = 1;
+    this.props.fetchOrderFromServer(userId)
   }
 
   render() {
-    console.log('hii', this.props)
     return (
       <div>
         <h2>Current Cart</h2>
         <ol>
         {
-          this.props.order.map(cartItem => {
+          this.props.order.trips.map(trip => {
             return (
-              <li key={cartItem.tripId}>
-
+              <li key={trip.id}>
+              {/*
               <form onSubmit={event => {
                 event.preventDefault()
                 handleSubmit(this.state)}}>
@@ -41,18 +40,18 @@ export class Cart extends React.Component {
                 </label>
                 <input type="submit" value="Add Trip to Cart" />
               </form>
-
-                Planet Name - {cartItem.planetName}
+              */}
+                Moon Name - {trip.moonName}
                 ||
-                Moon Name - {cartItem.moonName}
+                Planet Name - {trip.planetName}
                 ||
-                Price Per Trip - {cartItem.pricePerTrip}
+                Price Per Trip - {trip.pricePerTrip}
                 ||
-                #Nights - {cartItem.duration}
+                #Nights - {trip.duration}
                 ||
-                Number Of Guests - {cartItem.numberOfGuests}
+                Number Of Guests - {trip.tripOrder.numberOfGuests}
                 ||
-                Total - {cartItem.total}
+                Total - {trip.tripOrder.total}
                 <button>Delete this Trip</button>
               </li>
             )
@@ -67,14 +66,14 @@ export class Cart extends React.Component {
 
 const mapState = (state) => {
   return {
-    cart: state.order
+    order: state.order
   }
 }
 
 const mapDispatch = (dispatch) => {
   return {
-    fetchOrderFromServer: (orderId) => {
-      return dispatch(fetchOrder(orderId))
+    fetchOrderFromServer: (userId) => {
+      return dispatch(fetchOrder(userId))
     },
     deleteTripThunk: (tripId) => {
       return dispatch(deleteTrip(tripId))
