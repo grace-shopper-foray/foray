@@ -125,23 +125,26 @@ router.delete('/:userId/orders', (req, res, next) => {
 });
 
 // User wants to see Order history.
+//orders?cart=active
 
 router.get('/:userId/orders', (req, res, next) => {
   const isActive = (req.query.cart === 'active')
   if (req.query.cart !== undefined) { // There is a query string for cart
-    Order.findAll({
+    Order.findOne({
       where: {
         userId: req.params.userId,
-        isCheckedOut: isActive
-      }
+        isCheckedOut: !isActive
+      },
+      include: [Trip, User]
     })
-    .then(orders => res.json(orders))
+    .then(order => res.json(order))
     .catch(next)
   } else { // No query value, return all orders for user.
     Order.findAll({
       where: {
         userId: req.params.userId,
-      }
+      },
+      include: [Trip, User]
     })
     .then(orders => res.json(orders))
     .catch(err => {

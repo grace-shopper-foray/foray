@@ -9,13 +9,30 @@ import {fetchTrip} from "../store"
  */
 
 class SingleTrip extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      tripId: 0,
+      numberOfGuests: 1
+    }
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({
+      numberOfGuests: Number(event.target.value)
+    })
+  }
   componentDidMount() {
     const tripId = Number(this.props.match.params.tripId);
+    this.setState({
+      tripId
+    })
     this.props.fetchTripFromServer(tripId);
   }
 
   render() {
-    console.log(this.props)
+    let {handleSubmit} = this.props;
     return (
       <div>
         <h1>{this.props.trip.moonName}</h1>
@@ -25,19 +42,22 @@ class SingleTrip extends React.Component {
         <p>Start Date: {this.props.trip.startDate}</p>
         <p>Duration: {this.props.trip.duration} Nights</p>
         <p>Description: {this.props.trip.description}</p>
-        <div>
-          <p>Number of Guests:</p>
-          <select>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-            <option>6</option>
-            <option>7</option>
-          </select>
-        </div>
-        <button>Add Trip to Cart</button>
+        <form onSubmit={event => {
+          event.preventDefault()
+          handleSubmit(this.state)}}>
+          <label>Number of Guests:
+            <select onChange={this.handleChange}>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+            </select>
+          </label>
+          <input type="submit" value="Add Trip to Cart" />
+        </form>
       </div>
     )
   }
@@ -56,6 +76,14 @@ const mapDispatch = function(dispatch) {
   return {
     fetchTripFromServer: function(tripId) {
       return dispatch(fetchTrip(tripId))
+    },
+    handleSubmit: function(tripAdded) {
+      console.log(tripAdded);
+      dispatch(tripAddedThunk(tripAdded))
+      this.setState({
+        tripId: 0,
+        numberOfGuests: 1
+      })
     }
   }
 }
