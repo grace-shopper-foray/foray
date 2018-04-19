@@ -31,9 +31,9 @@ router.get('/:userId', (req, res, next) => {
 // Creating new user
 
 router.post('/', (req, res, next) => {
-  const {firstName, lastName, email } = req.body
+  const {firstName, lastName, phoneNumber, email } = req.body
   User.create({
-    firstName, lastName, email
+    firstName, lastName, email, phoneNumber
   }).then(user => {
     res.status(201).send(user)
   }).catch(next);
