@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {connect} from 'react-redux'
-import {Link} from 'react-router-dom'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
-import {fetchTrips} from "../store"
+import { fetchTrips } from '../store'
 
 /**
  * COMPONENT
@@ -16,18 +16,29 @@ class TripsHome extends React.Component {
 
   render() {
     return (
-      <div>
-      <h1>Ready for liftoff?</h1>
-      <ul>
-      {this.props.trips.map(trip => {
-        return (
-          <li key={trip.id}>
-            <Link to={`/trips/${trip.id}`}>{trip.moonName}</Link>
-            <img src={trip.imagePath} height="42" width="42" />
-          </li>
-        );
-      })}
-      </ul>
+      <div className="container">
+        <div className="text-center">
+          <h1>Ready for liftoff?</h1>
+        </div>
+        <ul className="row list-unstyled list-inline">
+          {this.props.trips.map(trip => {
+            return (
+              <div className="col-md-3" id="homePageCard">
+                <div className="card text-center">
+                  <li key={trip.id}>
+                    <img
+                      src={trip.imagePath}
+                      height="240"
+                      width="42"
+                      className="card-img-top rounded mx-auto d-block"
+                    />
+                    <Link to={`/trips/${trip.id}`}>{trip.moonName}</Link>
+                  </li>
+                </div>
+              </div>
+            )
+          })}
+        </ul>
       </div>
     )
   }
@@ -36,7 +47,7 @@ class TripsHome extends React.Component {
 /**
  * CONTAINER
  */
-const mapState = (state) => {
+const mapState = state => {
   return {
     trips: state.trips
   }

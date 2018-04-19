@@ -29,3 +29,16 @@ footer {
   font-size: small;
   width: 100%;
 }
+
+#homePageCard {
+  margin-bottom: 1in;
+}
+
+#rocket-logo {
+  animation: rocket-logo-spin infinite 20s linear;
+}
+
+@keyframes rocket-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
