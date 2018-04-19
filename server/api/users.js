@@ -3,8 +3,19 @@ const {User, Order, TripOrder, Trip} = require('../db/models')
 module.exports = router
 
 // Getting a list of all users.
+//check admin middleware
+function isAdmin (req, res, next) {
+  User.findById(req.session.passport.user)
+  .then( user => {
+    if (user.isAdmin) next()
+    else res.sendStatus(401)
+  })
+  .catch(next)
+}
 
-router.get('/', (req, res, next) => {
+// Requires Admin Permission
+router.get('/', isAdmin, (req, res, next) => {
+  isAdmin(req, res, next)
   User.findAll({
     // explicitly select only the id and email fields - even though
     // users' passwords are encrypted, it won't help if we just
