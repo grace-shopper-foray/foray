@@ -23,10 +23,11 @@ form div {
 footer {
   bottom: 0;
   color: #707070;
-  height: 2em;
+  height: 1rem;
+  right: 0;
   left: 0;
-  position: relative;
-  font-size: small;
+  position: absolute;
+  font-size: medium;
   width: 100%;
 }
 
@@ -39,6 +40,10 @@ footer {
 }
 
 @keyframes rocket-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
