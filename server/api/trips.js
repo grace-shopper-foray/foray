@@ -6,6 +6,7 @@ const {Trip} = require('../db/models')
 
 router.get('/', (req, res, next) => {
   console.log('in the router');
+  console.log(req.session.passport.user)
   Trip.findAll({})
   .then(trips => res.json(trips))
   .catch(next)
