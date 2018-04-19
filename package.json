@@ -13,10 +13,12 @@
     "lint": "eslint ./ --ignore-path .gitignore",
     "postinstall": "touch secrets.js",
     "seed": "node script/seed.js",
+    "test-seed": "NODE_ENV='test' node script/test-seed.js",
     "start": "node server",
     "start-dev": "NODE_ENV='development' npm run build-client-watch & npm run start-server",
     "start-server": "nodemon server -e html,js,scss --ignore public --ignore client",
-    "test": "NODE_ENV='test' mocha ./server/**/*.spec.js ./server/**/**/*.spec.js ./client/**/*.spec.js --watch --require @babel/polyfill --require @babel/register"
+    "test": "NODE_ENV='test' mocha ./server/**/*.spec.js ./server/**/**/*.spec.js ./client/**/*.spec.js --watch --require @babel/polyfill --require @babel/register",
+    "test-order": "NODE_ENV='test' mocha ./server/api/orders.spec.js --watch --require @babel/polyfill --require @babel/register"
   },
   "author": "Fullstack Academy of Code",
   "license": "MIT",
