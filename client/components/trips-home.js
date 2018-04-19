@@ -18,10 +18,10 @@ class TripsHome extends React.Component {
     return (
       <div className="container">
         <h1 className="text-center">Ready for liftoff?</h1>
-        <ul className="row">
+        <ul className="row list-unstyled list-inline">
         {this.props.trips.map(trip => {
           return (
-            <div className="col-md-3">
+            <div className="col-md-3" id="homePageCard">
               <div className="card text-center">
                 <li key={trip.id}>
                   <img src={trip.imagePath} height="200" width="42" className="card-img-top rounded mx-auto d-block"/>
