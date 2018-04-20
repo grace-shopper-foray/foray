@@ -1,9 +1,9 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-import { fetchOrder } from '../store'
+import { fetchOrder } from '../store';
 
 /**
  * COMPONENT
@@ -45,43 +45,43 @@ export class Cart extends React.Component {
                   || Planet Name - {trip.planetName}
                   || Price Per Trip - {trip.pricePerTrip}
                   || #Nights - {trip.duration}
-                  || Number Of Guests - {trip.tripOrder}
-                  || Total - {trip.tripOrder}
+                  || Number Of Guests - {trip.tripOrder.numberOfGuests}
+                  || Total - {trip.pricePerTrip * trip.tripOrder.numberOfGuests}
                   <button>Delete this Trip</button>
                 </li>
-              )
+              );
             })}
         </ol>
       </div>
-    )
+    );
   }
 }
 
 const mapState = state => {
   return {
     order: state.order
-  }
-}
+  };
+};
 
 const mapDispatch = dispatch => {
   return {
     fetchOrderFromServer: userId => {
-      return dispatch(fetchOrder(userId))
+      return dispatch(fetchOrder(userId));
     },
     deleteTripThunk: tripId => {
-      return dispatch(deleteTrip(tripId))
+      return dispatch(deleteTrip(tripId));
     },
     updateQuantityThunk: orderId => {
-      return dispatch(updateTrip(orderId))
+      return dispatch(updateTrip(orderId));
     },
     checkoutThunk: orderId => {
-      return dispatch(checkoutOrder(orderId))
+      return dispatch(checkoutOrder(orderId));
     }
-  }
-}
+  };
+};
 
 //a user can checkout from cart
 //a user can delete/remove trip from cart
 //a user can update quantity number of guests from cart
 
-export default connect(mapState, mapDispatch)(Cart)
+export default connect(mapState, mapDispatch)(Cart);
