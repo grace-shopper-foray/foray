@@ -27,7 +27,7 @@ class TripsHome extends React.Component {
     return (
       <div className="container">
         <div className="text-center">
-          <h1>Ready for liftoff?</h1>
+          <h1>Ready for liftoff? Book your lunar escape!</h1>
           {this.renderMoonSearch()}
         </div>
         <ul className="row list-unstyled list-inline">
