@@ -1,19 +1,14 @@
-const router = require('express').Router();
-const { TripOrder, Order, Trip, User } = require('../db/models');
+const router = require('express').Router()
+const { TripOrder, Order, Trip, User } = require('../db/models')
 
 // Get a specific order.
-
-function userValid(req, res, next) {
-  User.findById(req.session.passport.user)
-    .then(user => {
-      if (user.isAdmin) next();
-      else res.sendStatus(401);
-    })
-    .catch(next);
+//if never login to database
+function isLoginUser(req, res, next) {
+  if (!req.user) res.sendStatus(401)
+  else next()
 }
 
-router.get('/:orderId', (req, res, next) => {
-  // userValid(req, res, next)
+router.get('/:orderId', isLoginUser, (req, res, next) => {
   Order.findById(req.params.orderId, {
     include: [
       {
@@ -24,14 +19,22 @@ router.get('/:orderId', (req, res, next) => {
       }
     ]
   })
-    //.then(userValid(req, res, next))
-    .then(order => res.json(order))
+    .then(order => {
+      if (
+        +order.userId === +req.user.dataValues.id ||
+        req.user.dataValues.isAdmin
+      ) {
+        res.json(order)
+      } else {
+        res.sendStatus(401)
+      }
+    })
     .catch(err => {
-      res.status(404).send('Not Found');
-      next(err);
-    });
-});
+      res.status(404).send('Not Found')
+      next(err)
+    })
+})
 
-module.exports = router;
+module.exports = router
 
 // .then(userValid(req, res, next)
