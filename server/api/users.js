@@ -96,23 +96,21 @@ router.post('/:userId/orders', (req, res, next) => {
     where: { userId: userId, isCheckedOut: false },
     include: [Trip, User]
   })
-    .spread((order, created) => {
+    .spread((order, _) => {
       console.log(order.id, 'AFTER');
-      return order
-        .addTrip(tripId, { through: { numberOfGuests } })
-        .then(() => order);
-      // return TripOrder.create({
-      //   orderId: order.id,
-      //   tripId,
-      //   numberOfGuests
-      // }).then(res => console.log(res));
+      // return order
+      //   .addTrip(tripId, { through: { numberOfGuests } })
+      return TripOrder.create({
+        orderId: order.id,
+        tripId,
+        numberOfGuests
+      }).then(() => order);
     })
     //.then(tripOrder => Trip.findById(tripId, { include: [tripOrder] }))
     .then(order => {
       return Order.findById(order.id, { include: [Trip] });
     })
     .then(order => {
-      console.log(order);
       const trip = order.trips.filter(t => t.id === tripId)[0];
       res.status(201).json(trip);
     })
