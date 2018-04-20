@@ -45,7 +45,7 @@ async function seed() {
       lastName: 'leung',
       email: 'phil@email.com',
       password: '123',
-      isAdmin: false
+      isAdmin: true
     })
   ])
   // Wowzers! We can even `await` on the right-hand side of the assignment operator

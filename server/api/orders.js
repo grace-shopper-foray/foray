@@ -20,6 +20,7 @@ router.get('/:orderId', isLoginUser, (req, res, next) => {
     ]
   })
     .then(order => {
+      console.log(req.user.dataValues.isAdmin)
       if (
         +order.userId === +req.user.dataValues.id ||
         req.user.dataValues.isAdmin
