@@ -1,17 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {connect} from 'react-redux'
-import {Link} from 'react-router-dom'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
-import {fetchOrder} from '../store'
+import { fetchOrder } from '../store'
 
 /**
  * COMPONENT
  */
 export class Cart extends React.Component {
   componentDidMount() {
-    let userId = 1;
-    this.props.fetchOrderFromServer(userId)
+    //let userId = 1
+    //this.props.fetchOrderFromServer(userId)
   }
 
   render() {
@@ -19,11 +19,11 @@ export class Cart extends React.Component {
       <div>
         <h2>Current Cart</h2>
         <ol>
-        {
-          this.props.order.trips.map(trip => {
-            return (
-              <li key={trip.id}>
-              {/*
+          {this.props.order.trips &&
+            this.props.order.trips.map(trip => {
+              return (
+                <li key={trip.id}>
+                  {/*
               <form onSubmit={event => {
                 event.preventDefault()
                 handleSubmit(this.state)}}>
@@ -41,47 +41,40 @@ export class Cart extends React.Component {
                 <input type="submit" value="Add Trip to Cart" />
               </form>
               */}
-                Moon Name - {trip.moonName}
-                ||
-                Planet Name - {trip.planetName}
-                ||
-                Price Per Trip - {trip.pricePerTrip}
-                ||
-                #Nights - {trip.duration}
-                ||
-                Number Of Guests - {trip.tripOrder.numberOfGuests}
-                ||
-                Total - {trip.tripOrder.total}
-                <button>Delete this Trip</button>
-              </li>
-            )
-          })
-        }
+                  Moon Name - {trip.moonName}
+                  || Planet Name - {trip.planetName}
+                  || Price Per Trip - {trip.pricePerTrip}
+                  || #Nights - {trip.duration}
+                  || Number Of Guests - {trip.tripOrder}
+                  || Total - {trip.tripOrder}
+                  <button>Delete this Trip</button>
+                </li>
+              )
+            })}
         </ol>
       </div>
     )
   }
 }
 
-
-const mapState = (state) => {
+const mapState = state => {
   return {
     order: state.order
   }
 }
 
-const mapDispatch = (dispatch) => {
+const mapDispatch = dispatch => {
   return {
-    fetchOrderFromServer: (userId) => {
+    fetchOrderFromServer: userId => {
       return dispatch(fetchOrder(userId))
     },
-    deleteTripThunk: (tripId) => {
+    deleteTripThunk: tripId => {
       return dispatch(deleteTrip(tripId))
     },
-    updateQuantityThunk: (orderId) => {
+    updateQuantityThunk: orderId => {
       return dispatch(updateTrip(orderId))
     },
-    checkoutThunk: (orderId) => {
+    checkoutThunk: orderId => {
       return dispatch(checkoutOrder(orderId))
     }
   }

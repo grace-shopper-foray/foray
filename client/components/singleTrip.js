@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { fetchTripThunk } from '../store'
+import { fetchTripThunk, postOrderThunk } from '../store'
 
 /**
  * COMPONENT
@@ -32,7 +32,7 @@ class SingleTrip extends React.Component {
   }
 
   render() {
-    let { handleSubmit } = this.props
+    let { handleSubmit, user } = this.props
     return (
       <div>
         <h1>{this.props.trip.moonName}</h1>
@@ -45,7 +45,7 @@ class SingleTrip extends React.Component {
         <form
           onSubmit={event => {
             event.preventDefault()
-            handleSubmit(this.state)
+            handleSubmit(this.state, user.id)
           }}
         >
           <label>
@@ -72,7 +72,8 @@ class SingleTrip extends React.Component {
  */
 const mapState = state => {
   return {
-    trip: state.trip
+    trip: state.trip,
+    user: state.user
   }
 }
 
@@ -81,13 +82,14 @@ const mapDispatch = function(dispatch) {
     fetchTripFromServer: function(tripId) {
       return dispatch(fetchTripThunk(tripId))
     },
-    handleSubmit: function(tripAdded) {
+    handleSubmit: function(tripAdded, userId) {
       console.log(tripAdded)
-      dispatch(tripAddedThunk(tripAdded))
-      this.setState({
-        tripId: 0,
-        numberOfGuests: 1
-      })
+      console.log(userId, '_______________________________')
+      dispatch(postOrderThunk(tripAdded, userId))
+      // this.setState({
+      //   tripId: 0,
+      //   numberOfGuests: 1
+      // })
     }
   }
 }

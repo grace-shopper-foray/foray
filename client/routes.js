@@ -10,7 +10,7 @@ import {
   SingleTrip,
   Cart
 } from './components'
-import { me } from './store'
+import { me, fetchTrips } from './store'
 
 /**
  * COMPONENT
@@ -18,6 +18,7 @@ import { me } from './store'
 class Routes extends Component {
   componentDidMount() {
     this.props.loadInitialData()
+    this.props.fetchTripsFromServer()
   }
 
   render() {
@@ -29,7 +30,6 @@ class Routes extends Component {
         <Route path="/cart" component={Cart} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
-        <Route exact path="/home" component={TripsHome} />
         <Route exact path="/trips/:tripId" component={SingleTrip} />
         <Route exact path="/" component={TripsHome} />
         {isLoggedIn && (
@@ -60,6 +60,9 @@ const mapDispatch = dispatch => {
   return {
     loadInitialData() {
       dispatch(me())
+    },
+    fetchTripsFromServer: function() {
+      return dispatch(fetchTrips())
     }
   }
 }

@@ -12,48 +12,50 @@ const CHECKOUT_ORDER = 'CHECKOUT_TRIP'
 /**
  * INITIAL STATE
  */
-const initialState = {
-  id: 1,
-  isCheckedOut: false,
-  createdAt: '2018-04-18T20:39:32.316Z',
-  updatedAt: '2018-04-18T20:39:32.316Z',
-  userId: 1,
-  trips: [
-    {
-      id: 1,
-      moonName: 'default',
-      planetName: 'default',
-      pricePerTrip: 'default',
-      startDate: '2016-08-09T08:05:02.000Z',
-      duration: 0,
-      description: 'One Way Trip',
-      imagePath:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Phobos_colour_2008.jpg/225px-Phobos_colour_2008.jpg',
-      createdAt: '2018-04-18T20:39:32.296Z',
-      updatedAt: '2018-04-18T20:39:32.296Z',
-      tripOrder: {
-        numberOfGuests: 0,
-        createdAt: '2018-04-18T20:39:32.325Z',
-        updatedAt: '2018-04-18T20:39:32.325Z',
-        tripId: 1,
-        orderId: 1
-      }
-    }
-  ],
-  user: {
-    id: 1,
-    firstName: 'geena',
-    lastName: 'gao',
-    email: 'cody@email.com',
-    phoneNumber: null,
-    googleId: null,
-    facebookId: null,
-    isAdmin: null,
-    stripeTokenId: null,
-    createdAt: '2018-04-18T20:39:32.266Z',
-    updatedAt: '2018-04-18T20:39:32.266Z'
-  }
-}
+// const initialState = {
+//   // id: 1,
+//   // isCheckedOut: false,
+//   // createdAt: '2018-04-18T20:39:32.316Z',
+//   // updatedAt: '2018-04-18T20:39:32.316Z',
+//   // userId: 1,
+//   // trips: [
+//   //   {
+//   //     id: 1,
+//   //     moonName: 'default',
+//   //     planetName: 'default',
+//   //     pricePerTrip: 'default',
+//   //     startDate: '2016-08-09T08:05:02.000Z',
+//   //     duration: 0,
+//   //     description: 'One Way Trip',
+//   //     imagePath:
+//   //       'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Phobos_colour_2008.jpg/225px-Phobos_colour_2008.jpg',
+//   //     createdAt: '2018-04-18T20:39:32.296Z',
+//   //     updatedAt: '2018-04-18T20:39:32.296Z',
+//   //     tripOrder: {
+//   //       numberOfGuests: 0,
+//   //       createdAt: '2018-04-18T20:39:32.325Z',
+//   //       updatedAt: '2018-04-18T20:39:32.325Z',
+//   //       tripId: 1,
+//   //       orderId: 1
+//   //     }
+//   //   }
+//   // ],
+//   // user: {
+//   //   id: 1,
+//   //   firstName: 'geena',
+//   //   lastName: 'gao',
+//   //   email: 'cody@email.com',
+//   //   phoneNumber: null,
+//   //   googleId: null,
+//   //   facebookId: null,
+//   //   isAdmin: null,
+//   //   stripeTokenId: null,
+//   //   createdAt: '2018-04-18T20:39:32.266Z',
+//   //   updatedAt: '2018-04-18T20:39:32.266Z'
+//   }
+// }
+
+const initialState = { trips: [] }
 
 /**
  * ACTION CREATORS
@@ -75,11 +77,13 @@ export const fetchOrder = userId => dispatch => {
 }
 
 //add trip to cart order
-export const postOrder = (tripStateInfo, userId) => dispatch => {
+export const postOrderThunk = (tripStateInfo, userId) => dispatch => {
+  const { tripId, numberOfGuests } = tripStateInfo
   return axios
-    .post(`api/users/${userId}/orders`, { tripStateInfo })
+    .post(`/api/users/${userId}/orders`, { tripId, numberOfGuests })
     .then(res => res.data)
     .then(trip => {
+      console.log(trip, 'HELPPPPPP')
       return dispatch(addTrip(trip))
     })
     .catch(err => console.error(err))
@@ -94,8 +98,7 @@ export default function(state = initialState, action) {
 
     //case postOrder
     case ADD_TRIP:
-      return Object.assign({}, state, action.trip)
-
+      return Object.assign({}, state, { trips: [...state.trips, action.trip] })
     default:
       return state
   }
