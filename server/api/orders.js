@@ -1,15 +1,15 @@
-const router = require('express').Router();
-const { TripOrder, Order, Trip, User } = require('../db/models');
+const router = require('express').Router()
+const { TripOrder, Order, Trip, User } = require('../db/models')
 
 // Get a specific order.
 
 function userValid(req, res, next) {
   User.findById(req.session.passport.user)
     .then(user => {
-      if (user.isAdmin) next();
-      else res.sendStatus(401);
+      if (user.isAdmin) next()
+      else res.sendStatus(401)
     })
-    .catch(next);
+    .catch(next)
 }
 
 router.get('/:orderId', (req, res, next) => {
@@ -27,11 +27,11 @@ router.get('/:orderId', (req, res, next) => {
     //.then(userValid(req, res, next))
     .then(order => res.json(order))
     .catch(err => {
-      res.status(404).send('Not Found');
-      next(err);
-    });
-});
+      res.status(404).send('Not Found')
+      next(err)
+    })
+})
 
-module.exports = router;
+module.exports = router
 
 // .then(userValid(req, res, next)
