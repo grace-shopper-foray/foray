@@ -8,6 +8,7 @@ const ADD_TRIP = 'ADD_TRIP';
 const DELETE_TRIP = 'DELETE_TRIP';
 const UPDATE_TRIP = 'UPDATE_TRIP';
 const CHECKOUT_ORDER = 'CHECKOUT_TRIP';
+const LOGOUT_CART = 'LOGOUT_CART';
 
 /**
  * INITIAL STATE
@@ -62,6 +63,7 @@ const initialState = { trips: [], user: {} };
  */
 const getOrder = order => ({ type: GET_ORDER, order });
 const addTrip = trip => ({ type: ADD_TRIP, trip });
+export const logoutCart = () => ({ type: LOGOUT_CART });
 
 /**
  * THUNK CREATORS
@@ -95,7 +97,8 @@ export default function(state = initialState, action) {
   switch (action.type) {
     case GET_ORDER:
       return Object.assign({}, state, action.order);
-
+    case LOGOUT_CART:
+      return initialState;
     //case postOrder
     case ADD_TRIP:
       return Object.assign({}, state, { trips: [...state.trips, action.trip] });
