@@ -10,10 +10,21 @@ import InjectedCheckoutForm from './injectedCheckoutForm';
 /**
  * COMPONENT
  */
-export default function Checkout () {
+
+// export default function Checkout () {
+//     return (
+//       <Elements>
+//         <InjectedCheckoutForm />
+//       </Elements>
+//     )
+// }
+
+export default class Checkout extends React.Component {
+  render() {
     return (
       <Elements>
         <InjectedCheckoutForm />
       </Elements>
-    )
+    );
+  }
 }

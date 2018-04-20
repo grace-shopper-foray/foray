@@ -8,8 +8,10 @@ import {
   Account,
   TripsHome,
   SingleTrip,
-  Cart
+  Cart,
+  Checkout
 } from './components';
+import {StripeProvider} from 'react-stripe-elements';
 import { me, fetchTrips, fetchOrder } from './store';
 
 /**
@@ -32,6 +34,11 @@ class Routes extends Component {
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/trips/:tripId" component={SingleTrip} />
         <Route exact path="/" component={TripsHome} />
+        
+        <StripeProvider apiKey="pk_test_jHnlCXdlJJf0KQk5xvXChCxa">
+          <Route exact path="/checkout" component={Checkout} />
+        </StripeProvider>
+
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
