@@ -1,20 +1,28 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {BrowserRouter, withRouter, Route, Switch} from 'react-router-dom'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { BrowserRouter, withRouter, Route, Switch } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import {Login, Signup, Account, TripsHome, SingleTrip, Cart} from './components'
-import {me} from './store'
+import {
+  Login,
+  Signup,
+  Account,
+  TripsHome,
+  SingleTrip,
+  Cart
+} from './components'
+import { me, fetchTrips } from './store'
 
 /**
  * COMPONENT
  */
 class Routes extends Component {
-  componentDidMount () {
+  componentDidMount() {
     this.props.loadInitialData()
+    this.props.fetchTripsFromServer()
   }
 
-  render () {
-    const {isLoggedIn} = this.props
+  render() {
+    const { isLoggedIn } = this.props
 
     return (
       <Switch>
@@ -22,15 +30,14 @@ class Routes extends Component {
         <Route path="/cart" component={Cart} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
-        <Route exact path="/" component={TripsHome} />
         <Route exact path="/trips/:tripId" component={SingleTrip} />
-        {
-          isLoggedIn &&
-            <Switch>
-              {/* Routes placed here are only available after logging in */}
-              <Route path="/account" component={Account} />
-            </Switch>
-        }
+        <Route exact path="/" component={TripsHome} />
+        {isLoggedIn && (
+          <Switch>
+            {/* Routes placed here are only available after logging in */}
+            <Route path="/account" component={Account} />
+          </Switch>
+        )}
         {/* Displays our Login component as a fallback */}
         <Route component={Login} />
       </Switch>
@@ -41,7 +48,7 @@ class Routes extends Component {
 /**
  * CONTAINER
  */
-const mapState = (state) => {
+const mapState = state => {
   return {
     // Being 'logged in' for our purposes will be defined has having a state.user that has a truthy id.
     // Otherwise, state.user will be an empty object, and state.user.id will be falsey
@@ -49,10 +56,13 @@ const mapState = (state) => {
   }
 }
 
-const mapDispatch = (dispatch) => {
+const mapDispatch = dispatch => {
   return {
-    loadInitialData () {
+    loadInitialData() {
       dispatch(me())
+    },
+    fetchTripsFromServer: function() {
+      return dispatch(fetchTrips())
     }
   }
 }
