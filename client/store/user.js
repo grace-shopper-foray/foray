@@ -51,7 +51,7 @@ export const auth = (
       res => {
         dispatch(getUser(res.data));
         dispatch(fetchOrder(res.data.id));
-        history.push('/home');
+        history.push('/');
       },
       authError => {
         // rare example: a good use case for parallel (non-catch) error handler
