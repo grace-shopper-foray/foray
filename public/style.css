@@ -39,6 +39,10 @@ footer {
   animation: rocket-logo-spin infinite 20s linear;
 }
 
+#cart-image {
+  margin-left: 1in;
+}
+
 @keyframes rocket-logo-spin {
   from {
     transform: rotate(0deg);
