@@ -6,6 +6,7 @@ const OrderHistoryDetail = props => {
   const { user, orderHistory } = props
   return (
     <div>
+      <h1>Order History</h1>
       {orderHistory[0] &&
         orderHistory.map(eachOrder => {
           return <EachOrderDetail eachOrder={eachOrder} />
@@ -18,13 +19,15 @@ const EachOrderDetail = props => {
   const { eachOrder } = props
   return (
     <div>
+      <h5>Order Number: {eachOrder.id}</h5>
       <table className="table table-striped">
         <thead className="thead-dark">
           <tr>
-            <th scope="col">Order Number</th>
-            <th scope="col"> Purchase Date</th>
+            <th scope="col">Moon Name</th>
+            <th scope="col">Planet Name</th>
+            <th scope="col"> Number Of Guest</th>
             <th scope="col">Price</th>
-            <th scope="col">status</th>
+            <th scope="col">duration</th>
           </tr>
         </thead>
         {eachOrder.trips &&
@@ -42,10 +45,11 @@ const EachOrder = props => {
   return (
     <tbody>
       <tr>
-        <th scope="row">1</th>
-        <td scope="col">2</td>
+        <th scope="row">{eachOrderDetail.moonName}</th>
+        <th scope="row">{eachOrderDetail.planetName}</th>
+        <td scope="col">{eachOrderDetail.tripOrder.numberOfGuests}</td>
         <td scope="col">{eachOrderDetail.pricePerTrip}</td>
-        <td scope="col">4</td>
+        <td scope="col">{eachOrderDetail.duration} days</td>
       </tr>
     </tbody>
   )
