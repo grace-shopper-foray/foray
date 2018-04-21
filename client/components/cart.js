@@ -9,9 +9,21 @@ import { fetchOrder } from '../store'
  * COMPONENT
  */
 export class Cart extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
   componentDidMount() {
     //let userId = 1
     //this.props.fetchOrderFromServer(userId)
+  }
+
+  addUpSubTotal(arrayOfAllTripInCart) {
+    if (arrayOfAllTripInCart.length !== 0) {
+      return arrayOfAllTripInCart.reduce((prev, curr) => {
+        return +prev + +curr.pricePerTrip * curr.tripOrder.numberOfGuests
+      }, 0)
+    }
   }
 
   render() {
@@ -72,7 +84,8 @@ export class Cart extends React.Component {
                             />
                           </td>
                           <td data-th="Subtotal" className="text-center">
-                            {trip.pricePerTrip * trip.tripOrder.numberOfGuests}
+                            ${trip.pricePerTrip *
+                              +trip.tripOrder.numberOfGuests}
                           </td>
                           <td className="actions" data-th="">
                             <button className="btn btn-info btn-sm">
@@ -84,27 +97,29 @@ export class Cart extends React.Component {
                           </td>
                         </tr>
                       </tbody>
-                      <tfoot>
-                        <tr className="visible-xs">
-                          <td className="text-center">
-                            <strong>Total 1.99</strong>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td colSpan="2" className="hidden-xs" />
-                          <td className="hidden-xs text-center">
-                            <strong>Total $1.99</strong>
-                          </td>
-                        </tr>
-                      </tfoot>
                     </table>
                   </div>
-                  <a href="#" className="btn btn-success">
-                    <i className="fa fa-angle-right" /> Checkout
-                  </a>
                 </li>
               )
             })}
+            <div className="in-line input-group mb-3">
+              <h4>Total : ${this.addUpSubTotal(this.props.order.trips)}</h4>
+              <div className="input-group mb-3">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Promo Code"
+                />
+                <div className="input-group-append">
+                  <button className="btn btn-outline-secondary" type="button">
+                    Enter
+                  </button>
+                </div>
+              </div>
+              <a href="#" className="btn btn-success">
+                <i className="fa fa-angle-right" /> Checkout
+              </a>
+            </div>
           </ol>
         ) : (
           <div>Shopping Cart Empty</div>
