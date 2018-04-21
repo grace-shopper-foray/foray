@@ -12,9 +12,10 @@ export class Cart extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      subTotal: 0
+      numberOfGuests: 0
     }
     this.addUpSubTotal = this.addUpSubTotal.bind(this)
+    this.handleChange = this.handleChange.bind(this)
   }
 
   componentDidMount() {
@@ -30,6 +31,11 @@ export class Cart extends React.Component {
       //update to store state and database
       return subTotal
     }
+  }
+
+  handleChange(tripNumberOfGuest) {
+    console.log(tripNumberOfGuest.target.value)
+    this.setState({ numberOfGuests: tripNumberOfGuest.target.value })
   }
 
   render() {
@@ -82,11 +88,12 @@ export class Cart extends React.Component {
                             </div>
                           </td>
                           <td data-th="Price">${trip.pricePerTrip}</td>
-                          <td data-th="Quantity">
+                          <td data-th="NumberOfGuests">
                             <input
                               type="number"
                               className="form-control text-center"
-                              value={trip.tripOrder.numberOfGuests}
+                              value={this.state.numberOfGuests}
+                              onChange={this.handleChange}
                             />
                           </td>
                           <td data-th="Subtotal" className="text-center">
