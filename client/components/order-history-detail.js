@@ -9,7 +9,7 @@ const OrderHistoryDetail = props => {
       <h1>Order History</h1>
       {orderHistory[0] &&
         orderHistory.map(eachOrder => {
-          return <EachOrderDetail eachOrder={eachOrder} />
+          return <EachOrderDetail key={eachOrder.id} eachOrder={eachOrder} />
         })}
     </div>
   )
@@ -32,7 +32,12 @@ const EachOrderDetail = props => {
         </thead>
         {eachOrder.trips &&
           eachOrder.trips.map(eachOrderDetail => {
-            return <EachOrder eachOrderDetail={eachOrderDetail} />
+            return (
+              <EachOrder
+                key={eachOrderDetail.id}
+                eachOrderDetail={eachOrderDetail}
+              />
+            )
           })}
       </table>
     </div>
