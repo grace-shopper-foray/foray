@@ -9,7 +9,8 @@ import {
   TripsHome,
   SingleTrip,
   Cart,
-  Checkout
+  Checkout,
+  OrderHistoryDetail
 } from './components'
 import { StripeProvider } from 'react-stripe-elements'
 import { me, fetchTrips, fetchOrder } from './store'
@@ -33,6 +34,7 @@ class Routes extends Component {
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/trips/:tripId" component={SingleTrip} />
+        <Route exact path="/order-history" component={OrderHistoryDetail} />
         <Route exact path="/" component={TripsHome} />
 
         {isLoggedIn && (

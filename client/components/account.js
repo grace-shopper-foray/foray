@@ -1,14 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import OrderHistoryDetail from './order-history-detail'
+import { Link } from 'react-router-dom'
 
 /**
  * COMPONENT
  */
 const Account = props => {
   const { user } = props
-
   return (
     <div className="container">
       <div className="row">
@@ -25,7 +24,6 @@ const Account = props => {
               </h3>
               <h6>Email: {user.email}</h6>
               <h6>Phone Number: {user.phoneNumber}</h6>
-              <OrderHistoryDetail />
             </div>
             <div className="dropdown show">
               <a
@@ -44,9 +42,9 @@ const Account = props => {
                 <a className="dropdown-item" href="#">
                   Edit
                 </a>
-                <a className="dropdown-item" href="#">
+                <Link to="/order-history" className="dropdown-item" href="#">
                   Order History
-                </a>
+                </Link>
                 <a className="dropdown-item" href="#">
                   Something else here
                 </a>
