@@ -10,9 +10,9 @@ const GET_USER_ORDER_HISTORY = 'GET_USER_ORDER_HISTORY'
 const getUserOrderHistory = order => ({ type: GET_USER_ORDER_HISTORY, order })
 
 //THUNK CREATORS
-export const getUserOrderHistoryThunk = user => dispatch =>
+export const fetchOrderHistory = id => dispatch =>
   axios
-    .get(`/api/users/${user.id}/orders`)
+    .get(`/api/users/${id}/orders`)
     .then(res => res.data)
     .then(orderHistory => dispatch(getUserOrderHistory(orderHistory)))
     .catch(err => console.error(err))

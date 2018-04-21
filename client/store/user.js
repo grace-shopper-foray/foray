@@ -1,6 +1,6 @@
 import axios from 'axios'
 import history from '../history'
-import { fetchOrder, logoutCart } from './index'
+import { fetchOrder, logoutCart, fetchOrderHistory } from './index'
 
 /**
  * ACTION TYPES
@@ -29,6 +29,7 @@ export const me = () => dispatch =>
     .then(res => {
       dispatch(getUser(res.data || defaultUser))
       dispatch(fetchOrder(res.data.id))
+      dispatch(fetchOrderHistory(res.data.id))
     })
     .catch(err => console.log(err))
 
@@ -52,6 +53,7 @@ export const auth = (
       res => {
         dispatch(getUser(res.data))
         dispatch(fetchOrder(res.data.id))
+        dispatch(fetchOrderHistory(res.data.id))
         history.push('/')
       },
       authError => {
