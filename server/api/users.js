@@ -165,11 +165,12 @@ router.delete('/:userId/orders', (req, res, next) => {
 
 // User wants to remove a trip from the cart.
 // router.delete(`api/users/${userId}/${tripId}`)
+//destroy return 1
 router.delete(`/:userId/:tripId`, (req, res, next) => {
   const { userId, tripId } = req.params
   Order.findOne({ where: { userId, isCheckedOut: false } })
     .then(order => TripOrder.destroy({ where: { orderId: order.id, tripId } }))
-    .then(trip => res.status(204))
+    .then(() => res.status(200).json({ message: 'successful' }))
     .catch(next)
 })
 

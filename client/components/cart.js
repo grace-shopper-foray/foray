@@ -15,7 +15,6 @@ export class Cart extends React.Component {
       subTotal: 0
     }
     this.addUpSubTotal = this.addUpSubTotal.bind(this)
-    // this.handleDelete = this.handleDelete.bind(this)
   }
 
   componentDidMount() {
@@ -32,11 +31,6 @@ export class Cart extends React.Component {
       return subTotal
     }
   }
-
-  // handleDelete(tripId, userId) {
-  //   console.log(tripId, userId)
-  //   //deleteTripThunk
-  // }
 
   render() {
     const { user, order } = this.props
