@@ -1,15 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import OrderHistoryDetail from './order-history-detail'
 
 /**
  * COMPONENT
  */
-export const Account = props => {
+const Account = props => {
   const { user } = props
 
   return (
-    <div className="container text-center">
+    <div className="container">
       <div className="row">
         <div className="container-fluid well span6">
           <h4>Account Information</h4>
@@ -24,9 +25,7 @@ export const Account = props => {
               </h3>
               <h6>Email: {user.email}</h6>
               <h6>Phone Number: {user.phoneNumber}</h6>
-              <div>
-                <h6>Order History</h6>
-              </div>
+              <OrderHistoryDetail />
             </div>
             <div className="dropdown show">
               <a
@@ -46,7 +45,7 @@ export const Account = props => {
                   Edit
                 </a>
                 <a className="dropdown-item" href="#">
-                  Another action
+                  Order History
                 </a>
                 <a className="dropdown-item" href="#">
                   Something else here
