@@ -99,8 +99,8 @@ export class Cart extends React.Component {
                       </tfoot>
                     </table>
                   </div>
-                  <a href="#" className="btn btn-success btn-block">
-                    Checkout <i className="fa fa-angle-right" />
+                  <a href="#" className="btn btn-success">
+                    <i className="fa fa-angle-right" /> Checkout
                   </a>
                 </li>
               )
@@ -109,11 +109,9 @@ export class Cart extends React.Component {
         ) : (
           <div>Shopping Cart Empty</div>
         )}
-        <div>
-          <Link to="/" className="btn btn-warning">
-            <i className="fa fa-angle-left" /> Continue Shopping
-          </Link>
-        </div>
+        <Link to="/" className="btn btn-warning">
+          <i className="fa fa-angle-left" /> Continue Shopping
+        </Link>
       </div>
     )
   }
