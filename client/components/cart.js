@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { fetchOrder } from '../store'
+import { fetchOrder, removeTripFromCart } from '../store'
 
 /**
  * COMPONENT
@@ -15,6 +15,7 @@ export class Cart extends React.Component {
       subTotal: 0
     }
     this.addUpSubTotal = this.addUpSubTotal.bind(this)
+    // this.handleDelete = this.handleDelete.bind(this)
   }
 
   componentDidMount() {
@@ -32,14 +33,19 @@ export class Cart extends React.Component {
     }
   }
 
+  // handleDelete(tripId, userId) {
+  //   console.log(tripId, userId)
+  //   //deleteTripThunk
+  // }
+
   render() {
-    console.log(this.props.order.trips)
+    const { user, order } = this.props
     return (
       <div>
         <h2>Current Cart</h2>
-        {this.props.order.trips.length !== 0 ? (
+        {order.trips.length !== 0 ? (
           <ol>
-            {this.props.order.trips.map(trip => {
+            {order.trips.map(trip => {
               return (
                 <li key={trip.id}>
                   <div className="container">
@@ -98,7 +104,12 @@ export class Cart extends React.Component {
                               <i className="fa fa-refresh" />
                             </button>
                             <button className="btn btn-danger btn-sm">
-                              <i className="fa fa-trash-o" />
+                              <i
+                                className="fa fa-trash-o"
+                                onClick={() =>
+                                  this.props.deleteTripThunk(trip.id, user.id)
+                                }
+                              />
                             </button>
                           </td>
                         </tr>
@@ -140,7 +151,8 @@ export class Cart extends React.Component {
 
 const mapState = state => {
   return {
-    order: state.order
+    order: state.order,
+    user: state.user
   }
 }
 
@@ -149,8 +161,8 @@ const mapDispatch = dispatch => {
     fetchOrderFromServer: userId => {
       return dispatch(fetchOrder(userId))
     },
-    deleteTripThunk: tripId => {
-      return dispatch(deleteTrip(tripId))
+    deleteTripThunk: (tripId, userId) => {
+      return dispatch(removeTripFromCart(tripId, userId))
     },
     updateQuantityThunk: orderId => {
       return dispatch(updateTrip(orderId))
