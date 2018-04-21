@@ -1,43 +1,70 @@
 import React from 'react'
-import {connect} from "react-redux"
-import {Link} from "react-router-dom"
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
-import {fetchTrip} from "../store"
+import { fetchTripThunk, postOrderThunk } from '../store'
 
 /**
  * COMPONENT
  */
 
 class SingleTrip extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      tripId: 0,
+      numberOfGuests: 1
+    }
+    this.handleChange = this.handleChange.bind(this)
+  }
+
+  handleChange(event) {
+    this.setState({
+      numberOfGuests: Number(event.target.value)
+    })
+  }
   componentDidMount() {
-    const tripId = Number(this.props.match.params.tripId);
-    this.props.fetchTripFromServer(tripId);
+    const tripId = Number(this.props.match.params.tripId)
+    this.setState({
+      tripId
+    })
+    this.props.fetchTripFromServer(tripId)
   }
 
   render() {
-    console.log(this.props)
+    let { handleSubmit, user } = this.props
     return (
       <div>
         <h1>{this.props.trip.moonName}</h1>
         <h2>{this.props.trip.planetName}</h2>
-        <img src={this.props.trip.imagePath}/>
+        <img src={this.props.trip.imagePath} />
         <p>${this.props.trip.pricePerTrip}</p>
         <p>Start Date: {this.props.trip.startDate}</p>
         <p>Duration: {this.props.trip.duration} Nights</p>
         <p>Description: {this.props.trip.description}</p>
-        <div>
-          <p>Number of Guests:</p>
-          <select>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-            <option>6</option>
-            <option>7</option>
-          </select>
-        </div>
-        <button>Add Trip to Cart</button>
+        <form
+          onSubmit={event => {
+            event.preventDefault()
+            handleSubmit(this.state, user.id)
+          }}
+        >
+          <label>
+            Number of Guests:
+            <select onChange={this.handleChange}>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+          </label>
+          <input type="submit" value="Add Trip to Cart" />
+        </form>
       </div>
     )
   }
@@ -46,16 +73,26 @@ class SingleTrip extends React.Component {
 /**
  * CONTAINER
  */
-const mapState = (state) => {
+const mapState = state => {
   return {
-    trip: state.trip
+    trip: state.trip,
+    user: state.user
   }
 }
 
 const mapDispatch = function(dispatch) {
   return {
     fetchTripFromServer: function(tripId) {
-      return dispatch(fetchTrip(tripId))
+      return dispatch(fetchTripThunk(tripId))
+    },
+    handleSubmit: function(tripAdded, userId) {
+      console.log(tripAdded)
+      console.log(userId, '_______________________________')
+      dispatch(postOrderThunk(tripAdded, userId))
+      // this.setState({
+      //   tripId: 0,
+      //   numberOfGuests: 1
+      // })
     }
   }
 }

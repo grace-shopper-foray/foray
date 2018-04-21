@@ -13,10 +13,11 @@ describe('Account', () => {
   let account
 
   beforeEach(() => {
-    account = shallow(<Account email={'cody@email.com'} />)
+    account = shallow(<Account user={{firstName:'Cody', lastName:'Pug', email:'cody@email.com'}} />)
   })
 
-  it('renders the email in an h3', () => {
-    expect(account.find('h3').text()).to.be.equal('Welcome, cody@email.com')
+  it('renders the user\'s full name in an h3', () => {
+    expect(account.find('h3').text()).to.be.equal('Welcome, Cody Pug')
   })
+
 })

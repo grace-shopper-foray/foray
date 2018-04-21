@@ -1,16 +1,58 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 /**
  * COMPONENT
  */
-export const Account = (props) => {
-  const {email} = props
-
+const Account = props => {
+  const { user } = props
   return (
-    <div>
-      <h3>Welcome, {email}</h3>
+    <div className="container">
+      <div className="row">
+        <div className="container-fluid well span6">
+          <h4>Account Information</h4>
+          <div className="row-fluid">
+            <div className="span2">
+              <img src="" className="img-circle" />
+            </div>
+
+            <div className="span8">
+              <h3>
+                Welcome, {user.firstName} {user.lastName}
+              </h3>
+              <h6>Email: {user.email}</h6>
+              <h6>Phone Number: {user.phoneNumber}</h6>
+            </div>
+            <div className="dropdown show">
+              <a
+                className="btn btn-secondary dropdown-toggle"
+                href="#"
+                role="button"
+                id="dropdownMenuLink"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                Action
+              </a>
+
+              <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a className="dropdown-item" href="#">
+                  Edit
+                </a>
+                <Link to="/order-history" className="dropdown-item" href="#">
+                  Order History
+                </Link>
+                <a className="dropdown-item" href="#">
+                  Something else here
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
@@ -18,9 +60,9 @@ export const Account = (props) => {
 /**
  * CONTAINER
  */
-const mapState = (state) => {
+const mapState = state => {
   return {
-    email: state.user.email
+    user: state.user
   }
 }
 
