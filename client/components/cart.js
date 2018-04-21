@@ -3,24 +3,43 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { fetchOrder } from '../store'
+import { fetchOrder, removeTripFromCart } from '../store'
 
 /**
  * COMPONENT
  */
 export class Cart extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      subTotal: 0
+    }
+    this.addUpSubTotal = this.addUpSubTotal.bind(this)
+  }
+
   componentDidMount() {
     //let userId = 1
     //this.props.fetchOrderFromServer(userId)
   }
 
+  addUpSubTotal(arrayOfAllTripInCart) {
+    if (arrayOfAllTripInCart.length !== 0) {
+      const subTotal = arrayOfAllTripInCart.reduce((prev, curr) => {
+        return +prev + +curr.pricePerTrip * curr.tripOrder.numberOfGuests
+      }, 0)
+      //update to store state and database
+      return subTotal
+    }
+  }
+
   render() {
+    const { user, order } = this.props
     return (
       <div>
         <h2>Current Cart</h2>
-        <ol>
-          {this.props.order.trips &&
-            this.props.order.trips.map(trip => {
+        {order.trips.length !== 0 ? (
+          <ol>
+            {order.trips.map(trip => {
               return (
                 <li key={trip.id}>
                   <div className="container">
@@ -32,7 +51,7 @@ export class Cart extends React.Component {
                         <tr>
                           <th>Product</th>
                           <th>Price</th>
-                          <th> Quantity</th>
+                          <th>Number Of Guests</th>
                           <th className="text-center">Subtotal</th>
                           <th />
                         </tr>
@@ -71,45 +90,54 @@ export class Cart extends React.Component {
                             />
                           </td>
                           <td data-th="Subtotal" className="text-center">
-                            {trip.pricePerTrip * trip.tripOrder.numberOfGuests}
+                            ${trip.pricePerTrip *
+                              +trip.tripOrder.numberOfGuests}
                           </td>
                           <td className="actions" data-th="">
                             <button className="btn btn-info btn-sm">
                               <i className="fa fa-refresh" />
                             </button>
                             <button className="btn btn-danger btn-sm">
-                              <i className="fa fa-trash-o" />
+                              <i
+                                className="fa fa-trash-o"
+                                onClick={() =>
+                                  this.props.deleteTripThunk(trip.id, user.id)
+                                }
+                              />
                             </button>
                           </td>
                         </tr>
                       </tbody>
-                      <tfoot>
-                        <tr className="visible-xs">
-                          <td className="text-center">
-                            <strong>Total 1.99</strong>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td colSpan="2" className="hidden-xs" />
-                          <td className="hidden-xs text-center">
-                            <strong>Total $1.99</strong>
-                          </td>
-                        </tr>
-                      </tfoot>
                     </table>
                   </div>
                 </li>
               )
             })}
-          <div>
-            <a href="#" className="btn btn-warning">
-              <i className="fa fa-angle-left" /> Continue Shopping
-            </a>
-            <a href="#" className="btn btn-success btn-block">
-              Checkout <i className="fa fa-angle-right" />
-            </a>
-          </div>
-        </ol>
+            <div className="in-line input-group mb-3">
+              <h4>Total : ${this.addUpSubTotal(this.props.order.trips)}</h4>
+              <div className="input-group mb-3">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Promo Code"
+                />
+                <div className="input-group-append">
+                  <button className="btn btn-outline-secondary" type="button">
+                    Enter
+                  </button>
+                </div>
+              </div>
+              <a href="#" className="btn btn-success">
+                <i className="fa fa-angle-right" /> Checkout
+              </a>
+            </div>
+          </ol>
+        ) : (
+          <div>Shopping Cart Empty</div>
+        )}
+        <Link to="/" className="btn btn-warning">
+          <i className="fa fa-angle-left" /> Continue Shopping
+        </Link>
       </div>
     )
   }
@@ -117,7 +145,8 @@ export class Cart extends React.Component {
 
 const mapState = state => {
   return {
-    order: state.order
+    order: state.order,
+    user: state.user
   }
 }
 
@@ -126,8 +155,8 @@ const mapDispatch = dispatch => {
     fetchOrderFromServer: userId => {
       return dispatch(fetchOrder(userId))
     },
-    deleteTripThunk: tripId => {
-      return dispatch(deleteTrip(tripId))
+    deleteTripThunk: (tripId, userId) => {
+      return dispatch(removeTripFromCart(tripId, userId))
     },
     updateQuantityThunk: orderId => {
       return dispatch(updateTrip(orderId))
