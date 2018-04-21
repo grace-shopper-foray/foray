@@ -4,28 +4,50 @@ import { getUserOrderHistoryThunk } from '../store'
 
 const OrderHistoryDetail = props => {
   const { user, orderHistory } = props
-  console.log(orderHistory)
   return (
     <div>
-      <table>
-        <thead>
+      {orderHistory[0] &&
+        orderHistory.map(eachOrder => {
+          return <EachOrderDetail eachOrder={eachOrder} />
+        })}
+    </div>
+  )
+}
+
+const EachOrderDetail = props => {
+  const { eachOrder } = props
+  return (
+    <div>
+      <table className="table table-striped">
+        <thead className="thead-dark">
           <tr>
-            <th>Order Number</th>
-            <th>Purchase Date</th>
-            <th>Price</th>
-            <th>status</th>
+            <th scope="col">Order Number</th>
+            <th scope="col"> Purchase Date</th>
+            <th scope="col">Price</th>
+            <th scope="col">status</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>Order # 1</td>
-            <td>Purchase Date</td>
-            <td>Price</td>
-            <td>status</td>
-          </tr>
-        </tbody>
+        {eachOrder.trips &&
+          eachOrder.trips.map(eachOrderDetail => {
+            return <EachOrder eachOrderDetail={eachOrderDetail} />
+          })}
       </table>
     </div>
+  )
+}
+
+const EachOrder = props => {
+  const { eachOrderDetail } = props
+  console.log(eachOrderDetail)
+  return (
+    <tbody>
+      <tr>
+        <th scope="row">1</th>
+        <td scope="col">2</td>
+        <td scope="col">{eachOrderDetail.pricePerTrip}</td>
+        <td scope="col">4</td>
+      </tr>
+    </tbody>
   )
 }
 
