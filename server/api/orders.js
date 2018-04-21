@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const { TripOrder, Order, Trip, User } = require('../db/models')
 
+// Only admin can view it
 // Get a specific order.
 //if never login to database
 function isLoginUser(req, res, next) {
