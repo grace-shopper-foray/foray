@@ -2,10 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { auth } from '../store'
-import {Elements} from 'react-stripe-elements';
+import { Elements } from 'react-stripe-elements'
 
-
-import InjectedCheckoutForm from './injectedCheckoutForm';
+import InjectedCheckoutForm from './injectedCheckoutForm'
 
 /**
  * COMPONENT
@@ -25,6 +24,6 @@ export default class Checkout extends React.Component {
       <Elements>
         <InjectedCheckoutForm />
       </Elements>
-    );
+    )
   }
 }
