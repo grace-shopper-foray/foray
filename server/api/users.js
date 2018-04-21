@@ -168,8 +168,8 @@ router.delete('/:userId/orders', (req, res, next) => {
 router.delete(`api/users/:userId/:tripId`, (req, res, next) => {
   const {userId, tripId} = req.params
   Order.findOne({where: { userId, isCheckedOut: false }})
-  .then(order => TripOrder.destroy({ where: {orderId: order.id, tripId}})
-  .then(trip => res.status(204)
+  .then(order => TripOrder.destroy({ where: {orderId: order.id, tripId}}))
+  .then(trip => res.status(204))
   .catch(next)
 })
 
