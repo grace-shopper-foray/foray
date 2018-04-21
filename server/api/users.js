@@ -135,6 +135,16 @@ router.put('/:userId/orders', (req, res, next) => {
     .catch(next);
 });
 
+// User wants to checkout the cart
+// router.put(`/api/users/${userId}/orders/checkout`)
+router.put(`api/users/:userId/orders/checkout`, (req, res, next) => {
+  const { userId } = req.params;
+  Order.findOne({ where: { userId, isCheckedOut: false } })
+    .then(order => order.update({ isCheckedOut: true }))
+    .then(order => res.status(201).json(order))
+    .catch(next);
+});
+
 // User wants to delete a trip from the cart
 
 router.delete('/:userId/orders', (req, res, next) => {
@@ -150,6 +160,16 @@ router.delete('/:userId/orders', (req, res, next) => {
       return tripOrder.destroy();
     })
     .then(trip => res.status(204).json(trip))
+    .catch(next);
+});
+
+// User wants to remove a trip from the cart.
+// router.delete(`api/users/${userId}/${tripId}`)
+router.delete(`api/users/:userId/:tripId`, (req, res, next) => {
+  const { userId, tripId } = req.params;
+  Order.findOne({ where: { userId, isCheckedOut: false } })
+    .then(order => TripOrder.destroy({ where: { orderId: order.id, tripId } }))
+    .then(trip => res.status(204))
     .catch(next);
 });
 
@@ -173,7 +193,8 @@ router.get('/:userId/orders', (req, res, next) => {
     // No query value, return all orders for user.
     Order.findAll({
       where: {
-        userId: req.params.userId
+        userId: req.params.userId,
+        isCheckedOut: true
       },
       include: [Trip, User]
     })
