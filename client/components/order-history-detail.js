@@ -41,7 +41,6 @@ const EachOrderDetail = props => {
 
 const EachOrder = props => {
   const { eachOrderDetail } = props
-  console.log(eachOrderDetail)
   return (
     <tbody>
       <tr>
