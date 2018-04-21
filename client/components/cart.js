@@ -15,12 +15,13 @@ export class Cart extends React.Component {
   }
 
   render() {
+    console.log(this.props.order.trips)
     return (
       <div>
         <h2>Current Cart</h2>
-        <ol>
-          {this.props.order.trips &&
-            this.props.order.trips.map(trip => {
+        {this.props.order.trips.length !== 0 ? (
+          <ol>
+            {this.props.order.trips.map(trip => {
               return (
                 <li key={trip.id}>
                   <div className="container">
@@ -101,15 +102,15 @@ export class Cart extends React.Component {
                 </li>
               )
             })}
-          <div>
-            <a href="#" className="btn btn-warning">
-              <i className="fa fa-angle-left" /> Continue Shopping
-            </a>
-            <a href="#" className="btn btn-success btn-block">
-              Checkout <i className="fa fa-angle-right" />
-            </a>
-          </div>
-        </ol>
+          </ol>
+        ) : (
+          <div>Shopping Cart Empty</div>
+        )}
+        <div>
+          <a href="#" className="btn btn-warning">
+            <i className="fa fa-angle-left" /> Continue Shopping
+          </a>
+        </div>
       </div>
     )
   }
