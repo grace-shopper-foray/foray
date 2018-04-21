@@ -155,6 +155,7 @@ async function seed() {
     Order.create({ isCheckedOut: false, userId: 1 }),
     Order.create({ isCheckedOut: true, userId: 2 }),
     Order.create({ isCheckedOut: false, userId: 3 }),
+    Order.create({ isCheckedOut: true, userId: 4 }),
     Order.create({ isCheckedOut: true, userId: 4 })
   ])
 
@@ -166,7 +167,10 @@ async function seed() {
     TripOrder.create({ numberOfGuests: 2, orderId: 1, tripId: 1 }),
     TripOrder.create({ numberOfGuests: 4, orderId: 2, tripId: 2 }),
     TripOrder.create({ numberOfGuests: 5, orderId: 3, tripId: 3 }),
-    TripOrder.create({ numberOfGuests: 4, orderId: 4, tripId: 4 })
+    TripOrder.create({ numberOfGuests: 4, orderId: 4, tripId: 4 }),
+    TripOrder.create({ numberOfGuests: 3, orderId: 5, tripId: 1 }),
+    TripOrder.create({ numberOfGuests: 3, orderId: 5, tripId: 2 }),
+    TripOrder.create({ numberOfGuests: 3, orderId: 5, tripId: 3 })
   ])
 
   console.log(`seeded ${tripOrder.length} trip Order`)

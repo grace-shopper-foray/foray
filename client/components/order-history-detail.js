@@ -7,10 +7,13 @@ const OrderHistoryDetail = props => {
   return (
     <div>
       <h1>Order History</h1>
-      {orderHistory[0] &&
+      {orderHistory[0] ? (
         orderHistory.map(eachOrder => {
           return <EachOrderDetail key={eachOrder.id} eachOrder={eachOrder} />
-        })}
+        })
+      ) : (
+        <h3>No Order History</h3>
+      )}
     </div>
   )
 }
