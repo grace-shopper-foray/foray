@@ -11,6 +11,10 @@ import { fetchOrder } from '../store'
 export class Cart extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      subTotal: 0
+    }
+    this.addUpSubTotal = this.addUpSubTotal.bind(this)
   }
 
   componentDidMount() {
@@ -20,9 +24,11 @@ export class Cart extends React.Component {
 
   addUpSubTotal(arrayOfAllTripInCart) {
     if (arrayOfAllTripInCart.length !== 0) {
-      return arrayOfAllTripInCart.reduce((prev, curr) => {
+      const subTotal = arrayOfAllTripInCart.reduce((prev, curr) => {
         return +prev + +curr.pricePerTrip * curr.tripOrder.numberOfGuests
       }, 0)
+      //update to store state and database
+      return subTotal
     }
   }
 
@@ -45,7 +51,7 @@ export class Cart extends React.Component {
                         <tr>
                           <th>Product</th>
                           <th>Price</th>
-                          <th> Quantity</th>
+                          <th>Number Of Guests</th>
                           <th className="text-center">Subtotal</th>
                           <th />
                         </tr>
