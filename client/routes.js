@@ -25,7 +25,7 @@ class Routes extends Component {
   }
 
   render() {
-    const { isLoggedIn, user } = this.props
+    const { isLoggedIn } = this.props
     return (
       <Switch>
         {/* Routes placed here are available to all visitors */}
@@ -33,12 +33,7 @@ class Routes extends Component {
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/trips/:tripId" component={SingleTrip} />
-        <Route
-          exact
-          path="/order-history"
-          component={OrderHistoryDetail}
-          hi={user}
-        />
+        <Route exact path="/order-history" component={OrderHistoryDetail} />
         <Route exact path="/" component={TripsHome} />
 
         {isLoggedIn && (

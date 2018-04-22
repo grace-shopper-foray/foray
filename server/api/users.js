@@ -5,17 +5,14 @@ module.exports = router
 // Getting a list of all users.
 //check admin middleware
 function isAdmin(req, res, next) {
-  User.findById(req.session.passport.user)
-    .then(user => {
-      if (user.isAdmin) next()
-      else res.sendStatus(401)
-    })
-    .catch(next)
+  User.findById(req.session.passport.user).then(user => {
+    if (user.isAdmin) next()
+    else res.sendStatus(401)
+  })
 }
 
 // Requires Admin Permission
 router.get('/', isAdmin, (req, res, next) => {
-  isAdmin(req, res, next)
   User.findAll({
     // explicitly select only the id and email fields - even though
     // users' passwords are encrypted, it won't help if we just
@@ -118,8 +115,8 @@ router.post('/:userId/orders', (req, res, next) => {
 })
 
 // User wants to update the number of guests on an item in cart
-
-router.put('/:userId/orders', (req, res, next) => {
+// fix , need tripId to update as well
+router.put('/:userId/orders/:orderId/trip/:tripsId', (req, res, next) => {
   const userId = req.params.userId
   const { tripId, numberOfGuests } = req.body
   Order.findOne({
@@ -137,7 +134,7 @@ router.put('/:userId/orders', (req, res, next) => {
 
 // User wants to checkout the cart
 // router.put(`/api/users/${userId}/orders/checkout`)
-router.put(`api/users/:userId/orders/checkout`, (req, res, next) => {
+router.put(`/:userId/orders/checkout`, (req, res, next) => {
   const { userId } = req.params
   Order.findOne({ where: { userId, isCheckedOut: false } })
     .then(order => order.update({ isCheckedOut: true }))
@@ -165,7 +162,8 @@ router.delete('/:userId/orders', (req, res, next) => {
 
 // User wants to remove a trip from the cart.
 // router.delete(`api/users/${userId}/${tripId}`)
-//destroy return 1
+//  destroy return 1 , therefore send {message : successful} back to thunk
+
 router.delete(`/:userId/:tripId`, (req, res, next) => {
   const { userId, tripId } = req.params
   Order.findOne({ where: { userId, isCheckedOut: false } })
@@ -180,6 +178,7 @@ router.delete(`/:userId/:tripId`, (req, res, next) => {
 router.get('/:userId/orders', (req, res, next) => {
   const isActive = req.query.cart === 'active'
   if (req.query.cart !== undefined) {
+    // Non-Checkout Order in Cart
     // There is a query string for cart
     Order.findOne({
       where: {
@@ -188,10 +187,13 @@ router.get('/:userId/orders', (req, res, next) => {
       },
       include: [Trip, User]
     })
-      .then(order => res.json(order))
+      .then(order => {
+        res.json(order)
+      })
       .catch(next)
   } else {
     // No query value, return all orders for user.
+    // same as orders.js?
     Order.findAll({
       where: {
         userId: req.params.userId,

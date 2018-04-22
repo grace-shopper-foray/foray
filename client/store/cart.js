@@ -39,6 +39,7 @@ export const fetchOrder = userId => dispatch => {
 }
 
 //add trip to cart order
+// use this
 export const postOrderThunk = (tripStateInfo, userId) => dispatch => {
   const { tripId, numberOfGuests } = tripStateInfo
   return axios
@@ -58,12 +59,13 @@ export const checkoutCart = userId => dispatch => {
     .catch(err => console.error(err))
 }
 
+//user remove item from cart
 export const removeTripFromCart = (tripId, userId) => dispatch => {
   return axios
     .delete(`api/users/${userId}/${tripId}`)
     .then(res => res.data)
     .then(result => {
-      //destroy doesnt return anything
+      //since destroy doesnt return anything
       if (result.message === 'successful') {
         //update the order state to rerender the cart page
         dispatch(fetchOrder(userId))
@@ -78,7 +80,7 @@ export const updateNumberOfGuests = (
   numberOfGuests
 ) => dispatch => {
   return axios
-    .put(`/${userId}/orders`, { tripId, numberOfGuests })
+    .put(`/api/users/${userId}/orders`, { tripId, numberOfGuests })
     .then(res => res.data)
     .then(order => dispatch(updateTrip(order)))
     .catch(err => console.error(err))

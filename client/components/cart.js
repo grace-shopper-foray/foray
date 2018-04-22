@@ -12,9 +12,10 @@ export class Cart extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      subTotal: 0
+      numberOfGuests: 0
     }
     this.addUpSubTotal = this.addUpSubTotal.bind(this)
+    this.handleChange = this.handleChange.bind(this)
   }
 
   componentDidMount() {
@@ -22,6 +23,7 @@ export class Cart extends React.Component {
     //this.props.fetchOrderFromServer(userId)
   }
 
+  //add subTotal for all item in cart
   addUpSubTotal(arrayOfAllTripInCart) {
     if (arrayOfAllTripInCart.length !== 0) {
       const subTotal = arrayOfAllTripInCart.reduce((prev, curr) => {
@@ -30,6 +32,17 @@ export class Cart extends React.Component {
       //update to store state and database
       return subTotal
     }
+  }
+
+  handleChange(tripNumberOfGuest, tripId) {
+    console.log(
+      'NumberOf Guest',
+      tripNumberOfGuest.target.value,
+      ' tripId ',
+      tripId
+    )
+    //also need user id to update
+    //send to thunk immediately and reload
   }
 
   render() {
@@ -52,7 +65,7 @@ export class Cart extends React.Component {
                           <th>Product</th>
                           <th>Price</th>
                           <th>Number Of Guests</th>
-                          <th className="text-center">Subtotal</th>
+                          {/* <th className="text-center">Subtotal</th> */}
                           <th />
                         </tr>
                       </thead>
@@ -82,21 +95,19 @@ export class Cart extends React.Component {
                             </div>
                           </td>
                           <td data-th="Price">${trip.pricePerTrip}</td>
-                          <td data-th="Quantity">
-                            <input
-                              type="number"
-                              className="form-control text-center"
+                          <td data-th="NumberOfGuests">
+                            <select
+                              onChange={evt => this.handleChange(evt, trip.id)}
                               value={trip.tripOrder.numberOfGuests}
-                            />
-                          </td>
-                          <td data-th="Subtotal" className="text-center">
-                            ${trip.pricePerTrip *
-                              +trip.tripOrder.numberOfGuests}
+                            >
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                            </select>
                           </td>
                           <td className="actions" data-th="">
-                            <button className="btn btn-info btn-sm">
-                              <i className="fa fa-refresh" />
-                            </button>
                             <button className="btn btn-danger btn-sm">
                               <i
                                 className="fa fa-trash-o"
@@ -114,7 +125,7 @@ export class Cart extends React.Component {
               )
             })}
             <div className="in-line input-group mb-3">
-              <h4>Total : ${this.addUpSubTotal(this.props.order.trips)}</h4>
+              <h4>Subtotal : ${this.addUpSubTotal(this.props.order.trips)}</h4>
               <div className="input-group mb-3">
                 <input
                   type="text"
