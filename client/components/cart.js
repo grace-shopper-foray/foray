@@ -157,12 +157,12 @@ export class Cart extends React.Component {
             <div>
               <div>
                 <form onSubmit={this.handlePromoCode}>
-                  <div className="input-group mb-3">
+                  <div className="input-group mb-3 in-line">
                     <input
                       type="text"
-                      className="form-control"
                       placeholder="Promo Code"
                       name="promoCode"
+                      style={{ width: '150px', height: '50px' }}
                     />
                     <div className="input-group-append">
                       <input
