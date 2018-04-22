@@ -39,7 +39,6 @@ export const fetchOrder = userId => dispatch => {
 }
 
 //add trip to cart order
-// use this
 export const postOrderThunk = (tripStateInfo, userId) => dispatch => {
   const { tripId, numberOfGuests } = tripStateInfo
   return axios
@@ -51,6 +50,7 @@ export const postOrderThunk = (tripStateInfo, userId) => dispatch => {
     .catch(err => console.error(err))
 }
 
+//user want to checkout in cart
 export const checkoutCart = userId => dispatch => {
   return axios
     .put(`/api/users/${userId}/orders/checkout`)
@@ -77,12 +77,16 @@ export const removeTripFromCart = (tripId, userId) => dispatch => {
 export const updateNumberOfGuests = (
   tripId,
   userId,
-  numberOfGuests
+  numberOfGuests,
+  orderId
 ) => dispatch => {
   return axios
-    .put(`/api/users/${userId}/orders`, { tripId, numberOfGuests })
+    .put(`/api/users/${userId}/orders`, { tripId, numberOfGuests, orderId })
     .then(res => res.data)
-    .then(order => dispatch(updateTrip(order)))
+    .then(order => {
+      dispatch(updateTrip(order))
+      dispatch(fetchOrder(userId))
+    })
     .catch(err => console.error(err))
 }
 
