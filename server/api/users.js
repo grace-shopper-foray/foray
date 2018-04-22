@@ -118,7 +118,7 @@ router.post('/:userId/orders', (req, res, next) => {
 })
 
 // User wants to update the number of guests on an item in cart
-
+// fix
 router.put('/:userId/orders', (req, res, next) => {
   const userId = req.params.userId
   const { tripId, numberOfGuests } = req.body
@@ -137,7 +137,7 @@ router.put('/:userId/orders', (req, res, next) => {
 
 // User wants to checkout the cart
 // router.put(`/api/users/${userId}/orders/checkout`)
-router.put(`api/users/:userId/orders/checkout`, (req, res, next) => {
+router.put(`/:userId/orders/checkout`, (req, res, next) => {
   const { userId } = req.params
   Order.findOne({ where: { userId, isCheckedOut: false } })
     .then(order => order.update({ isCheckedOut: true }))
