@@ -116,7 +116,6 @@ router.post('/:userId/orders', (req, res, next) => {
 
 // User wants to update the number of guests on an item in cart
 router.put('/:userId/orders', (req, res, next) => {
-  console.log('HIIII')
   const userId = req.params.userId
   const { tripId, numberOfGuests } = req.body
   Order.findOne({

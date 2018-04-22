@@ -36,7 +36,7 @@ export class Cart extends React.Component {
 
   //send to thunk immediately and reload cart
   handleChange(event, tripId, userId, orderId) {
-    event.persist()
+    event.persist() //react async for SyntheticEvent
     let numberOfGuest = +event.target.value
     this.props.updateQuantityThunk(tripId, userId, numberOfGuest, orderId)
   }

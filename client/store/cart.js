@@ -84,7 +84,6 @@ export const updateNumberOfGuests = (
     .put(`/api/users/${userId}/orders`, { tripId, numberOfGuests, orderId })
     .then(res => res.data)
     .then(order => {
-      console.log(order)
       dispatch(updateTrip(order))
       dispatch(fetchOrder(userId))
     })
