@@ -116,13 +116,13 @@ export class Cart extends React.Component {
                             </select>
                           </td>
                           <td className="actions" data-th="">
-                            <button className="btn btn-danger btn-sm">
-                              <i
-                                className="fa fa-trash-o"
-                                onClick={() =>
-                                  this.props.deleteTripThunk(trip.id, user.id)
-                                }
-                              />
+                            <button
+                              className="btn btn-danger btn-sm"
+                              onClick={() =>
+                                this.props.deleteTripThunk(trip.id, user.id)
+                              }
+                            >
+                              <i className="fa fa-trash-o" />
                             </button>
                           </td>
                         </tr>
