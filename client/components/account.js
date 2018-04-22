@@ -39,9 +39,9 @@ const Account = props => {
               </a>
 
               <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <a className="dropdown-item" href="#">
-                  Edit
-                </a>
+                <Link to="/edit-account" className="dropdown-item" href="#">
+                  Edit Account Info
+                </Link>
                 <Link to="/order-history" className="dropdown-item" href="#">
                   Order History
                 </Link>
