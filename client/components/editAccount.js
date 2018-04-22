@@ -6,8 +6,8 @@ import { updateUserThunk } from '../store'
 
 
 class EditAccount extends React.Component {
-    constructor() {
-      super()
+    constructor(props) {
+      super(props)
         this.state = {
           firstName: '',
           lastName: '',
@@ -28,7 +28,7 @@ class EditAccount extends React.Component {
     return (
       <div>
         <h1>Edit Your Account Information</h1>
-        <form onSubmit={() => handleSubmit(event, user.id)}>
+        <form onSubmit={() => handleSubmit(this.state, user.id)}>
         <input
         className="form-control"
         placeholder="First Name"
@@ -69,7 +69,7 @@ class EditAccount extends React.Component {
         onChange={this.handleChange}
         value={this.state.phoneNumber}
         />
-        <button>Submit Updated Info</button>
+        <button type="submit">Submit Updated Info</button>
         </form>
       </div>
     )
@@ -86,31 +86,22 @@ const mapState = state => {
   }
 }
 
-const mapDispatch = (dispatch, ownProps) => {
+const mapDispatch = (dispatch) => {
   return {
-    handleSubmit (event, userId) {
+    handleSubmit (updatedEntry, userid) {
       event.preventDefault()
-      const updatedEntry = {[event.target.name]: event.target.value}
-      console.log('dispatch', userId, event)
-    
-      dispatch(updateUserThunk(updatedEntry, userId))
-      // this.setState({
-      //     firstName: '',
-      //     lastName: '',
-      //     phoneNumber: '',
-      //     email: '',
-      //     password: ''
-      // })
-
+      // const updatedEntry = {[evt.target.name]: evt.target.value}
+      // console.log('dispatch', ownProps, evt)
+      dispatch(updateUserThunk(updatedEntry, userid))
+      this.setState({
+          firstName: '',
+          lastName: '',
+          phoneNumber: '',
+          email: '',
+          password: ''
+      })
     }
   }
 }
 
 export default connect(mapState, mapDispatch)(EditAccount)
-
-// /**
-//  * PROP TYPES
-//  */
-// EditAccount.propTypes = {
-//   email: PropTypes.string
-// }
