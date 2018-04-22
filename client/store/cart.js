@@ -39,6 +39,7 @@ export const fetchOrder = userId => dispatch => {
 }
 
 //add trip to cart order
+// use this
 export const postOrderThunk = (tripStateInfo, userId) => dispatch => {
   const { tripId, numberOfGuests } = tripStateInfo
   return axios

@@ -156,7 +156,7 @@ async function seed() {
     Order.create({ isCheckedOut: true, userId: 2 }),
     Order.create({ isCheckedOut: false, userId: 3 }),
     Order.create({ isCheckedOut: true, userId: 4 }),
-    Order.create({ isCheckedOut: true, userId: 4 })
+    Order.create({ isCheckedOut: false, userId: 4 })
   ])
 
   console.log(`seeded ${order.length} order`)

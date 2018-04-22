@@ -35,7 +35,12 @@ export class Cart extends React.Component {
   }
 
   handleChange(tripNumberOfGuest, tripId) {
-    console.log(tripNumberOfGuest.target.value, ' ', tripId)
+    console.log(
+      'NumberOf Guest',
+      tripNumberOfGuest.target.value,
+      ' tripId ',
+      tripId
+    )
     //also need user id to update
     //send to thunk immediately and reload
   }
