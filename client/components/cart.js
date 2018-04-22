@@ -17,6 +17,7 @@ export class Cart extends React.Component {
     this.addUpSubTotal = this.addUpSubTotal.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.subTotalItem = this.subTotalItem.bind(this)
+    this.handlePromoCode = this.handlePromoCode.bind(this)
   }
 
   componentDidMount() {
@@ -43,6 +44,11 @@ export class Cart extends React.Component {
     }
   }
 
+  handlePromoCode(event) {
+    event.preventDefault()
+    const promoCode = event.target.promoCode.value
+  }
+
   //send to thunk immediately and reload cart
   handleChange(event, tripId, userId, orderId) {
     event.persist() //react async for SyntheticEvent
@@ -52,10 +58,9 @@ export class Cart extends React.Component {
 
   render() {
     const { user, order } = this.props
-    console.log(order.trips.length)
     return (
       <div>
-        <h2>Current Cart</h2>
+        <h2>Shopping Cart</h2>
         {order.trips.length !== 0 ? (
           <ol>
             {order.trips.map(trip => {
@@ -148,21 +153,32 @@ export class Cart extends React.Component {
                   this.props.order.trips
                 )}
               </h4>
-              <div className="input-group mb-3">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Promo Code"
-                />
-                <div className="input-group-append">
-                  <button className="btn btn-outline-secondary" type="button">
-                    Enter
-                  </button>
-                </div>
+            </div>
+            <div>
+              <div>
+                <form onSubmit={this.handlePromoCode}>
+                  <div className="input-group mb-3">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Promo Code"
+                      name="promoCode"
+                    />
+                    <div className="input-group-append">
+                      <input
+                        className="btn btn-success"
+                        type="submit"
+                        value="Submit"
+                      />
+                    </div>
+                  </div>
+                </form>
               </div>
-              <a href="#" className="btn btn-success">
-                <i className="fa fa-angle-right" /> Proceed to Checkout
-              </a>
+              <div>
+                <a href="#" className="btn btn-success">
+                  <i className="fa fa-angle-right" /> Proceed to Checkout
+                </a>
+              </div>
             </div>
           </ol>
         ) : (

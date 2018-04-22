@@ -7,7 +7,6 @@ const { PromoCode } = require('../db/models')
 router.get('/:promoCode', (req, res, next) => {
   console.log('in the pormo Code')
   const promoCode = req.params.promoCode
-  console.log(promoCode)
   PromoCode.findOne({
     where: {
       name: promoCode,
