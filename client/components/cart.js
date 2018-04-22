@@ -16,6 +16,7 @@ export class Cart extends React.Component {
     }
     this.addUpSubTotal = this.addUpSubTotal.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.subTotalItem = this.subTotalItem.bind(this)
   }
 
   componentDidMount() {
@@ -34,6 +35,14 @@ export class Cart extends React.Component {
     }
   }
 
+  subTotalItem(allTripInCart) {
+    if (allTripInCart.length === 1) {
+      return <strong>{`${allTripInCart.length} item`}</strong>
+    } else {
+      return <strong>{`${allTripInCart.length} items`}</strong>
+    }
+  }
+
   //send to thunk immediately and reload cart
   handleChange(event, tripId, userId, orderId) {
     event.persist() //react async for SyntheticEvent
@@ -43,6 +52,7 @@ export class Cart extends React.Component {
 
   render() {
     const { user, order } = this.props
+    console.log(order.trips.length)
     return (
       <div>
         <h2>Current Cart</h2>
@@ -133,7 +143,11 @@ export class Cart extends React.Component {
               )
             })}
             <div className="in-line input-group mb-3">
-              <h4>Subtotal : ${this.addUpSubTotal(this.props.order.trips)}</h4>
+              <h4>
+                Subtotal : {this.subTotalItem(order.trips)} ${this.addUpSubTotal(
+                  this.props.order.trips
+                )}
+              </h4>
               <div className="input-group mb-3">
                 <input
                   type="text"
@@ -147,7 +161,7 @@ export class Cart extends React.Component {
                 </div>
               </div>
               <a href="#" className="btn btn-success">
-                <i className="fa fa-angle-right" /> Checkout
+                <i className="fa fa-angle-right" /> Proceed to Checkout
               </a>
             </div>
           </ol>
