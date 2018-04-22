@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { fetchOrder, removeTripFromCart } from '../store'
+import { fetchOrder, removeTripFromCart, updateNumberOfGuests } from '../store'
 
 /**
  * COMPONENT
@@ -34,15 +34,11 @@ export class Cart extends React.Component {
     }
   }
 
-  handleChange(tripNumberOfGuest, tripId) {
-    console.log(
-      'NumberOf Guest',
-      tripNumberOfGuest.target.value,
-      ' tripId ',
-      tripId
-    )
-    //also need user id to update
-    //send to thunk immediately and reload
+  //send to thunk immediately and reload cart
+  handleChange(event, tripId, userId, orderId) {
+    event.persist()
+    let numberOfGuest = +event.target.value
+    this.props.updateQuantityThunk(tripId, userId, numberOfGuest, orderId)
   }
 
   render() {
@@ -97,7 +93,14 @@ export class Cart extends React.Component {
                           <td data-th="Price">${trip.pricePerTrip}</td>
                           <td data-th="NumberOfGuests">
                             <select
-                              onChange={evt => this.handleChange(evt, trip.id)}
+                              onChange={evt =>
+                                this.handleChange(
+                                  evt,
+                                  trip.id,
+                                  user.id,
+                                  order.id
+                                )
+                              }
                               value={trip.tripOrder.numberOfGuests}
                             >
                               <option value="1">1</option>
@@ -169,8 +172,10 @@ const mapDispatch = dispatch => {
     deleteTripThunk: (tripId, userId) => {
       return dispatch(removeTripFromCart(tripId, userId))
     },
-    updateQuantityThunk: orderId => {
-      return dispatch(updateTrip(orderId))
+    updateQuantityThunk: (tripId, userId, numberOfGuest, orderId) => {
+      return dispatch(
+        updateNumberOfGuests(tripId, userId, numberOfGuest, orderId)
+      )
     },
     checkoutThunk: orderId => {
       return dispatch(checkoutOrder(orderId))
