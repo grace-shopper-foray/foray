@@ -10,7 +10,6 @@ import InjectedCheckoutForm from './injectedCheckoutForm'
  * COMPONENT
  */
 
-
 export default class Checkout extends React.Component {
   render() {
     return (
