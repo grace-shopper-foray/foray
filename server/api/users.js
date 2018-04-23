@@ -58,11 +58,7 @@ router.put('/:userId', (req, res, next) => {
     return user
       .update(req.body)
       .then(updatedUser => {
-<<<<<<< HEAD
-        res.status(201).send(res.json(updatedUser));
-=======
-        res.status(200).json(updatedUser)
->>>>>>> dev-master
+        res.status(200).json(updatedUser);
       })
       .catch(next);
   });

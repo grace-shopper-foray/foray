@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { getUserOrderHistoryThunk } from '../store';
 
 const OrderHistoryDetail = props => {
-  const { user, orderHistory } = props;
+  const { orderHistory } = props;
   return (
     <div>
       <h1>Order History</h1>

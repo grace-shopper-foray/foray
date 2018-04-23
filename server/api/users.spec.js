@@ -52,8 +52,8 @@ describe('User routes', () => {
           .send({
             email: 'potus@hotmail.com'
           })
-          .expect(201)
-          .then(res => {
+          .expect(200)
+          .then(() => {
             return User.findById(geoff);
           })
           .then(user => {

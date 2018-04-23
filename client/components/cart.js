@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -7,7 +6,8 @@ import {
   fetchOrder,
   removeTripFromCart,
   updateNumberOfGuests,
-  addPromoCode
+  addPromoCode,
+  checkoutOrder
 } from '../store';
 
 /**
@@ -23,11 +23,6 @@ export class Cart extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.subTotalItem = this.subTotalItem.bind(this);
     this.handlePromoCode = this.handlePromoCode.bind(this);
-  }
-
-  componentDidMount() {
-    //let userId = 1
-    //this.props.fetchOrderFromServer(userId)
   }
 
   //add subTotal for all item in cart
@@ -96,7 +91,6 @@ export class Cart extends React.Component {
                           <th>Product</th>
                           <th>Price</th>
                           <th>Number Of Guests</th>
-                          {/* <th className="text-center">Subtotal</th> */}
                           <th />
                         </tr>
                       </thead>
