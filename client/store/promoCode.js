@@ -19,12 +19,9 @@ export const addPromoCode = (promoCode, userId) => dispatch => {
     .then(result => {
       if (result.error) {
         dispatch(setPercentage({ error: 'error' }))
-        dispatch(fetchOrder(userId))
       } else {
         dispatch(setPercentage(result))
-        dispatch(fetchOrder(userId))
       }
-      console.log(userId)
     })
     .catch(err => console.error(err))
 }

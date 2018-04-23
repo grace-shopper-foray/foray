@@ -31,22 +31,33 @@ export class Cart extends React.Component {
   }
 
   //add subTotal for all item in cart
+  //change total if promo code is valid
   addUpSubTotal(arrayOfAllTripInCart, promoPercentage) {
     if (arrayOfAllTripInCart.length !== 0) {
       const subTotal = arrayOfAllTripInCart.reduce((prev, curr) => {
         return +prev + +curr.pricePerTrip * curr.tripOrder.numberOfGuests
       }, 0)
-      console.log(promoPercentage.length)
+      //after user enter a promo code
       if (promoPercentage.length !== 0) {
-        //filter array
         const discount = promoPercentage.filter(each => each.isActive)
-        console.log(discount)
-        if (discount.length === 0) {
+        const promoStatelength = promoPercentage.length - 1
+        let lastPromoCode = false
+        if (promoPercentage[promoStatelength] !== discount[0]) {
+          //last index not equal to active promocode
+          lastPromoCode = true
+        }
+
+        if (discount.length === 0 || lastPromoCode) {
           // not such code , error message
           console.log('No Such Promo Code')
+          alert('Invalid Promo Code!')
+          return subTotal
         } else {
           const discountPercentage = +discount[0].percentage
           //set state show is valid , how much discount
+          alert(
+            ' Discount has been successfully applied to the following events'
+          )
           return subTotal * (discountPercentage / 100)
         }
       } else {
@@ -67,8 +78,12 @@ export class Cart extends React.Component {
     //change all the price in state order base on the promo percentage
     //update order.trips
     event.preventDefault()
-    const promoCode = event.target.promoCode.value
-    this.props.promoCodeThunk(promoCode, userId)
+    const promoCodeInput = event.target.promoCode.value
+    if (promoCodeInput) {
+      this.props.promoCodeThunk(promoCodeInput, userId)
+    } else {
+      alert('Pleast enter a Valid Promo Code')
+    }
   }
 
   //send to thunk immediately and reload cart
