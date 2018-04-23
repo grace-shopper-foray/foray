@@ -17,7 +17,7 @@ componentDidMount() {
 
   render() {
     return (
-      <div class="sidenav">
+      <div className="sidenav">
         <a>Available trips:</a>
         {this.props.trips.map(trip => {
           return (
