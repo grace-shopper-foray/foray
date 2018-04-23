@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { fetchOrder } from './cart'
 
-const initialState = []
+const initialState = {}
 
 //action
 const SET_PERCENTAGE = 'SET_PERCENTAGE'
@@ -30,7 +30,7 @@ export const addPromoCode = (promoCode, userId) => dispatch => {
 export default function(state = initialState, action) {
   switch (action.type) {
     case SET_PERCENTAGE:
-      return [...state, action.percentage]
+      return action.percentage
 
     default:
       return state

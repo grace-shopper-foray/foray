@@ -32,38 +32,21 @@ export class Cart extends React.Component {
 
   //add subTotal for all item in cart
   //change total if promo code is valid
-  addUpSubTotal(arrayOfAllTripInCart, promoPercentage) {
-    if (arrayOfAllTripInCart.length !== 0) {
-      const subTotal = arrayOfAllTripInCart.reduce((prev, curr) => {
-        return +prev + +curr.pricePerTrip * curr.tripOrder.numberOfGuests
-      }, 0)
-      //after user enter a promo code
-      if (promoPercentage.length !== 0) {
-        const discount = promoPercentage.filter(each => each.isActive)
-        const promoStatelength = promoPercentage.length - 1
-        let lastPromoCode = false
-        if (promoPercentage[promoStatelength] !== discount[0]) {
-          //last index not equal to active promocode
-          lastPromoCode = true
-        }
-
-        if (discount.length === 0 || lastPromoCode) {
-          // not such code , error message
-          console.log('No Such Promo Code')
-          alert('Invalid Promo Code!')
-          return subTotal
-        } else {
-          const discountPercentage = +discount[0].percentage
-          //set state show is valid , how much discount
-          alert(
-            ' Discount has been successfully applied to the following events'
-          )
-          return subTotal * (discountPercentage / 100)
-        }
-      } else {
-        return subTotal
+  addUpSubTotal(arrayOfAllTripInCart, promoCodeObjFromServer) {
+    let subTotalPercentage = 100
+    if (promoCodeObjFromServer.error) {
+      alert('Invalid promo Code')
+    } else {
+      if (promoCodeObjFromServer.percentage !== undefined) {
+        subTotalPercentage = promoCodeObjFromServer.percentage
+        alert('Coupon has been successfully applied to the following events')
       }
     }
+    let subTotal = arrayOfAllTripInCart.reduce((prev, curr) => {
+      return +prev + +curr.pricePerTrip * curr.tripOrder.numberOfGuests
+    }, 0)
+
+    return subTotal * (subTotalPercentage / 100)
   }
 
   subTotalItem(allTripInCart) {
@@ -95,7 +78,6 @@ export class Cart extends React.Component {
 
   render() {
     const { user, order, promoCode } = this.props
-    // console.log(promoCode)
     return (
       <div>
         <h2>Shopping Cart</h2>
