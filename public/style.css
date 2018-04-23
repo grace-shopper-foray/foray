@@ -20,17 +20,6 @@ form div {
   display: inline-block;
 }
 
-footer {
-  bottom: 0;
-  color: #707070;
-  height: 1rem;
-  right: 0;
-  left: 0;
-  position: absolute;
-  font-size: medium;
-  width: 100%;
-}
-
 #homePageCard {
   margin-bottom: 1in;
 }
