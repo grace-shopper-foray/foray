@@ -1,13 +1,13 @@
-const router = require('express').Router();
-const { User, Order, TripOrder, Trip } = require('../db/models');
-module.exports = router;
+const router = require('express').Router()
+const { User, Order, TripOrder, Trip } = require('../db/models')
+module.exports = router
 
 //check admin middleware
 function isAdmin(req, res, next) {
   User.findById(req.session.passport.user).then(user => {
-    if (user.isAdmin) next();
-    else res.sendStatus(401);
-  });
+    if (user.isAdmin) next()
+    else res.sendStatus(401)
+  })
 }
 
 // Getting a list of all users.
@@ -17,12 +17,9 @@ router.get('/', isAdmin, (req, res, next) => {
     // explicitly select only the id and email fields
     attributes: ['id', 'email']
   })
-    .then(users => {
-      console.log(users);
-      res.json(users);
-    })
-    .catch(next);
-});
+    .then(users => res.json(users))
+    .catch(next)
+})
 
 // Find a single user
 
@@ -31,13 +28,13 @@ router.get('/:userId', (req, res, next) => {
     attributes: ['id', 'firstName', 'lastName', 'email']
   })
     .then(user => res.json(user))
-    .catch(next);
-});
+    .catch(next)
+})
 
 // Creating new user
 
 router.post('/', (req, res, next) => {
-  const { firstName, lastName, phoneNumber, email } = req.body;
+  const { firstName, lastName, phoneNumber, email } = req.body
   User.create({
     firstName,
     lastName,
@@ -45,42 +42,42 @@ router.post('/', (req, res, next) => {
     phoneNumber
   })
     .then(user => {
-      res.status(201).send(user);
+      res.status(201).send(user)
     })
-    .catch(next);
-});
+    .catch(next)
+})
 
 // Updating a users information.
 
 router.put('/:userId', (req, res, next) => {
-  const id = req.params.userId;
+  const id = req.params.userId
   User.findById(id).then(user => {
     return user
       .update(req.body)
       .then(updatedUser => {
-        res.status(200).json(updatedUser);
+        res.status(200).json(updatedUser)
       })
-      .catch(next);
-  });
-});
+      .catch(next)
+  })
+})
 
 // Removes a user from the database
 
 router.delete('/:userId', (req, res, next) => {
-  const id = req.params.userId;
+  const id = req.params.userId
   User.findById(id)
     .then(user => user.destroy())
     .then(() => {
-      res.status(204).send('No content');
+      res.status(204).send('No content')
     })
-    .catch(next);
-});
+    .catch(next)
+})
 
 // User adds trip to cart.
 
 router.post('/:userId/orders', (req, res, next) => {
-  const userId = req.params.userId;
-  const { tripId, numberOfGuests } = req.body;
+  const userId = req.params.userId
+  const { tripId, numberOfGuests } = req.body
 
   Order.findOrCreate({
     where: { userId: userId, isCheckedOut: false },
@@ -91,79 +88,79 @@ router.post('/:userId/orders', (req, res, next) => {
         orderId: order.id,
         tripId,
         numberOfGuests
-      }).then(() => order);
+      }).then(() => order)
     })
     .then(order => {
-      return Order.findById(order.id, { include: [Trip] });
+      return Order.findById(order.id, { include: [Trip] })
     })
     .then(order => {
-      const trip = order.trips.filter(t => t.id === tripId)[0];
-      res.status(201).json(trip);
+      const trip = order.trips.filter(t => t.id === tripId)[0]
+      res.status(201).json(trip)
     })
-    .catch(next);
-});
+    .catch(next)
+})
 
 // User wants to update the number of guests on an item in cart
 
 router.put('/:userId/orders', (req, res, next) => {
-  const userId = req.params.userId;
-  const { tripId, numberOfGuests } = req.body;
+  const userId = req.params.userId
+  const { tripId, numberOfGuests } = req.body
   Order.findOne({
     where: { userId: userId, isCheckedOut: false },
     include: [Trip, User]
   })
     .then(order => {
       // TripOrder only exists on trip objects, need to filter to trip with tripId
-      const tripOrder = order.trips.filter(t => t.id === tripId)[0].tripOrder;
-      return tripOrder.update({ orderId: order.id, tripId, numberOfGuests });
+      const tripOrder = order.trips.filter(t => t.id === tripId)[0].tripOrder
+      return tripOrder.update({ orderId: order.id, tripId, numberOfGuests })
     })
     .then(trip => res.status(200).json(trip))
-    .catch(next);
-});
+    .catch(next)
+})
 
 // User wants to checkout the cart
 router.put(`/:userId/orders/checkout`, (req, res, next) => {
-  const { userId } = req.params;
+  const { userId } = req.params
   Order.findOne({ where: { userId, isCheckedOut: false } })
     .then(order => order.update({ isCheckedOut: true }))
     .then(order => res.status(201).json(order))
-    .catch(next);
-});
+    .catch(next)
+})
 
 // User wants to delete a trip from the cart
 
 router.delete('/:userId/orders', (req, res, next) => {
-  const userId = req.params.userId;
-  const { tripId } = req.body;
+  const userId = req.params.userId
+  const { tripId } = req.body
   Order.findOne({
     where: { userId: userId, isCheckedOut: false },
     include: [Trip, User]
   })
     .then(order => {
       // TripOrder only exists on trip objects, need to filter to trip with tripId
-      const tripOrder = order.trips.filter(t => t.id === tripId)[0].tripOrder;
-      return tripOrder.destroy();
+      const tripOrder = order.trips.filter(t => t.id === tripId)[0].tripOrder
+      return tripOrder.destroy()
     })
     .then(trip => res.status(200).json(trip))
-    .catch(next);
-});
+    .catch(next)
+})
 
 // User wants to remove a trip from the cart.
 // router.delete(`api/users/${userId}/${tripId}`)
 //  destroy return 1 , therefore send {message : successful} back to thunk
 
 router.delete(`/:userId/:tripId`, (req, res, next) => {
-  const { userId, tripId } = req.params;
+  const { userId, tripId } = req.params
   Order.findOne({ where: { userId, isCheckedOut: false } })
     .then(order => TripOrder.destroy({ where: { orderId: order.id, tripId } }))
     .then(() => res.status(200).json({ message: 'successful' }))
-    .catch(next);
-});
+    .catch(next)
+})
 
 // User wants to see Order history or cart (/orders?cart=active).
 
 router.get('/:userId/orders', (req, res, next) => {
-  const isActive = req.query.cart === 'active';
+  const isActive = req.query.cart === 'active'
   if (req.query.cart !== undefined) {
     // Non-Checkout Order in Cart
     // There is a query string for cart
@@ -175,9 +172,9 @@ router.get('/:userId/orders', (req, res, next) => {
       include: [Trip, User]
     })
       .then(order => {
-        res.json(order);
+        res.json(order)
       })
-      .catch(next);
+      .catch(next)
   } else {
     // No query value, return all orders for user.
     // same as orders.js?
@@ -190,8 +187,8 @@ router.get('/:userId/orders', (req, res, next) => {
     })
       .then(orders => res.json(orders))
       .catch(err => {
-        res.status(404).send('Not Found');
-        next(err);
-      });
+        res.status(404).send('Not Found')
+        next(err)
+      })
   }
-});
+})
