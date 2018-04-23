@@ -10,7 +10,13 @@
  * Now that you've got the main idea, check it out in practice below!
  */
 const db = require('../server/db')
-const { User, Trip, Order, TripOrder } = require('../server/db/models')
+const {
+  User,
+  Trip,
+  Order,
+  TripOrder,
+  PromoCode
+} = require('../server/db/models')
 
 async function seed() {
   await db.sync({ force: true })
@@ -171,6 +177,14 @@ async function seed() {
   ])
 
   console.log(`successfully seeded ${tripOrder.length} Trip Orders`)
+
+  const promoCode = await Promise.all([
+    PromoCode.create({ name: 'foray', isActive: true, percentage: 10 }),
+    PromoCode.create({ name: 'fullstack', isActive: false, percentage: 90 })
+  ])
+
+  console.log(`seeded ${promoCode.length} promo code`)
+  console.log(`seeded promo code successfully`)
 }
 
 // Execute the `seed` function

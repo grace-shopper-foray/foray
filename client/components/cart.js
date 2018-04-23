@@ -3,7 +3,12 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { fetchOrder, removeTripFromCart, updateNumberOfGuests } from '../store'
+import {
+  fetchOrder,
+  removeTripFromCart,
+  updateNumberOfGuests,
+  addPromoCode
+} from '../store'
 
 /**
  * COMPONENT
@@ -16,6 +21,8 @@ export class Cart extends React.Component {
     }
     this.addUpSubTotal = this.addUpSubTotal.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.subTotalItem = this.subTotalItem.bind(this)
+    this.handlePromoCode = this.handlePromoCode.bind(this)
   }
 
   componentDidMount() {
@@ -24,13 +31,41 @@ export class Cart extends React.Component {
   }
 
   //add subTotal for all item in cart
-  addUpSubTotal(arrayOfAllTripInCart) {
-    if (arrayOfAllTripInCart.length !== 0) {
-      const subTotal = arrayOfAllTripInCart.reduce((prev, curr) => {
-        return +prev + +curr.pricePerTrip * curr.tripOrder.numberOfGuests
-      }, 0)
-      //update to store state and database
-      return subTotal
+  //change total if promo code is valid
+  addUpSubTotal(arrayOfAllTripInCart, promoCodeObjFromServer) {
+    let subTotalPercentage = 100
+    if (promoCodeObjFromServer.error) {
+      alert('Invalid promo Code')
+    } else {
+      if (promoCodeObjFromServer.percentage !== undefined) {
+        subTotalPercentage = promoCodeObjFromServer.percentage
+        alert('Coupon has been successfully applied to the following events')
+      }
+    }
+    let subTotal = arrayOfAllTripInCart.reduce((prev, curr) => {
+      return +prev + +curr.pricePerTrip * curr.tripOrder.numberOfGuests
+    }, 0)
+
+    return subTotal * (subTotalPercentage / 100)
+  }
+
+  subTotalItem(allTripInCart) {
+    if (allTripInCart.length === 1) {
+      return <strong>{`${allTripInCart.length} item`}</strong>
+    } else {
+      return <strong>{`${allTripInCart.length} items`}</strong>
+    }
+  }
+
+  handlePromoCode(event, userId) {
+    //change all the price in state order base on the promo percentage
+    //update order.trips
+    event.preventDefault()
+    const promoCodeInput = event.target.promoCode.value
+    if (promoCodeInput) {
+      this.props.promoCodeThunk(promoCodeInput, userId)
+    } else {
+      alert('Pleast enter a Valid Promo Code')
     }
   }
 
@@ -42,10 +77,10 @@ export class Cart extends React.Component {
   }
 
   render() {
-    const { user, order } = this.props
+    const { user, order, promoCode } = this.props
     return (
       <div>
-        <h2>Current Cart</h2>
+        <h2>Shopping Cart</h2>
         {order.trips.length !== 0 ? (
           <ol>
             {order.trips.map(trip => {
@@ -133,22 +168,38 @@ export class Cart extends React.Component {
               )
             })}
             <div className="in-line input-group mb-3">
-              <h4>Subtotal : ${this.addUpSubTotal(this.props.order.trips)}</h4>
-              <div className="input-group mb-3">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Promo Code"
-                />
-                <div className="input-group-append">
-                  <button className="btn btn-outline-secondary" type="button">
-                    Enter
-                  </button>
-                </div>
+              <h4>
+                Subtotal : {this.subTotalItem(order.trips)} ${this.addUpSubTotal(
+                  this.props.order.trips,
+                  promoCode
+                )}
+              </h4>
+            </div>
+            <div>
+              <div>
+                <form onSubmit={event => this.handlePromoCode(event, user.id)}>
+                  <div className="input-group mb-3 in-line">
+                    <input
+                      type="text"
+                      placeholder="Promo Code"
+                      name="promoCode"
+                      style={{ width: '150px', height: '50px' }}
+                    />
+                    <div className="input-group-append">
+                      <input
+                        className="btn btn-success"
+                        type="submit"
+                        value="Submit"
+                      />
+                    </div>
+                  </div>
+                </form>
               </div>
-              <a href="#" className="btn btn-success">
-                <i className="fa fa-angle-right" /> Checkout
-              </a>
+              <div>
+                <a href="#" className="btn btn-success">
+                  <i className="fa fa-angle-right" /> Proceed to Checkout
+                </a>
+              </div>
             </div>
           </ol>
         ) : (
@@ -165,7 +216,8 @@ export class Cart extends React.Component {
 const mapState = state => {
   return {
     order: state.order,
-    user: state.user
+    user: state.user,
+    promoCode: state.promoCode
   }
 }
 
@@ -184,6 +236,9 @@ const mapDispatch = dispatch => {
     },
     checkoutThunk: orderId => {
       return dispatch(checkoutOrder(orderId))
+    },
+    promoCodeThunk: (promoCode, userId) => {
+      return dispatch(addPromoCode(promoCode, userId))
     }
   }
 }
