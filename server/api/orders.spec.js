@@ -7,8 +7,6 @@ const app = require('../index');
 const seed = require('../../script/test-seed');
 const Order = db.model('order');
 const Trip = db.model('trip');
-const User = db.model('user');
-const TripOrder = db.model('tripOrder');
 
 describe('Order routes', () => {
   after(async function() {
@@ -25,9 +23,10 @@ describe('Order routes', () => {
         await db.sync({ force: true });
       });
 
-      it('GET /api/orders/:orderID returns the correct order', () => {
+      it('GET /api/orders/:orderId returns the correct order', () => {
         return request(app)
           .get('/api/orders/1')
+          .send({ userId: 1 })
           .expect(200)
           .then(res => {
             const anOrder = res.body;
@@ -119,7 +118,7 @@ describe('Order routes', () => {
         await seed();
       });
 
-      it('User can update number of guests on a trip with PUT api/users/{{usersId}}/orders,  getting a 200 response on success', () => {
+      it('User can update number of guests on a trip with PUT api/users/{{usersId}}/orders, getting a 200 response on success', () => {
         return request(app)
           .put(`/api/users/1/orders`)
           .send({ tripId: 1, numberOfGuests: 15 })
