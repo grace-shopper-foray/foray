@@ -66,7 +66,7 @@ async function seed() {
       moonName: 'Phobos',
       price: 2000,
       startDate: '2016-08-09 04:05:02',
-      duration: 5,
+      numberOfNights: 5,
       description: 'One Way Trip',
       imagePath:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Phobos_colour_2008.jpg/225px-Phobos_colour_2008.jpg'
@@ -76,7 +76,7 @@ async function seed() {
       moonName: 'Moon',
       price: 1500,
       startDate: '2017-08-09 04:05:02',
-      duration: 3,
+      numberOfNights: 3,
       description: 'One Way Trip',
       imagePath:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/225px-FullMoon2010.jpg'
@@ -86,7 +86,7 @@ async function seed() {
       moonName: 'Io',
       price: 1800,
       startDate: '2017-08-09 04:05:02',
-      duration: 4,
+      numberOfNights: 4,
       description: 'One Way Trip',
       imagePath:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Io_highest_resolution_true_color.jpg/225px-Io_highest_resolution_true_color.jpg'
@@ -96,7 +96,7 @@ async function seed() {
       moonName: 'Europa',
       price: 1500,
       startDate: '2017-08-09 04:05:02',
-      duration: 4,
+      numberOfNights: 4,
       description: 'One Way Trip',
       imagePath:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Europa-moon.jpg/225px-Europa-moon.jpg'
@@ -106,7 +106,7 @@ async function seed() {
       moonName: 'Triton',
       price: 1900,
       startDate: '2017-08-09 04:05:02',
-      duration: 7,
+      numberOfNights: 7,
       description: 'One Way Trip',
       imagePath:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Triton_moon_mosaic_Voyager_2_%28large%29.jpg/300px-Triton_moon_mosaic_Voyager_2_%28large%29.jpg'
@@ -116,7 +116,7 @@ async function seed() {
       moonName: 'Ariel',
       price: 900,
       startDate: '2017-08-09 04:05:02',
-      duration: 6,
+      numberOfNights: 6,
       description: 'One Way Trip',
       imagePath:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Ariel_%28moon%29.jpg/225px-Ariel_%28moon%29.jpg'
@@ -126,7 +126,7 @@ async function seed() {
       moonName: 'Miranda',
       price: 600,
       startDate: '2017-08-09 04:05:02',
-      duration: 3,
+      numberOfNights: 3,
       description: 'One Way Trip',
       imagePath:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Miranda.jpg/224px-Miranda.jpg'
@@ -136,7 +136,7 @@ async function seed() {
       moonName: 'Oberon',
       price: 800,
       startDate: '2017-08-09 04:05:02',
-      duration: 3,
+      numberOfNights: 3,
       description: 'One Way Trip',
       imagePath:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Voyager_2_picture_of_Oberon.jpg/225px-Voyager_2_picture_of_Oberon.jpg'
@@ -146,7 +146,7 @@ async function seed() {
       moonName: 'Dione',
       price: 1700,
       startDate: '2017-08-09 04:05:02',
-      duration: 8,
+      numberOfNights: 8,
       description: 'One Way Trip',
       imagePath:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Dione_in_natural_light.jpg/225px-Dione_in_natural_light.jpg'

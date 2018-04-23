@@ -54,9 +54,9 @@ describe('Order routes', () => {
         Trip.create({
           planetName: 'Jupiter',
           moonName: 'Io',
-          pricePerTrip: 1800,
+          price: 1800,
           startDate: '2017-08-09 04:05:02',
-          duration: 4,
+          numberOfNights: 4,
           description: 'One Way Trip',
           imagePath:
             'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Io_highest_resolution_true_color.jpg/225px-Io_highest_resolution_true_color.jpg'
@@ -93,9 +93,9 @@ describe('Order routes', () => {
         await Trip.create({
           planetName: 'Jupiter',
           moonName: 'Io',
-          pricePerTrip: 1800,
+          price: 1800,
           startDate: '2017-08-09 04:05:02',
-          duration: 4,
+          numberOfNights: 4,
           description: 'One Way Trip',
           imagePath:
             'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Io_highest_resolution_true_color.jpg/225px-Io_highest_resolution_true_color.jpg'

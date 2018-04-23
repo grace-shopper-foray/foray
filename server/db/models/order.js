@@ -16,7 +16,7 @@ Order.prototype.totalPrice = () => {
     }
   }).then(tripOrderArr => {
     return tripOrderArr.reduce((acc, tripOrder) => {
-      return acc + tripOrder.pricePerTrip;
+      return acc + tripOrder.price;
     });
   });
 };
