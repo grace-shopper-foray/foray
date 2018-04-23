@@ -1,9 +1,9 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-import { fetchTrips } from '../store'
+import { fetchTrips } from '../store';
 
 /**
  * COMPONENT
@@ -11,16 +11,16 @@ import { fetchTrips } from '../store'
 
 class TripsHome extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       moonName: ''
-    }
-    this.filterMoon = this.filterMoon.bind(this)
+    };
+    this.filterMoon = this.filterMoon.bind(this);
   }
 
   componentDidMount() {
-    this.props.fetchTripsFromServer()
+    this.props.fetchTripsFromServer();
   }
 
   render() {
@@ -33,7 +33,7 @@ class TripsHome extends React.Component {
         <ul className="row list-unstyled list-inline">
           {this.props.trips.filter(this.filterMoon).map(trip => {
             return (
-              <div className="col-md-3" id="homePageCard">
+              <div className="col-md-3" id="homePageCard" key={trip.id}>
                 <div className="card text-center">
                   <li key={trip.id}>
                     <img
@@ -46,11 +46,11 @@ class TripsHome extends React.Component {
                   </li>
                 </div>
               </div>
-            )
+            );
           })}
         </ul>
       </div>
-    )
+    );
   }
 
   renderMoonSearch() {
@@ -66,14 +66,12 @@ class TripsHome extends React.Component {
           />
         </form>
       </div>
-    )
+    );
   }
 
   filterMoon(moon) {
-    const moonMatch = new RegExp(this.state.moonName, 'i')
-
-    //return true if moonName === moonName from this.props.trips
-    return moonMatch.test(moon.moonName)
+    const moonMatch = new RegExp(this.state.moonName, 'i');
+    return moonMatch.test(moon.moonName);
   }
 }
 
@@ -83,16 +81,15 @@ class TripsHome extends React.Component {
 const mapState = state => {
   return {
     trips: state.trips
-  }
-}
+  };
+};
 
 const mapDispatch = function(dispatch) {
   return {
     fetchTripsFromServer: function() {
-      return dispatch(fetchTrips())
+      return dispatch(fetchTrips());
     }
-  }
-}
+  };
+};
 
-export default connect(mapState, mapDispatch)(TripsHome)
-// {trip.imagePath}
+export default connect(mapState, mapDispatch)(TripsHome);
