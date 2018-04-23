@@ -14,31 +14,34 @@ const Navbar = ({ handleClick, isLoggedIn }) => (
         id="rocket-logo"
       />
       <a className="navbar-brand">FORAY</a>
+      <Link to="/" className="btn btn-info">
+        Home
+      </Link>
       {isLoggedIn ? (
         <div>
           {/* The navbar will show these links after you log in */}
-          <Link to="/home">Home</Link>
-          <a href="#" onClick={handleClick}>
+
+          <a href="#" onClick={handleClick} className="btn btn-danger">
             Logout
           </a>
+          <Link to="/account" className="btn btn-primary">
+            My Account
+          </Link>
         </div>
       ) : (
         <div navbar-nav>
           {/* The navbar will show these links before you log in */}
-          <Link to="/" className="btn btn-secondary">
-            All Trips
-          </Link>
           <Link to="/login" className="btn btn-success">
             Login
           </Link>
           <Link to="/signup" className="btn btn-danger">
             Sign Up
           </Link>
-          <Link to="/cart" className="btn btn-warning">
-            Go To Cart
-          </Link>
         </div>
       )}
+      <Link to="/cart" className="btn btn-warning">
+        Go To Cart
+      </Link>
       <hr />
     </div>
   </nav>

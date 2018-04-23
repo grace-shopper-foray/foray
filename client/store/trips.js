@@ -9,7 +9,7 @@ const GET_TRIPS = 'GET_TRIPS'
 /**
  * INITIAL STATE
  */
-const defaultTrips = [{planetName: 'Mars', moonName: 'Phobos' , pricePerTrip: 200000 , startDate: '2016-08-09 04:05:02', duration: 24, description: 'One Way Trip', imagePath: 'TBD'}, ,{planetName: 'Earth', moonName: 'Moon' , pricePerTrip: 1 , startDate: '2017-08-09 04:05:02', duration: 1, description: 'One Way Trip', imagePath: 'TBD'}];
+const defaultTrips = [{planetName: 'Mars', moonName: 'Phobos', pricePerTrip: 200000, startDate: '2016-08-09 04:05:02', duration: 24, description: 'One Way Trip', imagePath: 'TBD'},{planetName: 'Earth', moonName: 'Moon', pricePerTrip: 1, startDate: '2017-08-09 04:05:02', duration: 1, description: 'One Way Trip', imagePath: 'TBD'}];
 
 /**
  * ACTION CREATORS

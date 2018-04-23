@@ -1,38 +1,52 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {BrowserRouter, withRouter, Route, Switch} from 'react-router-dom'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { BrowserRouter, withRouter, Route, Switch } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import {Login, Signup, Account, TripsHome, SingleTrip, Cart} from './components'
-import {me} from './store'
+import {
+  Login,
+  Signup,
+  Account,
+  TripsHome,
+  SingleTrip,
+  Cart,
+  Checkout,
+  OrderHistoryDetail
+} from './components'
+import { StripeProvider } from 'react-stripe-elements'
+import { me, fetchTrips, fetchOrder } from './store'
 
 /**
  * COMPONENT
  */
 class Routes extends Component {
-  componentDidMount () {
+  componentDidMount() {
     this.props.loadInitialData()
+    this.props.fetchTripsFromServer()
   }
 
-  render () {
-    const {isLoggedIn} = this.props
-
+  render() {
+    const { isLoggedIn } = this.props
     return (
       <Switch>
         {/* Routes placed here are available to all visitors */}
         <Route path="/cart" component={Cart} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
-        <Route exact path="/" component={TripsHome} />
         <Route exact path="/trips/:tripId" component={SingleTrip} />
-        {
-          isLoggedIn &&
-            <Switch>
-              {/* Routes placed here are only available after logging in */}
-              <Route path="/account" component={Account} />
-            </Switch>
-        }
+        <Route exact path="/order-history" component={OrderHistoryDetail} />
+        <Route exact path="/" component={TripsHome} />
+
+        {isLoggedIn && (
+          <Switch>
+            {/* Routes placed here are only available after logging in */}
+            <Route exact path="/account" component={Account} />
+          </Switch>
+        )}
         {/* Displays our Login component as a fallback */}
         <Route component={Login} />
+        <StripeProvider apiKey="pk_test_jHnlCXdlJJf0KQk5xvXChCxa">
+          <Route exact path="/checkout" component={Checkout} />
+        </StripeProvider>
       </Switch>
     )
   }
@@ -41,18 +55,25 @@ class Routes extends Component {
 /**
  * CONTAINER
  */
-const mapState = (state) => {
+const mapState = state => {
   return {
     // Being 'logged in' for our purposes will be defined has having a state.user that has a truthy id.
     // Otherwise, state.user will be an empty object, and state.user.id will be falsey
-    isLoggedIn: !!state.user.id
+    isLoggedIn: !!state.user.id,
+    user: state.user
   }
 }
 
-const mapDispatch = (dispatch) => {
+const mapDispatch = dispatch => {
   return {
-    loadInitialData () {
+    loadInitialData() {
       dispatch(me())
+    },
+    fetchTripsFromServer: function() {
+      return dispatch(fetchTrips())
+    },
+    fetchOrderfromServer: function(userId) {
+      return dispatch(fetchOrder(userId))
     }
   }
 }
