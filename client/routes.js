@@ -10,7 +10,8 @@ import {
   SingleTrip,
   Cart,
   Checkout,
-  OrderHistoryDetail
+  OrderHistoryDetail,
+  EditAccount
 } from './components'
 import { StripeProvider } from 'react-stripe-elements'
 import { me, fetchTrips, fetchOrder } from './store'
@@ -40,6 +41,7 @@ class Routes extends Component {
           <Switch>
             {/* Routes placed here are only available after logging in */}
             <Route exact path="/account" component={Account} />
+            <Route exact path="/edit-account" component={EditAccount} />
           </Switch>
         )}
         {/* Displays our Login component as a fallback */}

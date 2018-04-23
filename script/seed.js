@@ -9,18 +9,18 @@
  *
  * Now that you've got the main idea, check it out in practice below!
  */
-const db = require('../server/db')
+const db = require('../server/db');
 const {
   User,
   Trip,
   Order,
   TripOrder,
   PromoCode
-} = require('../server/db/models')
+} = require('../server/db/models');
 
 async function seed() {
-  await db.sync({ force: true })
-  console.log('db synced!')
+  await db.sync({ force: true });
+  console.log('db synced!');
   // Whoa! Because we `await` the promise that db.sync returns, the next line will not be
   // executed until that promise resolves!
 
@@ -53,19 +53,24 @@ async function seed() {
       password: '123',
       isAdmin: true
     })
-  ])
+  ]);
   // Wowzers! We can even `await` on the right-hand side of the assignment operator
   // and store the result that the promise resolves to in a variable! This is nice!
+<<<<<<< HEAD
+  console.log(`seeded ${users.length} users`);
+  console.log(`seeded user successfully`);
+=======
   console.log(`successfully seeded ${users.length} users`)
+>>>>>>> dev-master
 
   //create Seed for Trip
   const trip = await Promise.all([
     Trip.create({
       planetName: 'Mars',
       moonName: 'Phobos',
-      pricePerTrip: 2000,
+      price: 2000,
       startDate: '2016-08-09 04:05:02',
-      duration: 5,
+      numberOfNights: 5,
       description: 'One Way Trip',
       imagePath:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Phobos_colour_2008.jpg/225px-Phobos_colour_2008.jpg'
@@ -73,9 +78,9 @@ async function seed() {
     Trip.create({
       planetName: 'Earth',
       moonName: 'Moon',
-      pricePerTrip: 1500,
+      price: 1500,
       startDate: '2017-08-09 04:05:02',
-      duration: 3,
+      numberOfNights: 3,
       description: 'One Way Trip',
       imagePath:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/225px-FullMoon2010.jpg'
@@ -83,9 +88,9 @@ async function seed() {
     Trip.create({
       planetName: 'Jupiter',
       moonName: 'Io',
-      pricePerTrip: 1800,
+      price: 1800,
       startDate: '2017-08-09 04:05:02',
-      duration: 4,
+      numberOfNights: 4,
       description: 'One Way Trip',
       imagePath:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Io_highest_resolution_true_color.jpg/225px-Io_highest_resolution_true_color.jpg'
@@ -93,9 +98,9 @@ async function seed() {
     Trip.create({
       planetName: 'Jupiter',
       moonName: 'Europa',
-      pricePerTrip: 1500,
+      price: 1500,
       startDate: '2017-08-09 04:05:02',
-      duration: 4,
+      numberOfNights: 4,
       description: 'One Way Trip',
       imagePath:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Europa-moon.jpg/225px-Europa-moon.jpg'
@@ -103,9 +108,9 @@ async function seed() {
     Trip.create({
       planetName: 'Neptune',
       moonName: 'Triton',
-      pricePerTrip: 1900,
+      price: 1900,
       startDate: '2017-08-09 04:05:02',
-      duration: 7,
+      numberOfNights: 7,
       description: 'One Way Trip',
       imagePath:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Triton_moon_mosaic_Voyager_2_%28large%29.jpg/300px-Triton_moon_mosaic_Voyager_2_%28large%29.jpg'
@@ -113,9 +118,9 @@ async function seed() {
     Trip.create({
       planetName: 'Uranus',
       moonName: 'Ariel',
-      pricePerTrip: 900,
+      price: 900,
       startDate: '2017-08-09 04:05:02',
-      duration: 6,
+      numberOfNights: 6,
       description: 'One Way Trip',
       imagePath:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Ariel_%28moon%29.jpg/225px-Ariel_%28moon%29.jpg'
@@ -123,9 +128,9 @@ async function seed() {
     Trip.create({
       planetName: 'Uranus',
       moonName: 'Miranda',
-      pricePerTrip: 600,
+      price: 600,
       startDate: '2017-08-09 04:05:02',
-      duration: 3,
+      numberOfNights: 3,
       description: 'One Way Trip',
       imagePath:
         'http://www.seasky.org/solar-system/assets/images/miranda03_sk12.jpg'
@@ -133,9 +138,9 @@ async function seed() {
     Trip.create({
       planetName: 'Uranus',
       moonName: 'Oberon',
-      pricePerTrip: 800,
+      price: 800,
       startDate: '2017-08-09 04:05:02',
-      duration: 3,
+      numberOfNights: 3,
       description: 'One Way Trip',
       imagePath:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Voyager_2_picture_of_Oberon.jpg/225px-Voyager_2_picture_of_Oberon.jpg'
@@ -143,16 +148,21 @@ async function seed() {
     Trip.create({
       planetName: 'Saturn',
       moonName: 'Dione',
-      pricePerTrip: 1700,
+      price: 1700,
       startDate: '2017-08-09 04:05:02',
-      duration: 8,
+      numberOfNights: 8,
       description: 'One Way Trip',
       imagePath:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Dione_in_natural_light.jpg/225px-Dione_in_natural_light.jpg'
     })
-  ])
+  ]);
 
+<<<<<<< HEAD
+  console.log(`seeded ${trip.length} trip`);
+  console.log(`seeded trip successfully`);
+=======
   console.log(`successfully seeded ${trip.length} trips`)
+>>>>>>> dev-master
 
   //create Seed for Order
   const order = await Promise.all([
@@ -161,9 +171,14 @@ async function seed() {
     Order.create({ isCheckedOut: false, userId: 3 }),
     Order.create({ isCheckedOut: true, userId: 4 }),
     Order.create({ isCheckedOut: false, userId: 4 })
-  ])
+  ]);
 
+<<<<<<< HEAD
+  console.log(`seeded ${order.length} order`);
+  console.log(`seeded order successfully`);
+=======
   console.log(`successully seeded ${order.length} orders`)
+>>>>>>> dev-master
 
   //create Seed for tripOrder
   const tripOrder = await Promise.all([
@@ -174,17 +189,22 @@ async function seed() {
     TripOrder.create({ numberOfGuests: 3, orderId: 5, tripId: 1 }),
     TripOrder.create({ numberOfGuests: 3, orderId: 5, tripId: 2 }),
     TripOrder.create({ numberOfGuests: 3, orderId: 5, tripId: 3 })
-  ])
+  ]);
 
+<<<<<<< HEAD
+  console.log(`seeded ${tripOrder.length} trip Order`);
+  console.log(`seeded trip Order successfully`);
+=======
   console.log(`successfully seeded ${tripOrder.length} Trip Orders`)
+>>>>>>> dev-master
 
   const promoCode = await Promise.all([
     PromoCode.create({ name: 'foray', isActive: true, percentage: 10 }),
     PromoCode.create({ name: 'fullstack', isActive: false, percentage: 90 })
-  ])
+  ]);
 
-  console.log(`seeded ${promoCode.length} promo code`)
-  console.log(`seeded promo code successfully`)
+  console.log(`seeded ${promoCode.length} promo code`);
+  console.log(`seeded promo code successfully`);
 }
 
 // Execute the `seed` function
@@ -192,19 +212,19 @@ async function seed() {
 // that might occur inside of `seed`
 seed()
   .catch(err => {
-    console.error(err.message)
-    console.error(err.stack)
-    process.exitCode = 1
+    console.error(err.message);
+    console.error(err.stack);
+    process.exitCode = 1;
   })
   .then(() => {
-    console.log('closing db connection')
-    db.close()
-    console.log('db connection closed')
-  })
+    console.log('closing db connection');
+    db.close();
+    console.log('db connection closed');
+  });
 
 /*
  * note: everything outside of the async function is totally synchronous
  * The console.log below will occur before any of the logs that occur inside
  * of the async function
  */
-console.log('seeding...')
+console.log('seeding...');
