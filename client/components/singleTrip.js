@@ -34,7 +34,7 @@ class SingleTrip extends React.Component {
   render() {
     let { handleSubmit, user } = this.props;
     return (
-      <div>
+      <div className="main">
         <h1>{this.props.trip.moonName}</h1>
         <h2>{this.props.trip.planetName}</h2>
         <img src={this.props.trip.imagePath} />

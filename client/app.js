@@ -9,7 +9,7 @@ const App = () => {
       <Navbar />
       <Sidebar />
       <Routes />
-      <Footer />
+      <Footer className="footer"/>
     </div>
   );
 };
