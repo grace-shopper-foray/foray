@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react'
 import {
-	CardElement,
+  CardElement,
   CardNumberElement,
   CardExpiryElement,
   CardCVCElement,
@@ -8,26 +8,26 @@ import {
   PaymentRequestButtonElement,
   StripeProvider,
   Elements,
-  injectStripe,
-} from 'react-stripe-elements';
+  injectStripe
+} from 'react-stripe-elements'
 
 const handleBlur = () => {
-  console.log('[blur]');
-};
+  console.log('[blur]')
+}
 const handleChange = change => {
-  console.log('[change]', change);
-};
+  console.log('[change]', change)
+}
 const handleClick = () => {
-  console.log('[click]');
-};
+  console.log('[click]')
+}
 const handleFocus = () => {
-  console.log('[focus]');
-};
+  console.log('[focus]')
+}
 const handleReady = () => {
-  console.log('[ready]');
-};
+  console.log('[ready]')
+}
 
-const createOptions = (fontSize) => {
+const createOptions = fontSize => {
   return {
     style: {
       base: {
@@ -36,19 +36,18 @@ const createOptions = (fontSize) => {
         letterSpacing: '0.025em',
         fontFamily: 'Source Code Pro, Menlo, monospace',
         '::placeholder': {
-          color: '#aab7c4',
-        },
+          color: '#aab7c4'
+        }
       },
       invalid: {
-        color: '#9e2146',
-      },
-    },
-  };
-};
-
+        color: '#9e2146'
+      }
+    }
+  }
+}
 
 class InjectedCheckoutForm extends React.Component {
-  constructor(){
+  constructor() {
     super()
     this.state = {
       name: '',
@@ -56,85 +55,88 @@ class InjectedCheckoutForm extends React.Component {
       address_line2: '',
       address_city: '',
       address_state: '',
-      address_country:''
+      address_country: ''
     }
 
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleAddressChange = this.handleAddressChange.bind(this)
   }
-  
-  handleAddressChange= evt => {
-      console.log('name', evt.target.name)
-      console.log('value', evt.target.value)
-      this.setState({[evt.target.name]: evt.target.value})
+
+  handleAddressChange = evt => {
+    console.log('name', evt.target.name)
+    console.log('value', evt.target.value)
+    this.setState({ [evt.target.name]: evt.target.value })
   }
-  
+
+  // OH: no need to bind here, since you're using arrow functions!
   handleSubmit = ev => {
-    ev.preventDefault();
+    ev.preventDefault()
     console.log('submit', this.state)
-    this.props.stripe.createToken(this.state)
-    .then(payload => console.log(payload))
-    .then(() => this.setState({
-      name: '',
-      address_line1: '',
-      address_line2: '',
-      address_city: '',
-      address_state: '',
-      address_country:''
-    }))
-    
-  };
+    this.props.stripe
+      .createToken(this.state)
+      .then(payload => console.log(payload))
+      .then(() =>
+        this.setState({
+          name: '',
+          address_line1: '',
+          address_line2: '',
+          address_city: '',
+          address_state: '',
+          address_country: ''
+        })
+      )
+  }
   render() {
     return (
       <form onSubmit={this.handleSubmit}>
-          <input
+        <input
           className="form-control"
           placeholder="Name"
           name="name"
           type="text"
           onChange={this.handleAddressChange}
           value={this.state.name}
-          />
-          <input
+        />
+        <input
           className="form-control"
           placeholder="Address Line 1"
           name="address_line1"
           type="text"
           onChange={this.handleAddressChange}
           value={this.state.address_line1}
-          />
-          <input
+        />
+        <input
           className="form-control"
           placeholder="Address Line 2"
           name="address_line2"
           type="text"
           onChange={this.handleAddressChange}
           value={this.state.address_line2}
-          />
-          <input
+        />
+        <input
           className="form-control"
           placeholder="State"
           name="address_state"
           type="text"
           onChange={this.handleAddressChange}
           value={this.state.address_state}
-          />
-          <input
+        />
+        <input
           className="form-control"
           placeholder="City"
           name="address_city"
           type="text"
           onChange={this.handleAddressChange}
           value={this.state.address_city}
-          />
-          <input
+        />
+        <input
           className="form-control"
           placeholder="Country"
           name="address_country"
           type="text"
           onChange={this.handleAddressChange}
           value={this.state.address_country}
-          />
+        />
 
         <label>
           Card number
@@ -178,7 +180,7 @@ class InjectedCheckoutForm extends React.Component {
         </label>
         <button>Pay</button>
       </form>
-    );
+    )
   }
 }
 

@@ -3,6 +3,8 @@ const { User, Order, TripOrder, Trip } = require('../db/models')
 module.exports = router
 
 //check admin middleware
+
+// OH: I love this, but use it throughout!
 function isAdmin(req, res, next) {
   User.findById(req.session.passport.user).then(user => {
     if (user.isAdmin) next()
@@ -26,6 +28,11 @@ router.get('/', isAdmin, (req, res, next) => {
 
 // Find a single user
 
+// OH: The below should only be accessible by admin or logged in user. Many other routes
+// should also be accessible to only one or both of these, not anyone.
+// I.E. I should not be able to hit any of these routes as a non-admin user,
+// a different user, or a guest. Use the isAdmin function above, and make one
+// to check current user and implement either/or/both where appropriate.
 router.get('/:userId', (req, res, next) => {
   User.findById(req.params.userId, {
     attributes: ['id', 'firstName', 'lastName', 'email']

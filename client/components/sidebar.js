@@ -10,9 +10,8 @@ import { fetchTrips } from '../store'
  */
 
 class Sidebar extends React.Component {
-
-componentDidMount() {
-  this.props.fetchTripsFromServer()
+  componentDidMount() {
+    this.props.fetchTripsFromServer()
   }
 
   render() {
@@ -21,6 +20,8 @@ componentDidMount() {
         <a>Available trips:</a>
         {this.props.trips.map(trip => {
           return (
+            // OH: need a key prop here! Check your console errors for
+            // other places you may need to add one.
             <a href={`/trips/${trip.id}`}>{trip.moonName}</a>
           )
         })}
