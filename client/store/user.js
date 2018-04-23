@@ -82,8 +82,8 @@ export const updateUserThunk = (entry, userId) => dispatch =>
           .then(res => res.data)
           .then(updatedUser => {
             dispatch(updateUser(updatedUser))
+            history.push('/account')
           })
-          .then(() => history.push('/account'))
           .catch(err => console.log(err))
 
 /**

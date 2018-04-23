@@ -16,6 +16,7 @@ class EditAccount extends React.Component {
           password: ''
         }
       this.handleChange = this.handleChange.bind(this)
+      this.handleSubmit = this.handleSubmit.bind(this)
     }
 
   handleChange (evt) {
@@ -23,12 +24,24 @@ class EditAccount extends React.Component {
       this.setState({[evt.target.name]: evt.target.value})
     }
 
+  handleSubmit (evt, updatedEntry, userid) {
+    evt.preventDefault()
+    this.props.submitUserThunk(this.state, userid)
+    this.setState({
+      firstName: '',
+      lastName: '',
+      phoneNumber: '',
+      email: '',
+      password: ''
+    })
+  }
+
   render() {
     let { handleSubmit, user } = this.props
     return (
       <div>
         <h1>Edit Your Account Information</h1>
-        <form onSubmit={() => handleSubmit(this.state, user.id)}>
+        <form onSubmit={evt => this.handleSubmit(evt, this.state, user.id)}>
         <input
         className="form-control"
         placeholder="First Name"
@@ -88,18 +101,9 @@ const mapState = state => {
 
 const mapDispatch = (dispatch) => {
   return {
-    handleSubmit (updatedEntry, userid) {
-      event.preventDefault()
-      // const updatedEntry = {[evt.target.name]: evt.target.value}
-      // console.log('dispatch', ownProps, evt)
+    submitUserThunk (updatedEntry, userid) {
+
       dispatch(updateUserThunk(updatedEntry, userid))
-      this.setState({
-          firstName: '',
-          lastName: '',
-          phoneNumber: '',
-          email: '',
-          password: ''
-      })
     }
   }
 }
