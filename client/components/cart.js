@@ -31,13 +31,27 @@ export class Cart extends React.Component {
   }
 
   //add subTotal for all item in cart
-  addUpSubTotal(arrayOfAllTripInCart) {
+  addUpSubTotal(arrayOfAllTripInCart, promoPercentage) {
     if (arrayOfAllTripInCart.length !== 0) {
       const subTotal = arrayOfAllTripInCart.reduce((prev, curr) => {
         return +prev + +curr.pricePerTrip * curr.tripOrder.numberOfGuests
       }, 0)
-      //update to store state and database
-      return subTotal
+      console.log(promoPercentage.length)
+      if (promoPercentage.length !== 0) {
+        //filter array
+        const discount = promoPercentage.filter(each => each.isActive)
+        console.log(discount)
+        if (discount.length === 0) {
+          // not such code , error message
+          console.log('No Such Promo Code')
+        } else {
+          const discountPercentage = +discount[0].percentage
+          //set state show is valid , how much discount
+          return subTotal * (discountPercentage / 100)
+        }
+      } else {
+        return subTotal
+      }
     }
   }
 
@@ -49,14 +63,12 @@ export class Cart extends React.Component {
     }
   }
 
-  handlePromoCode(event) {
+  handlePromoCode(event, userId) {
     //change all the price in state order base on the promo percentage
     //update order.trips
     event.preventDefault()
     const promoCode = event.target.promoCode.value
-    console.log(promoCode)
-    this.props.promoCodeThunk(promoCode)
-    //once its back, set local state
+    this.props.promoCodeThunk(promoCode, userId)
   }
 
   //send to thunk immediately and reload cart
@@ -67,8 +79,8 @@ export class Cart extends React.Component {
   }
 
   render() {
-    const { user, order } = this.props
-    console.log(order.trips)
+    const { user, order, promoCode } = this.props
+    // console.log(promoCode)
     return (
       <div>
         <h2>Shopping Cart</h2>
@@ -161,13 +173,14 @@ export class Cart extends React.Component {
             <div className="in-line input-group mb-3">
               <h4>
                 Subtotal : {this.subTotalItem(order.trips)} ${this.addUpSubTotal(
-                  this.props.order.trips
+                  this.props.order.trips,
+                  promoCode
                 )}
               </h4>
             </div>
             <div>
               <div>
-                <form onSubmit={this.handlePromoCode}>
+                <form onSubmit={event => this.handlePromoCode(event, user.id)}>
                   <div className="input-group mb-3 in-line">
                     <input
                       type="text"
@@ -206,7 +219,8 @@ export class Cart extends React.Component {
 const mapState = state => {
   return {
     order: state.order,
-    user: state.user
+    user: state.user,
+    promoCode: state.promoCode
   }
 }
 
@@ -226,8 +240,8 @@ const mapDispatch = dispatch => {
     checkoutThunk: orderId => {
       return dispatch(checkoutOrder(orderId))
     },
-    promoCodeThunk: promoCode => {
-      return dispatch(addPromoCode(promoCode))
+    promoCodeThunk: (promoCode, userId) => {
+      return dispatch(addPromoCode(promoCode, userId))
     }
   }
 }

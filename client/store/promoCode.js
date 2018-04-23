@@ -1,6 +1,7 @@
 import axios from 'axios'
+import { fetchOrder } from './cart'
 
-const initialState = {}
+const initialState = []
 
 //action
 const SET_PERCENTAGE = 'SET_PERCENTAGE'
@@ -11,16 +12,19 @@ const setPercentage = percentage => ({ type: SET_PERCENTAGE, percentage })
 //thunk
 
 //user enter a promo Code
-export const addPromoCode = promoCode => dispatch => {
+export const addPromoCode = (promoCode, userId) => dispatch => {
   return axios
     .get(`/api/promoCode/${promoCode}`)
     .then(res => res.data)
     .then(result => {
       if (result.error) {
         dispatch(setPercentage({ error: 'error' }))
+        dispatch(fetchOrder(userId))
       } else {
         dispatch(setPercentage(result))
+        dispatch(fetchOrder(userId))
       }
+      console.log(userId)
     })
     .catch(err => console.error(err))
 }
@@ -29,7 +33,7 @@ export const addPromoCode = promoCode => dispatch => {
 export default function(state = initialState, action) {
   switch (action.type) {
     case SET_PERCENTAGE:
-      return action.percentage
+      return [...state, action.percentage]
 
     default:
       return state
