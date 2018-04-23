@@ -17,7 +17,7 @@ const Trip = db.define('trip', {
     }
   },
   price: {
-    type: Sequelize.INT,
+    type: Sequelize.INTEGER,
     get() {
       return this.getDataValue('price') * 100;
     },
