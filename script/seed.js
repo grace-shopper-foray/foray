@@ -56,8 +56,12 @@ async function seed() {
   ]);
   // Wowzers! We can even `await` on the right-hand side of the assignment operator
   // and store the result that the promise resolves to in a variable! This is nice!
+<<<<<<< HEAD
   console.log(`seeded ${users.length} users`);
   console.log(`seeded user successfully`);
+=======
+  console.log(`successfully seeded ${users.length} users`)
+>>>>>>> dev-master
 
   //create Seed for Trip
   const trip = await Promise.all([
@@ -129,7 +133,7 @@ async function seed() {
       numberOfNights: 3,
       description: 'One Way Trip',
       imagePath:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Miranda.jpg/224px-Miranda.jpg'
+        'http://www.seasky.org/solar-system/assets/images/miranda03_sk12.jpg'
     }),
     Trip.create({
       planetName: 'Uranus',
@@ -153,8 +157,12 @@ async function seed() {
     })
   ]);
 
+<<<<<<< HEAD
   console.log(`seeded ${trip.length} trip`);
   console.log(`seeded trip successfully`);
+=======
+  console.log(`successfully seeded ${trip.length} trips`)
+>>>>>>> dev-master
 
   //create Seed for Order
   const order = await Promise.all([
@@ -165,8 +173,12 @@ async function seed() {
     Order.create({ isCheckedOut: false, userId: 4 })
   ]);
 
+<<<<<<< HEAD
   console.log(`seeded ${order.length} order`);
   console.log(`seeded order successfully`);
+=======
+  console.log(`successully seeded ${order.length} orders`)
+>>>>>>> dev-master
 
   //create Seed for tripOrder
   const tripOrder = await Promise.all([
@@ -179,8 +191,12 @@ async function seed() {
     TripOrder.create({ numberOfGuests: 3, orderId: 5, tripId: 3 })
   ]);
 
+<<<<<<< HEAD
   console.log(`seeded ${tripOrder.length} trip Order`);
   console.log(`seeded trip Order successfully`);
+=======
+  console.log(`successfully seeded ${tripOrder.length} Trip Orders`)
+>>>>>>> dev-master
 
   const promoCode = await Promise.all([
     PromoCode.create({ name: 'foray', isActive: true, percentage: 10 }),
