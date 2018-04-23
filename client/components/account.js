@@ -1,13 +1,13 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 /**
  * COMPONENT
  */
 const Account = props => {
-  const { user } = props
+  const { user } = props;
   return (
     <div className="container">
       <div className="row">
@@ -39,9 +39,9 @@ const Account = props => {
               </a>
 
               <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <a className="dropdown-item" href="#">
-                  Edit
-                </a>
+                <Link to="/edit-account" className="dropdown-item" href="#">
+                  Edit Account Info
+                </Link>
                 <Link to="/order-history" className="dropdown-item" href="#">
                   Order History
                 </Link>
@@ -54,8 +54,8 @@ const Account = props => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 /**
  * CONTAINER
@@ -63,14 +63,14 @@ const Account = props => {
 const mapState = state => {
   return {
     user: state.user
-  }
-}
+  };
+};
 
-export default connect(mapState)(Account)
+export default connect(mapState)(Account);
 
 /**
  * PROP TYPES
  */
 Account.propTypes = {
   email: PropTypes.string
-}
+};

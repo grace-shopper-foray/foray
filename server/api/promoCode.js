@@ -1,12 +1,12 @@
-const router = require('express').Router()
-const { PromoCode } = require('../db/models')
+const router = require('express').Router();
+const { PromoCode } = require('../db/models');
 
 // get all promo Code
 
 // find active promo code
 router.get('/:promoCode', (req, res, next) => {
-  console.log('in the pormo Code')
-  const promoCode = req.params.promoCode
+  console.log('in the promo Code');
+  const promoCode = req.params.promoCode;
   PromoCode.findOne({
     where: {
       name: promoCode,
@@ -14,10 +14,10 @@ router.get('/:promoCode', (req, res, next) => {
     }
   })
     .then(result => {
-      if (result) res.status(200).json(result)
-      else res.status(200).json({ error: 'Not Found' })
+      if (result) res.status(200).json(result);
+      else res.status(200).json({ error: 'Not Found' });
     })
-    .catch(next)
-})
+    .catch(next);
+});
 
-module.exports = router
+module.exports = router;
