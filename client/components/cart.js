@@ -3,7 +3,12 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { fetchOrder, removeTripFromCart, updateNumberOfGuests } from '../store'
+import {
+  fetchOrder,
+  removeTripFromCart,
+  updateNumberOfGuests,
+  addPromoCode
+} from '../store'
 
 /**
  * COMPONENT
@@ -45,8 +50,13 @@ export class Cart extends React.Component {
   }
 
   handlePromoCode(event) {
+    //change all the price in state order base on the promo percentage
+    //update order.trips
     event.preventDefault()
     const promoCode = event.target.promoCode.value
+    console.log(promoCode)
+    this.props.promoCodeThunk(promoCode)
+    //once its back, set local state
   }
 
   //send to thunk immediately and reload cart
@@ -58,6 +68,7 @@ export class Cart extends React.Component {
 
   render() {
     const { user, order } = this.props
+    console.log(order.trips)
     return (
       <div>
         <h2>Shopping Cart</h2>
@@ -214,6 +225,9 @@ const mapDispatch = dispatch => {
     },
     checkoutThunk: orderId => {
       return dispatch(checkoutOrder(orderId))
+    },
+    promoCodeThunk: promoCode => {
+      return dispatch(addPromoCode(promoCode))
     }
   }
 }

@@ -4,7 +4,8 @@ const db = require('../db')
 const PromoCode = db.define('promoCode', {
   name: {
     type: Sequelize.STRING,
-    allowNull: false
+    allowNull: false,
+    unique: true
   },
   isActive: {
     type: Sequelize.BOOLEAN,

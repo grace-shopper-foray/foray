@@ -15,7 +15,7 @@ router.get('/:promoCode', (req, res, next) => {
   })
     .then(result => {
       if (result) res.status(200).json(result)
-      else res.sendStatus(404)
+      else res.status(200).json({ error: 'Not Found' })
     })
     .catch(next)
 })
