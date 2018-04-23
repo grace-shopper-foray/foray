@@ -163,6 +163,7 @@ router.delete(`/:userId/:tripId`, (req, res, next) => {
 // User wants to see Order history or cart (/orders?cart=active).
 
 router.get('/:userId/orders', (req, res, next) => {
+  console.log('FIXXXXX', req.sessionId)
   const isActive = req.query.cart === 'active'
   if (req.query.cart !== undefined) {
     // Non-Checkout Order in Cart
