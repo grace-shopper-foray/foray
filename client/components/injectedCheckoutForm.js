@@ -64,10 +64,11 @@ class InjectedCheckoutForm extends React.Component {
 
   render() {
     let {handleSubmit} = this.props;
+    console.log(this.props.promoCode)
     return (
       <form onSubmit={event => {
         event.preventDefault();
-        handleSubmit(this.props.stripe, this.state, this.props.user)}}>
+        handleSubmit(this.props.stripe, this.state, this.props.user, this.props.promoCode.code)}}>
         <input
           className="form-control"
           placeholder="Name"
@@ -177,13 +178,14 @@ const mapDispatch = function(dispatch) {
     fetchOrderFromServer: userId => {
       return dispatch(fetchOrder(userId));
     },
-    handleSubmit: (stripe, state, user) => {
+    handleSubmit: (stripe, state, user, code) => {
       stripe.createToken(state)
       // .then(payload => console.log(payload))
       .then(stripeToken => {
         // console.log(stripe)
         // console.log(stripe.token.id, 'foray', user.id)
-        dispatch(updateOrderToCheckedOutThunk(stripeToken.token.id, 'foray', user.id))
+        console.log(code)
+        dispatch(updateOrderToCheckedOutThunk(stripeToken.token.id, code, user.id))
       })
     }
   }

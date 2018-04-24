@@ -59,6 +59,7 @@ export class Cart extends React.Component {
     const promoCodeInput = event.target.promoCode.value;
     if (promoCodeInput) {
       this.props.applyPromoCode(promoCodeInput);
+      
     } else {
       alert('Please enter a Valid Promo Code');
     }
