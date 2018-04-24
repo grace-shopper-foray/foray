@@ -114,9 +114,9 @@ router.post('/:userId/orders', (req, res, next) => {
     } else {
       // add more item to cart
       Trip.getTripDetail(tripId).then(result => {
-        cart.trips.push(result)
+        cart.trips.push(result.dataValues)
         console.log('NEXT', cart)
-        res.status(200).json(result)
+        res.status(200).json(result.dataValues)
       })
     }
   }
