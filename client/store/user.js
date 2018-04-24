@@ -8,11 +8,13 @@ import { fetchOrder, logoutCart, fetchOrderHistory } from './index'
 const GET_USER = 'GET_USER'
 const REMOVE_USER = 'REMOVE_USER'
 const UPDATE_USER = 'UPDATE_USER'
+const GET_USERS = 'GET_USERS'
+
 
 /**
  * INITIAL STATE
  */
-const defaultUser = {}
+const initialState = {}
 
 /**
  * ACTION CREATORS
@@ -20,16 +22,26 @@ const defaultUser = {}
 const getUser = user => ({ type: GET_USER, user })
 const removeUser = () => ({ type: REMOVE_USER })
 const updateUser = (user) => ({ type: UPDATE_USER, user })
+// const getUsers = (users) => ({ type: GET_USERS, users })
+
 
 /**
  * THUNK CREATORS
  */
 
+// export const getUsersThunk = () => dispatch =>
+//   axios
+//     .get('/api/users')
+//     .then(res => res.data)
+//     .then(allUsers => dispatch(getUsers(allUsers)))
+//     .catch(err => console.log(err))
+
+
 export const me = () => dispatch =>
   axios
     .get('/auth/me')
     .then(res => {
-      dispatch(getUser(res.data || defaultUser))
+      dispatch(getUser(res.data || initialState.user))
       dispatch(fetchOrder(res.data.id))
       dispatch(fetchOrderHistory(res.data.id))
     })
@@ -76,6 +88,7 @@ export const logout = () => dispatch =>
     .catch(err => console.log(err))
 
 
+
 export const updateUserThunk = (entry, userId) => dispatch =>
         axios
           .put(`/api/users/${userId}`, entry)
@@ -86,15 +99,19 @@ export const updateUserThunk = (entry, userId) => dispatch =>
           })
           .catch(err => console.log(err))
 
+
+
 /**
  * REDUCER
  */
-export default function(state = defaultUser, action) {
+export default function(state = initialState, action) {
   switch (action.type) {
     case GET_USER:
-      return action.user
+      return Object.assign({}, state, action.user)
+    // case GET_USERS:
+    //   return Object.assign({}, state, action.users)
     case REMOVE_USER:
-      return defaultUser
+      return state.user
     case UPDATE_USER:
       return action.user
     default:
