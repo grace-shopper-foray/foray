@@ -1,5 +1,6 @@
 import axios from 'axios'
 import history from '../history'
+import { fetchOrderHistory } from './order-history'
 
 /**
  * ACTION TYPES
@@ -112,7 +113,8 @@ export const updateOrderToCheckedOutThunk = (
     .then(res => res.data)
     .then(() => {
       dispatch(checkoutOrder())
-      history.push('/account')
+      dispatch(fetchOrderHistory(userId))
+      history.push('/order-history')
     })
     .catch(err => console.log(err))
 }
