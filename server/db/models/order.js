@@ -47,7 +47,12 @@ Order.prototype.totalPrice = function(promoCode) {
         }
     })
     .then(promo => {
-      self.setDataValue('orderTotal', promo.percentage * total / 100)
+      if (promo) {
+        self.setDataValue('orderTotal', promo.percentage * total / 100)
+      }
+      else {
+        self.setDataValue('orderTotal', total)
+      }
       self.save()
       return self
     })
