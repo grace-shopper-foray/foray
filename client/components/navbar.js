@@ -29,7 +29,7 @@ const Navbar = ({ handleClick, isLoggedIn, user }) => (
           <a>Welcome, {user.firstName}!</a>
         </div>
       ) : (
-        <div navbar-nav>
+        <div>
           {/* The navbar will show these links before you log in */}
           <Link to="/login" className="btn btn-success">
             Login

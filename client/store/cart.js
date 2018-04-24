@@ -31,7 +31,7 @@ const updateTrip = order => ({ type: UPDATE_TRIP, order });
  */
 export const fetchOrder = userId => dispatch => {
   return axios
-    .get(`/api/users/${userId}/orders?cart=active`)
+    .get(`/api/users/${userId}/cart`)
     .then(res => res.data)
     .then(order => {
       return dispatch(getOrder(order));

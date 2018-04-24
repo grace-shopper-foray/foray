@@ -19,7 +19,11 @@ class Sidebar extends React.Component {
       <div className="sidenav">
         <a>Available trips:</a>
         {this.props.trips.map(trip => {
-          return <a href={`/trips/${trip.id}`}>{trip.moonName}</a>;
+          return (
+            <a key={trip.moonName} href={`/trips/${trip.id}`}>
+              {trip.moonName}
+            </a>
+          );
         })}
       </div>
     );
