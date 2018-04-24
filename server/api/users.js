@@ -89,7 +89,7 @@ router.post('/:userId/orders', (req, res, next) => {
   } else {
     let cart = req.session.cart
     // tripId, numberOfGuests
-    if (cart.trips.length <= 1) {
+    if (cart.trips.length < 1) {
       //first time adding to cart
       Trip.getTripDetail(tripId).then(result => {
         let tripOrder = {
@@ -106,7 +106,6 @@ router.post('/:userId/orders', (req, res, next) => {
           orderTotal: 0
         }
         req.session.cart = cart
-        console.log(tripDetail)
         res.status(200).json(tripDetail)
       })
     } else {
@@ -118,7 +117,8 @@ router.post('/:userId/orders', (req, res, next) => {
         }
         let tripDetail = result.dataValues
         tripDetail.tripOrder = tripOrder
-        cart.trips.push(tripDetail)
+        console.log(req.session.cart)
+        req.session.cart.trips.push(tripDetail)
         res.status(200).json(tripDetail)
       })
     }
@@ -212,8 +212,7 @@ router.delete(`/:userId/trip/:tripId`, (req, res, next) => {
     let deletedTripsInCart = req.session.cart.trips.filter(
       each => each.id !== +tripId
     )
-    req.session.cart.trips = deletedTripsInCart // work!
-    console.log(req.session.cart)
+    req.session.cart.trips = deletedTripsInCart
     //find the delete one , return and del it from state and session
     res.status(200).json(req.session.cart)
     // send json back req.session.cart
