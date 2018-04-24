@@ -81,7 +81,8 @@ export const removeTripFromCart = (tripId, userId) => dispatch => {
         //update the order state to rerender the cart page
         dispatch(fetchOrder(userId))
       } else {
-        return dispatch(getOrder(result))
+        //Guest User
+        dispatch(getOrder(result))
         //fetch order return new data
         //should we drop everything in state and send a new one?
       }

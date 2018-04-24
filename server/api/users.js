@@ -89,7 +89,7 @@ router.post('/:userId/orders', (req, res, next) => {
   } else {
     let cart = req.session.cart
     // tripId, numberOfGuests
-    if (!cart.trips[0].id) {
+    if (cart.trips.length <= 1) {
       //first time adding to cart
       Trip.getTripDetail(tripId).then(result => {
         let tripOrder = {
@@ -106,6 +106,7 @@ router.post('/:userId/orders', (req, res, next) => {
           orderTotal: 0
         }
         req.session.cart = cart
+        console.log(tripDetail)
         res.status(200).json(tripDetail)
       })
     } else {
@@ -235,7 +236,8 @@ router.get('/:userId/cart', (req, res, next) => {
       .catch(next)
   } else {
     // Guest fetch session item id to cart
-    if (req.session.cart.trips[0].id) {
+    console.log(req.session.cart)
+    if (req.session.cart.trips.length > 0) {
       res.json(req.session.cart)
     }
   }
