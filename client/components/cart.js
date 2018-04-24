@@ -39,7 +39,6 @@ export class Cart extends React.Component {
     }
     console.log('Trips - expect an array', this.props.order.trips)
     let subTotal = this.props.order.trips.reduce((prev, curr) => {
-      console.log('Current term - expect trip', curr)
       return +prev + +curr.price * curr.tripOrder.numberOfGuests
     }, 0)
     return subTotal * (subTotalPercentage / 100)
@@ -70,7 +69,6 @@ export class Cart extends React.Component {
 
   render() {
     const { user, order, promoCode } = this.props
-    console.log(order)
     return (
       <div>
         <h2>Shopping Cart</h2>
