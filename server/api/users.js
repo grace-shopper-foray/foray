@@ -130,18 +130,20 @@ router.put(`/:userId/orders/checkout`, (req, res, next) => {
   console.log(req.body, 'hi')
   //requires promocode to be passed in
   const { userId } = req.params;
-  Order.findOne({ where: { userId, isCheckedOut: false } })
+
+  Order.findOne({ where: { userId: +userId, isCheckedOut: false } })
   .then(order => order.update({
     isCheckedOut: true,
-    stripeTokenId: req.body.stripeTokenId
+    stripeTokenId: token
   }))
   .then(order => order.totalPrice(promoCode))
-  .then(updatedOrder =>  stripe.charges.create({
+  .then(updatedOrder => {
+    return stripe.charges.create({
     amount: updatedOrder.orderTotal,
     currency: 'usd',
     description: 'Example charge',
     source: token
-  }))
+  })})
   .then(data => res.status(201).json(data))
   .catch(next)
 });

@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const TripOrder = require('./tripOrder');
+const Trip = require('./trip')
 const db = require('../db');
 const PromoCode = require('./promoCode')
 
@@ -23,26 +24,31 @@ const Order = db.define('order', {
   }
 });
 
-Order.prototype.totalPrice = (promoCode) => {
+Order.prototype.totalPrice = function(promoCode) {
+  const self = this
   return TripOrder.findAll({
     where: {
-      orderId: this.getDataValue('id')
+      orderId: self.id
     }
-  }).then(tripOrderArr => {
-    return tripOrderArr.reduce((acc, tripOrder) => {
-      return acc + tripOrder.price;
-    })
   })
+  .then(tripOrderArr => {
+   return Promise.all(tripOrderArr.map(tripOrder => {
+      return Trip.findById(tripOrder.tripId)
+            .then(foundTrip => foundTrip.price)
+    }))
+  })
+  .then(foundTripPrices => foundTripPrices.reduce((acc, elem) => acc + elem))
   .then(total => {
     return PromoCode.findOne({
         where: {
-          name: promoCode,
-          isActive: true
+          isActive: true,
+          name: promoCode
         }
     })
     .then(promo => {
-      this.setDataValue('orderTotal', promo.percentage * total)
-      return promo.percentage * total
+      self.setDataValue('orderTotal', promo.percentage * total / 100)
+      self.save()
+      return self
     })
   })
 }
