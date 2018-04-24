@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { TripOrder, Order, Trip, User } = require('../db/models');
 
+
 // Only admin can view it
 function isLoginUser(req, res, next) {
   if (!req.user) res.sendStatus(401);
@@ -8,7 +9,6 @@ function isLoginUser(req, res, next) {
 }
 
 // Get a specific order.
-
 router.get('/:orderId', isLoginUser, (req, res, next) => {
   Order.findById(req.params.orderId, {
     include: [

@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
@@ -7,7 +6,8 @@ import {
   fetchOrder,
   removeTripFromCart,
   updateNumberOfGuests,
-  addPromoCode
+  addPromoCode,
+  checkoutOrder
 } from '../store'
 
 /**
@@ -25,21 +25,16 @@ export class Cart extends React.Component {
     this.handlePromoCode = this.handlePromoCode.bind(this)
   }
 
-  componentDidMount() {
-    //let userId = 1
-    //this.props.fetchOrderFromServer(userId)
-  }
-
   //add subTotal for all item in cart
   //change total if promo code is valid
   addUpSubTotal(arrayOfAllTripInCart, promoCodeObjFromServer) {
     let subTotalPercentage = 100
     if (promoCodeObjFromServer.error) {
-      alert('Invalid promo Code')
+      // alert('Invalid promo Code');
     } else {
       if (promoCodeObjFromServer.percentage !== undefined) {
         subTotalPercentage = promoCodeObjFromServer.percentage
-        alert('Coupon has been successfully applied to the following events')
+        // alert('Coupon has been successfully applied to the following events');
       }
     }
     let subTotal = arrayOfAllTripInCart.reduce((prev, curr) => {
@@ -57,15 +52,11 @@ export class Cart extends React.Component {
     }
   }
 
-  handlePromoCode(event, userId) {
-    //change all the price in state order base on the promo percentage
-    //update order.trips
+  handlePromoCode(event) {
     event.preventDefault()
     const promoCodeInput = event.target.promoCode.value
     if (promoCodeInput) {
-      this.props.promoCodeThunk(promoCodeInput, userId)
-    } else {
-      alert('Pleast enter a Valid Promo Code')
+      this.props.applyPromoCode(promoCodeInput)
     }
   }
 
@@ -96,7 +87,6 @@ export class Cart extends React.Component {
                           <th>Product</th>
                           <th>Price</th>
                           <th>Number Of Guests</th>
-                          {/* <th className="text-center">Subtotal</th> */}
                           <th />
                         </tr>
                       </thead>
@@ -171,7 +161,7 @@ export class Cart extends React.Component {
               <h4>
                 Subtotal : {this.subTotalItem(order.trips)} ${this.addUpSubTotal(
                   this.props.order.trips,
-                  promoCode
+                  promoCode.percentage
                 )}
               </h4>
             </div>
@@ -193,12 +183,15 @@ export class Cart extends React.Component {
                       />
                     </div>
                   </div>
+                  {this.props.promoCode.error && (
+                    <p>Please enter a valid promo code.</p>
+                  )}
                 </form>
               </div>
               <div>
-                <a href="#" className="btn btn-success">
+                <Link to="/checkout" className="btn btn-success">
                   <i className="fa fa-angle-right" /> Proceed to Checkout
-                </a>
+                </Link>
               </div>
             </div>
           </ol>
@@ -237,7 +230,7 @@ const mapDispatch = dispatch => {
     checkoutThunk: orderId => {
       return dispatch(checkoutOrder(orderId))
     },
-    promoCodeThunk: (promoCode, userId) => {
+    applyPromoCode: (promoCode, userId) => {
       return dispatch(addPromoCode(promoCode, userId))
     }
   }

@@ -1,31 +1,32 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-import { fetchTrips } from '../store'
+import { fetchTrips } from '../store';
 
 /**
  * COMPONENT
  */
 
 class Sidebar extends React.Component {
-
-componentDidMount() {
-  this.props.fetchTripsFromServer()
+  componentDidMount() {
+    this.props.fetchTripsFromServer();
   }
 
   render() {
     return (
-      <div class="sidenav">
+      <div className="sidenav">
         <a>Available trips:</a>
         {this.props.trips.map(trip => {
           return (
-            <a href={`/trips/${trip.id}`}>{trip.moonName}</a>
-          )
+            <a key={trip.moonName} href={`/trips/${trip.id}`}>
+              {trip.moonName}
+            </a>
+          );
         })}
       </div>
-    )
+    );
   }
 }
 
@@ -35,15 +36,15 @@ componentDidMount() {
 const mapState = state => {
   return {
     trips: state.trips
-  }
-}
+  };
+};
 
 const mapDispatch = function(dispatch) {
   return {
     fetchTripsFromServer: function() {
-      return dispatch(fetchTrips())
+      return dispatch(fetchTrips());
     }
-  }
-}
+  };
+};
 
-export default connect(mapState, mapDispatch)(Sidebar)
+export default connect(mapState, mapDispatch)(Sidebar);

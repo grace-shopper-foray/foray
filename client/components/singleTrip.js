@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 
 import { fetchTripThunk, postOrderThunk } from '../store';
 
@@ -12,7 +11,6 @@ class SingleTrip extends React.Component {
   constructor() {
     super();
     this.state = {
-      tripId: 0,
       numberOfGuests: 1
     };
     this.handleChange = this.handleChange.bind(this);
@@ -25,16 +23,13 @@ class SingleTrip extends React.Component {
   }
   componentDidMount() {
     const tripId = Number(this.props.match.params.tripId);
-    this.setState({
-      tripId
-    });
     this.props.fetchTripFromServer(tripId);
   }
 
   render() {
     let { handleSubmit, user } = this.props;
     return (
-      <div>
+      <div className="main">
         <h1>{this.props.trip.moonName}</h1>
         <h2>{this.props.trip.planetName}</h2>
         <img src={this.props.trip.imagePath} />
@@ -45,7 +40,11 @@ class SingleTrip extends React.Component {
         <form
           onSubmit={event => {
             event.preventDefault();
-            handleSubmit(this.state, user.id);
+            handleSubmit(
+              this.props.trip.id,
+              this.state.numberOfGuests,
+              user.id
+            );
           }}
         >
           <label>
@@ -85,14 +84,9 @@ const mapDispatch = function(dispatch) {
     fetchTripFromServer: function(tripId) {
       return dispatch(fetchTripThunk(tripId));
     },
-    handleSubmit: function(tripAdded, userId) {
-      console.log(tripAdded);
-      console.log(userId, '_______________________________');
+    handleSubmit: function(tripId, numberOfGuests, userId) {
+      const tripAdded = { tripId, numberOfGuests };
       dispatch(postOrderThunk(tripAdded, userId));
-      // this.setState({
-      //   tripId: 0,
-      //   numberOfGuests: 1
-      // })
     }
   };
 };
