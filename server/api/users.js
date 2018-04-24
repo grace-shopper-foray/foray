@@ -194,7 +194,7 @@ router.delete('/:userId/orders', (req, res, next) => {
 // router.delete(`api/users/${userId}/${tripId}`)
 //  destroy return 1 , therefore send {message : successful} back to thunk
 
-router.delete(`/:userId/:tripId`, (req, res, next) => {
+router.delete(`/:userId/trip/:tripId`, (req, res, next) => {
   const { userId, tripId } = req.params
   Order.findOne({ where: { userId, isCheckedOut: false } })
     .then(order => TripOrder.destroy({ where: { orderId: order.id, tripId } }))
@@ -219,7 +219,7 @@ router.get('/:userId/cart', (req, res, next) => {
   } else {
     // Guest fetch session item id to cart
     if (req.session.cart.trips[0].id) {
-    res.json(req.session.cart)
+      res.json(req.session.cart)
     }
   }
 })
@@ -239,7 +239,5 @@ router.get('/:userId/orders', (req, res, next) => {
         res.status(404).send('Not Found')
         next(err)
       })
-  } else {
-
   }
 })

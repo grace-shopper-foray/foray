@@ -74,7 +74,7 @@ export const checkoutCart = userId => dispatch => {
 //user remove item from cart
 export const removeTripFromCart = (tripId, userId) => dispatch => {
   return axios
-    .delete(`api/users/${userId}/${tripId}`)
+    .delete(`/api/users/${userId}/trip/${tripId}`)
     .then(res => res.data)
     .then(result => {
       //since destroy doesnt return anything
