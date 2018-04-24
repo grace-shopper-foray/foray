@@ -174,9 +174,7 @@ router.get('/:userId/cart', (req, res, next) => {
     },
     include: [Trip, User]
   })
-    .then(order => {
-      res.json(order)
-    })
+    .then(order => res.json(order))
     .catch(next)
 })
 
