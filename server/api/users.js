@@ -92,7 +92,9 @@ router.post('/:userId/orders', (req, res, next) => {
     console.log(tripId, numberOfGuests)
     let cart = req.session.cart
     cart[tripId] = numberOfGuests
-    res.status(200).json({ [tripId]: cart[tripId] })
+    let newCart = Object.assign({}, cart, { [tripId]: cart[tripId] })
+    // res.status(200).json({ order: { [tripId]: cart[tripId] } })
+    res.status(200).json(newCart)
   }
 })
 
@@ -189,10 +191,6 @@ router.get('/:userId/cart', (req, res, next) => {
     // Guest fetch session item id to cart
     console.log('HERERE')
     console.log(req.session.cart)
-    req.session.cart = Object.assign({}, req.session.cart, { 2: '4' })
-    let cart = req.session.cart
-    console.log(req.session.cart)
-    res.status(200).json({ order: cart })
   }
 })
 
@@ -214,9 +212,5 @@ router.get('/:userId/orders', (req, res, next) => {
   } else {
     console.log('HOOO')
     console.log(req.session.cart)
-
-    req.session.cart = Object.assign({}, req.session.cart, { 1: '5' })
-    console.log(req.session.cart)
-    res.status(200).json({ order: req.session.json })
   }
 })

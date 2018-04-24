@@ -58,8 +58,14 @@ export const postOrderThunk = (tripStateInfo, userId) => dispatch => {
     .then(res => res.data)
     .then(trip => {
       console.log(trip)
-      // dispatch(addTrip(trip))
-      // history.push('/cart')
+      if (trip.id) {
+        // login user
+        dispatch(addTrip(trip))
+        history.push('/cart')
+      } else {
+        //guest
+      }
+      history.push('/cart')
     })
     .catch(err => console.error(err))
 }
