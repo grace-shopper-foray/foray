@@ -92,7 +92,7 @@ router.post('/:userId/orders', (req, res, next) => {
     let cart = req.session.cart
     // tripId, numberOfGuests
     console.log(cart, 'HEEEEEEE')
-    if (!cart.trips) {
+    if (cart.trips) {
       //first time adding to cart
       Trip.getTripDetail(tripId).then(result => {
         let tripOrder = {
@@ -101,7 +101,6 @@ router.post('/:userId/orders', (req, res, next) => {
         }
         let tripDetail = result.dataValues
         tripDetail.tripOrder = tripOrder
-        console.log(tripDetail, 'LLLLLLL')
         cart = {
           orderId: null,
           trips: [tripDetail],
@@ -110,14 +109,14 @@ router.post('/:userId/orders', (req, res, next) => {
           orderTotal: 0
         }
         console.log('FIRST', cart)
-        res.status(200).json(cart)
+        res.status(200).json(tripDetail)
       })
     } else {
       // add more item to cart
       Trip.getTripDetail(tripId).then(result => {
         cart.trips.push(result)
         console.log('NEXT', cart)
-        res.status(200).json(cart)
+        res.status(200).json(result)
       })
     }
   }

@@ -27,7 +27,7 @@ export class Cart extends React.Component {
 
   //add subTotal for all item in cart
   //change total if promo code is valid
-  addUpSubTotal(arrayOfAllTripInCart, promoCodeObjFromServer) {
+  addUpSubTotal(promoCodeObjFromServer) {
     let subTotalPercentage = 100
     if (promoCodeObjFromServer.error) {
       // alert('Invalid promo Code');
@@ -37,7 +37,9 @@ export class Cart extends React.Component {
         // alert('Coupon has been successfully applied to the following events');
       }
     }
-    let subTotal = arrayOfAllTripInCart.reduce((prev, curr) => {
+    console.log('Trips - expect an array', this.props.order.trips)
+    let subTotal = this.props.order.trips.reduce((prev, curr) => {
+      console.log('Current term - expect trip', curr)
       return +prev + +curr.price * curr.tripOrder.numberOfGuests
     }, 0)
     return subTotal * (subTotalPercentage / 100)
@@ -162,7 +164,6 @@ export class Cart extends React.Component {
             <div className="in-line input-group mb-3">
               <h4>
                 Subtotal : {this.subTotalItem(order.trips)} ${this.addUpSubTotal(
-                  this.props.order.trips,
                   promoCode.percentage
                 )}
               </h4>
