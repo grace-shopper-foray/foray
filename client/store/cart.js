@@ -15,7 +15,7 @@ const UPDATE_ORDER_TO_CHECKED_OUT = 'UPDATE_ORDER_TO_CHECKED_OUT'
 /**
  * INITIAL STATE
  */
-const initialState = { trips: [], user: {} };
+const initialState = { trips: [], user: {} }
 
 /**
  * ACTION CREATORS
@@ -26,7 +26,10 @@ export const logoutCart = () => ({ type: LOGOUT_CART })
 const checkoutOrder = () => ({ type: CHECKOUT_ORDER })
 const removeTrip = order => ({ type: REMOVE_TRIP, order })
 const updateTrip = order => ({ type: UPDATE_TRIP, order })
-const updateOrderToCheckedOut = order => ({ type: UPDATE_ORDER_TO_CHECKED_OUT, order})
+const updateOrderToCheckedOut = order => ({
+  type: UPDATE_ORDER_TO_CHECKED_OUT,
+  order
+})
 
 /**
  * THUNK CREATORS
@@ -36,23 +39,28 @@ export const fetchOrder = userId => dispatch => {
     .get(`/api/users/${userId}/cart`)
     .then(res => res.data)
     .then(order => {
-      return dispatch(getOrder(order));
+      if (order.order) {
+        // Guest session
+      } else {
+        return dispatch(getOrder(order))
+      }
     })
-    .catch(err => console.error(err));
-};
+    .catch(err => console.error(err))
+}
 
 //add trip to cart order
 export const postOrderThunk = (tripStateInfo, userId) => dispatch => {
-  const { tripId, numberOfGuests } = tripStateInfo;
+  const { tripId, numberOfGuests } = tripStateInfo
   return axios
     .post(`/api/users/${userId}/orders`, { tripId, numberOfGuests })
     .then(res => res.data)
     .then(trip => {
-      dispatch(addTrip(trip));
-      history.push('/cart');
+      //if trip is the same then update it
+      dispatch(addTrip(trip))
+      history.push('/cart')
     })
-    .catch(err => console.error(err));
-};
+    .catch(err => console.error(err))
+}
 
 //user want to checkout in cart
 export const checkoutCart = userId => dispatch => {
@@ -60,8 +68,8 @@ export const checkoutCart = userId => dispatch => {
     .put(`/api/users/${userId}/orders/checkout`)
     .then(res => res.data)
     .then(() => dispatch(checkoutOrder()))
-    .catch(err => console.error(err));
-};
+    .catch(err => console.error(err))
+}
 
 //user remove item from cart
 export const removeTripFromCart = (tripId, userId) => dispatch => {
@@ -72,11 +80,11 @@ export const removeTripFromCart = (tripId, userId) => dispatch => {
       //since destroy doesnt return anything
       if (result.message === 'successful') {
         //update the order state to rerender the cart page
-        dispatch(fetchOrder(userId));
+        dispatch(fetchOrder(userId))
       }
     })
-    .catch(err => console.error(err));
-};
+    .catch(err => console.error(err))
+}
 
 export const updateNumberOfGuests = (
   tripId,
@@ -88,22 +96,25 @@ export const updateNumberOfGuests = (
     .put(`/api/users/${userId}/orders`, { tripId, numberOfGuests, orderId })
     .then(res => res.data)
     .then(order => {
-      dispatch(updateTrip(order));
-      dispatch(fetchOrder(userId));
+      dispatch(updateTrip(order))
+      dispatch(fetchOrder(userId))
     })
-    .catch(err => console.error(err));
-};
+    .catch(err => console.error(err))
+}
 
-export const updateOrderToCheckedOutThunk = (stripeToken, promoCode, userId) => dispatch => {
-  console.log('reduce', stripeToken, promoCode, userId)
+export const updateOrderToCheckedOutThunk = (
+  stripeToken,
+  promoCode,
+  userId
+) => dispatch => {
   return axios
-        .put(`/api/users/${userId}/orders/checkout`, { stripeToken, promoCode })
-        .then(res => res.data)
-        .then(() => {
-          dispatch(checkoutOrder())
-          history.push('/account')
-        })
-        .catch(err => console.log(err))
+    .put(`/api/users/${userId}/orders/checkout`, { stripeToken, promoCode })
+    .then(res => res.data)
+    .then(() => {
+      dispatch(checkoutOrder())
+      history.push('/account')
+    })
+    .catch(err => console.log(err))
 }
 /**
  * TRIPS SUB-REDUCER
@@ -111,18 +122,18 @@ export const updateOrderToCheckedOutThunk = (stripeToken, promoCode, userId) => 
 export default function(state = initialState, action) {
   switch (action.type) {
     case GET_ORDER:
-      return Object.assign({}, state, action.order);
+      return Object.assign({}, state, action.order)
     case UPDATE_TRIP:
-      return Object.assign({}, state, action.order);
+      return Object.assign({}, state, action.order)
     case REMOVE_TRIP:
-      return Object.assign({}, state, action.order);
+      return Object.assign({}, state, action.order)
     case ADD_TRIP:
-      return Object.assign({}, state, { trips: [...state.trips, action.trip] });
+      return Object.assign({}, state, { trips: [...state.trips, action.trip] })
     case CHECKOUT_ORDER:
-      return initialState;
+      return initialState
     case LOGOUT_CART:
-      return initialState;
+      return initialState
     default:
-      return state;
+      return state
   }
 }

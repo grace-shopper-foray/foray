@@ -53,7 +53,7 @@ class InjectedCheckoutForm extends React.Component {
       address_country: ''
     };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
+    // this.handleSubmit = this.handleSubmit.bind(this);
     this.handleAddressChange = this.handleAddressChange.bind(this);
   }
 
@@ -63,27 +63,30 @@ class InjectedCheckoutForm extends React.Component {
     this.setState({ [evt.target.name]: evt.target.value });
   };
 
-  handleSubmit = ev => {
-    ev.preventDefault();
-    this.props.stripe.createToken(this.state)
-    // .then(payload => console.log(payload))
-    .then(stripe => {
-      console.log(stripe.token.id, 'furby', this.props.user.id)
-      return updateOrderToCheckedOutThunk(stripe.token.id, 'furby', this.props.user.id)
-    })
-    .then(() => this.setState({
-      name: '',
-      address_line1: '',
-      address_line2: '',
-      address_city: '',
-      address_state: '',
-      address_country:''
-    }))
+  // handleSubmit = ev => {
+  //   ev.preventDefault();
+  //   this.props.stripe.createToken(this.state)
+  //   // .then(payload => console.log(payload))
+  //   .then(stripe => {
+  //     console.log(stripe.token.id, 'furby', this.props.user.id)
+  //     updateOrderToCheckedOutThunk(stripe.token.id, 'furby', this.props.user.id)
+  //   })
+  //   .then(() => this.setState({
+  //     name: '',
+  //     address_line1: '',
+  //     address_line2: '',
+  //     address_city: '',
+  //     address_state: '',
+  //     address_country:''
+  //   }))
 
-  };
+  // };
   render() {
+    let {handleSubmit} = this.props;
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form onSubmit={event => {
+        event.preventDefault();
+        handleSubmit(this.props.stripe, this.state, this.props.user)}}>
         <input
           className="form-control"
           placeholder="Name"
@@ -192,14 +195,25 @@ const mapDispatch = function(dispatch, ownProps) {
   return {
     fetchOrderFromServer: userId => {
       return dispatch(fetchOrder(userId));
+    },
+    handleSubmit: (stripe, state, user) => {
+      stripe.createToken(state)
+      // .then(payload => console.log(payload))
+      .then(stripe => {
+        // console.log(stripe)
+        console.log(stripe.token.id, 'furby', user.id)
+        dispatch(updateOrderToCheckedOutThunk(stripe.token.id, 'furby', user.id))
+      })
+      // .then(() => this.setState({
+      //   name: '',
+      //   address_line1: '',
+      //   address_line2: '',
+      //   address_city: '',
+      //   address_state: '',
+      //   address_country:''
+      // }))
     }
-
-    // checkout: function() {
-    //   return dispatch(updateOrderToCheckedOutThunk(ownProps.order, ownProps.order.id))
-    // }
   }
 }
 
-// export default injectStripe(connect(mapState, mapDispatch)(InjectedCheckoutForm))
-
-export default connect(mapState, mapDispatch, mergeProps, {pure: false})(injectStripe(InjectedCheckoutForm))
+export default injectStripe(connect(mapState, mapDispatch)(InjectedCheckoutForm))
