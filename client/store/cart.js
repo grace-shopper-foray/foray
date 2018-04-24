@@ -94,16 +94,18 @@ export const updateNumberOfGuests = (
     .catch(err => console.error(err));
 };
 
-export const updateOrderToCheckedOutThunk = (stripeToken, promoCode, userId) => dispatch => {
+export const updateOrderToCheckedOutThunk = (stripeToken, promoCode, userId) => {
+  return dispatch => {
   console.log('reduce', stripeToken, promoCode, userId)
-  return axios
-        .put(`/api/users/${userId}/orders/checkout`, { stripeToken, promoCode })
-        .then(res => res.data)
-        .then(() => {
-          dispatch(checkoutOrder())
-          history.push('/account')
-        })
-        .catch(err => console.log(err))
+    return axios
+      .put(`/api/users/${userId}/orders/checkout`, { stripeToken, promoCode })
+      .then(res => res.data)
+      .then(() => {
+        dispatch(checkoutOrder())
+        history.push('/account')
+      })
+      .catch(err => console.log(err))
+  }
 }
 /**
  * TRIPS SUB-REDUCER
