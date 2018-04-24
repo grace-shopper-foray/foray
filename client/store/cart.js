@@ -39,10 +39,8 @@ export const fetchOrder = userId => dispatch => {
     .get(`/api/users/${userId}/cart`)
     .then(res => res.data)
     .then(order => {
-      console.log(order, ' in thunk')
       if (order.order) {
         // Guest session
-        console.log('HIIIII')
       } else {
         return dispatch(getOrder(order))
       }
@@ -58,7 +56,6 @@ export const postOrderThunk = (tripStateInfo, userId) => dispatch => {
     .then(res => res.data)
     .then(trip => {
       //if trip is the same then update it
-      console.log(trip)
       dispatch(addTrip(trip))
       history.push('/cart')
     })
@@ -110,7 +107,6 @@ export const updateOrderToCheckedOutThunk = (
   promoCode,
   userId
 ) => dispatch => {
-  console.log('reduce', stripeToken, promoCode, userId)
   return axios
     .put(`/api/users/${userId}/orders/checkout`, { stripeToken, promoCode })
     .then(res => res.data)

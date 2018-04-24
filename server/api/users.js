@@ -20,7 +20,6 @@ router.get('/', isAdmin, (req, res, next) => {
     attributes: ['id', 'email']
   })
     .then(users => {
-      console.log(users)
       res.json(users)
     })
     .catch(next)
@@ -56,7 +55,6 @@ router.post('/', (req, res, next) => {
 
 router.put('/:userId', (req, res, next) => {
   const { firstName, lastName, password, email, phoneNumber } = req.body
-  console.log(req.body, ')))))))))))))))))))))))))')
   const id = req.params.userId
   User.findById(id)
     .then(user =>
@@ -91,8 +89,7 @@ router.post('/:userId/orders', (req, res, next) => {
   } else {
     let cart = req.session.cart
     // tripId, numberOfGuests
-    console.log(cart, 'HEEEEEEE')
-    if (cart.trips) {
+    if (!cart.trips[0].id) {
       //first time adding to cart
       Trip.getTripDetail(tripId).then(result => {
         let tripOrder = {
@@ -108,15 +105,20 @@ router.post('/:userId/orders', (req, res, next) => {
           stripeTokenId: null,
           orderTotal: 0
         }
-        console.log('FIRST', cart)
+        req.session.cart = cart
         res.status(200).json(tripDetail)
       })
     } else {
       // add more item to cart
       Trip.getTripDetail(tripId).then(result => {
-        cart.trips.push(result.dataValues)
-        console.log('NEXT', cart)
-        res.status(200).json(result.dataValues)
+        let tripOrder = {
+          numberOfGuests,
+          tripId
+        }
+        let tripDetail = result.dataValues
+        tripDetail.tripOrder = tripOrder
+        cart.trips.push(tripDetail)
+        res.status(200).json(tripDetail)
       })
     }
   }
@@ -148,7 +150,6 @@ router.put('/:userId/orders', (req, res, next) => {
 router.put(`/:userId/orders/checkout`, (req, res, next) => {
   const token = req.body.stripeToken
   const promoCode = req.body.promoCode
-  console.log(req.body, 'hi')
   //requires promocode to be passed in
   const { userId } = req.params
   Order.findOne({ where: { userId, isCheckedOut: false } })
@@ -217,8 +218,9 @@ router.get('/:userId/cart', (req, res, next) => {
       .catch(next)
   } else {
     // Guest fetch session item id to cart
-    console.log('HERERE')
-    console.log(req.session.cart)
+    if (req.session.cart.trips[0].id) {
+    res.json(req.session.cart)
+    }
   }
 })
 
@@ -238,7 +240,6 @@ router.get('/:userId/orders', (req, res, next) => {
         next(err)
       })
   } else {
-    console.log('HOOO')
-    console.log(req.session.cart)
+
   }
 })

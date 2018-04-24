@@ -71,6 +71,7 @@ const createApp = () => {
         orderTotal: 0
       }
     }
+    // req.session.destroy()
     next()
   })
 

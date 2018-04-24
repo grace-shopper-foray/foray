@@ -37,7 +37,6 @@ export class Cart extends React.Component {
         // alert('Coupon has been successfully applied to the following events');
       }
     }
-    console.log('Trips - expect an array', this.props.order.trips)
     let subTotal = this.props.order.trips.reduce((prev, curr) => {
       return +prev + +curr.price * curr.tripOrder.numberOfGuests
     }, 0)
