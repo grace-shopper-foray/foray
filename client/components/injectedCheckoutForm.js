@@ -6,7 +6,7 @@ import {
   PostalCodeElement,
   injectStripe
 } from 'react-stripe-elements';
-import { connect, mergeProps } from 'react-redux'
+import { connect } from 'react-redux'
 import { updateOrderToCheckedOutThunk, fetchOrder } from '../store'
 
 const handleBlur = () => {
@@ -53,7 +53,6 @@ class InjectedCheckoutForm extends React.Component {
       address_country: ''
     };
 
-    // this.handleSubmit = this.handleSubmit.bind(this);
     this.handleAddressChange = this.handleAddressChange.bind(this);
   }
 
@@ -63,30 +62,13 @@ class InjectedCheckoutForm extends React.Component {
     this.setState({ [evt.target.name]: evt.target.value });
   };
 
-  // handleSubmit = ev => {
-  //   ev.preventDefault();
-  //   this.props.stripe.createToken(this.state)
-  //   // .then(payload => console.log(payload))
-  //   .then(stripe => {
-  //     console.log(stripe.token.id, 'furby', this.props.user.id)
-  //     updateOrderToCheckedOutThunk(stripe.token.id, 'furby', this.props.user.id)
-  //   })
-  //   .then(() => this.setState({
-  //     name: '',
-  //     address_line1: '',
-  //     address_line2: '',
-  //     address_city: '',
-  //     address_state: '',
-  //     address_country:''
-  //   }))
-
-  // };
   render() {
     let {handleSubmit} = this.props;
+    console.log(this.props.promoCode)
     return (
       <form onSubmit={event => {
         event.preventDefault();
-        handleSubmit(this.props.stripe, this.state, this.props.user)}}>
+        handleSubmit(this.props.stripe, this.state, this.props.user, this.props.promoCode.code)}}>
         <input
           className="form-control"
           placeholder="Name"
@@ -191,27 +173,20 @@ const mapState = state => {
   };
 };
 
-const mapDispatch = function(dispatch, ownProps) {
+const mapDispatch = function(dispatch) {
   return {
     fetchOrderFromServer: userId => {
       return dispatch(fetchOrder(userId));
     },
-    handleSubmit: (stripe, state, user) => {
+    handleSubmit: (stripe, state, user, code) => {
       stripe.createToken(state)
       // .then(payload => console.log(payload))
-      .then(stripe => {
+      .then(stripeToken => {
         // console.log(stripe)
-        console.log(stripe.token.id, 'furby', user.id)
-        dispatch(updateOrderToCheckedOutThunk(stripe.token.id, 'furby', user.id))
+        // console.log(stripe.token.id, 'foray', user.id)
+        console.log(code)
+        dispatch(updateOrderToCheckedOutThunk(stripeToken.token.id, code, user.id))
       })
-      // .then(() => this.setState({
-      //   name: '',
-      //   address_line1: '',
-      //   address_line2: '',
-      //   address_city: '',
-      //   address_state: '',
-      //   address_country:''
-      // }))
     }
   }
 }

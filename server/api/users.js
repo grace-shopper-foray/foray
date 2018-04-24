@@ -151,26 +151,24 @@ router.put(`/:userId/orders/checkout`, (req, res, next) => {
   const token = req.body.stripeToken
   const promoCode = req.body.promoCode
   //requires promocode to be passed in
-  const { userId } = req.params
-  Order.findOne({ where: { userId, isCheckedOut: false } })
-    .then(order =>
-      order.update({
-        isCheckedOut: true,
-        stripeTokenId: req.body.stripeTokenId
-      })
-    )
-    .then(order => order.totalPrice(promoCode))
-    .then(updatedOrder =>
-      stripe.charges.create({
-        amount: updatedOrder.orderTotal,
-        currency: 'usd',
-        description: 'Example charge',
-        source: token
-      })
-    )
-    .then(data => res.status(201).json(data))
-    .catch(next)
-})
+  const { userId } = req.params;
+
+  Order.findOne({ where: { userId: +userId, isCheckedOut: false } })
+  .then(order => order.update({
+    isCheckedOut: true,
+    stripeTokenId: token
+  }))
+  .then(order => order.totalPrice(promoCode))
+  .then(updatedOrder => {
+    return stripe.charges.create({
+    amount: updatedOrder.orderTotal,
+    currency: 'usd',
+    description: 'Example charge',
+    source: token
+  })})
+  .then(data => res.status(201).json(data))
+  .catch(next)
+});
 
 // User wants to delete a trip from the cart
 

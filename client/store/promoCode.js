@@ -3,12 +3,14 @@ import { fetchOrder } from './cart';
 
 const initialState = {
   percentage: 100,
+  code: '',
   error: false
 };
 
 //action
 const SET_PERCENTAGE = 'SET_PERCENTAGE';
 const NOTIFY_INVALID = 'NOTIFY_INVALID';
+const SET_CODE = 'SET_CODE'
 
 //action creator
 const setPercentage = percentage => {
@@ -17,6 +19,9 @@ const setPercentage = percentage => {
 const notifyInvalid = error => {
   return { type: NOTIFY_INVALID, error };
 };
+const setCode = code => {
+  return { type: SET_CODE, code }
+}
 
 //thunk
 
@@ -27,13 +32,16 @@ export const addPromoCode = promoCode => dispatch => {
     .then(res => res.data)
     .then(result => {
       dispatch(notifyInvalid(false));
-      return dispatch(setPercentage(result));
+      dispatch(setCode(result.name))
+      console.log(result, 'result!')
+      return dispatch(setPercentage(result.percentage));
     })
     .catch(err => {
       console.error(err);
       return dispatch(notifyInvalid(true));
     });
 };
+
 
 //reducer
 export default function(state = initialState, action) {
@@ -42,6 +50,8 @@ export default function(state = initialState, action) {
       return Object.assign({}, state, { percentage: action.percentage });
     case NOTIFY_INVALID:
       return Object.assign({}, state, { error: action.error });
+    case SET_CODE:
+      return Object.assign({}, state, { code: action.code })
     default:
       return state;
   }
