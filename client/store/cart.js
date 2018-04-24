@@ -57,15 +57,9 @@ export const postOrderThunk = (tripStateInfo, userId) => dispatch => {
     .post(`/api/users/${userId}/orders`, { tripId, numberOfGuests })
     .then(res => res.data)
     .then(trip => {
+      //if trip is the same then update it
       console.log(trip)
-      if (trip.id) {
-        // login user
-        dispatch(addTrip(trip))
-      } else {
-        //guest
-        //user the trip id to find correlate trip
-        dispatch(addTrip(trip))
-      }
+      dispatch(addTrip(trip))
       history.push('/cart')
     })
     .catch(err => console.error(err))

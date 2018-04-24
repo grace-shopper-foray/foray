@@ -86,7 +86,7 @@ router.post('/:userId/orders', (req, res, next) => {
 
   if (userId !== 'undefined') {
     Order.addTripToOrder(tripId, userId, numberOfGuests)
-      .then(trip => res.status(201).json(trip))
+      .then(trip => res.status(200).json(trip))
       .catch(next)
   } else {
     let cart = req.session.cart
