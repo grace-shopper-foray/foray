@@ -40,7 +40,6 @@ export class Cart extends React.Component {
     let subTotal = arrayOfAllTripInCart.reduce((prev, curr) => {
       return +prev + +curr.price * curr.tripOrder.numberOfGuests
     }, 0)
-
     return subTotal * (subTotalPercentage / 100)
   }
 
@@ -69,6 +68,7 @@ export class Cart extends React.Component {
 
   render() {
     const { user, order, promoCode } = this.props
+    console.log(order)
     return (
       <div>
         <h2>Shopping Cart</h2>
@@ -126,7 +126,9 @@ export class Cart extends React.Component {
                                   order.id
                                 )
                               }
-                              value={trip.tripOrder.numberOfGuests}
+                              value={
+                                trip.tripOrder && trip.tripOrder.numberOfGuests
+                              }
                             >
                               <option value="1">1</option>
                               <option value="2">2</option>

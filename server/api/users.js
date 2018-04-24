@@ -89,13 +89,42 @@ router.post('/:userId/orders', (req, res, next) => {
       .then(trip => res.status(201).json(trip))
       .catch(next)
   } else {
-    console.log(tripId, numberOfGuests)
     let cart = req.session.cart
-    cart[tripId] = numberOfGuests
-    let newCart = Object.assign({}, cart, { [tripId]: cart[tripId] })
-    // res.status(200).json({ order: { [tripId]: cart[tripId] } })
-    res.status(200).json(newCart)
+    // tripId, numberOfGuests
+    console.log(cart, 'HEEEEEEE')
+    if (!cart.trips) {
+      //first time adding to cart
+      Trip.getTripDetail(tripId).then(result => {
+        let tripOrder = {
+          numberOfGuests,
+          tripId
+        }
+        let tripDetail = result.dataValues
+        tripDetail.tripOrder = tripOrder
+        console.log(tripDetail, 'LLLLLLL')
+        cart = {
+          orderId: null,
+          trips: [tripDetail],
+          isCheckout: false,
+          stripeTokenId: null,
+          orderTotal: 0
+        }
+        console.log('FIRST', cart)
+        res.status(200).json(cart)
+      })
+    } else {
+      // add more item to cart
+      Trip.getTripDetail(tripId).then(result => {
+        cart.trips.push(result)
+        console.log('NEXT', cart)
+        res.status(200).json(cart)
+      })
+    }
   }
+
+  // cart[tripId] = numberOfGuests
+  // let newCart = Object.assign({}, cart, { [tripId]: cart[tripId] })
+  // res.status(200).json({ order: { [tripId]: cart[tripId] } })
 })
 
 // User wants to update the number of guests on an item in cart

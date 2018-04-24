@@ -57,7 +57,13 @@ const createApp = () => {
   // if user never login , set {} to session
   app.use('/', (req, res, next) => {
     if (!req.session.cart) {
-      req.session.cart = {}
+      req.session.cart = {
+        orderId: null,
+        trips: [],
+        isCheckout: false,
+        stripeTokenId: null,
+        orderTotal: 0
+      }
     }
     next()
   })

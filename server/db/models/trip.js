@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
-const db = require('../db');
+const Sequelize = require('sequelize')
+const db = require('../db')
 
 const Trip = db.define('trip', {
   moonName: {
@@ -19,10 +19,10 @@ const Trip = db.define('trip', {
   price: {
     type: Sequelize.INTEGER,
     get() {
-      return this.getDataValue('price') * 100;
+      return this.getDataValue('price') * 100
     },
     set(value) {
-      return this.setDataValue('price', value) / 100;
+      return this.setDataValue('price', value) / 100
     },
     allowNull: false,
     validate: {
@@ -57,6 +57,12 @@ const Trip = db.define('trip', {
       notEmpty: true
     }
   }
-});
+})
 
-module.exports = Trip;
+Trip.getTripDetail = function(tripId) {
+  return this.findById(tripId)
+    .then(trip => trip)
+    .catch(console.error)
+}
+
+module.exports = Trip

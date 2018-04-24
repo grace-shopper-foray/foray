@@ -61,9 +61,10 @@ export const postOrderThunk = (tripStateInfo, userId) => dispatch => {
       if (trip.id) {
         // login user
         dispatch(addTrip(trip))
-        history.push('/cart')
       } else {
         //guest
+        //user the trip id to find correlate trip
+        dispatch(addTrip(trip))
       }
       history.push('/cart')
     })
