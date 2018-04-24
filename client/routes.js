@@ -36,6 +36,10 @@ class Routes extends Component {
         <Route exact path="/trips/:tripId" component={SingleTrip} />
         <Route exact path="/order-history" component={OrderHistoryDetail} />
         <Route exact path="/" component={TripsHome} />
+       
+        <StripeProvider apiKey="pk_test_jHnlCXdlJJf0KQk5xvXChCxa">
+          <Route exact path="/checkout" component={Checkout} />
+        </StripeProvider>
 
         {isLoggedIn && (
           <Switch>
@@ -46,9 +50,6 @@ class Routes extends Component {
         )}
         {/* Displays our Login component as a fallback */}
         <Route component={Login} />
-        <StripeProvider apiKey="pk_test_jHnlCXdlJJf0KQk5xvXChCxa">
-          <Route exact path="/checkout" component={Checkout} />
-        </StripeProvider>
       </Switch>
     )
   }
@@ -91,3 +92,4 @@ Routes.propTypes = {
   loadInitialData: PropTypes.func.isRequired,
   isLoggedIn: PropTypes.bool.isRequired
 }
+

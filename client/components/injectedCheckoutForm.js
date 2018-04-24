@@ -10,6 +10,8 @@ import {
   Elements,
   injectStripe,
 } from 'react-stripe-elements';
+import { connect, mergeProps } from 'react-redux'
+import { updateOrderToCheckedOutThunk, fetchOrder } from '../store'
 
 const handleBlur = () => {
   console.log('[blur]');
@@ -48,8 +50,8 @@ const createOptions = (fontSize) => {
 
 
 class InjectedCheckoutForm extends React.Component {
-  constructor(){
-    super()
+  constructor(props){
+    super(props)
     this.state = {
       name: '',
       address_line1: '',
@@ -71,9 +73,12 @@ class InjectedCheckoutForm extends React.Component {
   
   handleSubmit = ev => {
     ev.preventDefault();
-    console.log('submit', this.state)
     this.props.stripe.createToken(this.state)
-    .then(payload => console.log(payload))
+    // .then(payload => console.log(payload))
+    .then(stripe => {
+      console.log(stripe.token.id, 'furby', this.props.user.id)
+      return updateOrderToCheckedOutThunk(stripe.token.id, 'furby', this.props.user.id)
+    })
     .then(() => this.setState({
       name: '',
       address_line1: '',
@@ -176,10 +181,33 @@ class InjectedCheckoutForm extends React.Component {
             {...createOptions(this.props.fontSize)}
           />
         </label>
-        <button>Pay</button>
+        <button type="submit">Pay</button>
       </form>
     );
   }
 }
 
-export default injectStripe(InjectedCheckoutForm)
+const mapState = state => {
+  return {
+    order: state.order,
+    user: state.user,
+    promoCode: state.promoCode,
+    total: state.total
+  };
+};
+
+const mapDispatch = function(dispatch, ownProps) {
+  return {
+    fetchOrderFromServer: userId => {
+      return dispatch(fetchOrder(userId));
+    }
+   
+    // checkout: function() {
+    //   return dispatch(updateOrderToCheckedOutThunk(ownProps.order, ownProps.order.id))
+    // }
+  }
+}
+
+// export default injectStripe(connect(mapState, mapDispatch)(InjectedCheckoutForm))
+
+export default connect(mapState, mapDispatch, mergeProps, {pure: false})(injectStripe(InjectedCheckoutForm))

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import history from '../history'
 
 /**
  * ACTION TYPES
@@ -9,6 +10,7 @@ const REMOVE_TRIP = 'DELETE_TRIP'
 const UPDATE_TRIP = 'UPDATE_TRIP'
 const CHECKOUT_ORDER = 'CHECKOUT_TRIP'
 const LOGOUT_CART = 'LOGOUT_CART'
+const UPDATE_ORDER_TO_CHECKED_OUT = 'UPDATE_ORDER_TO_CHECKED_OUT'
 
 /**
  * INITIAL STATE
@@ -24,6 +26,7 @@ export const logoutCart = () => ({ type: LOGOUT_CART })
 const checkoutOrder = () => ({ type: CHECKOUT_ORDER })
 const removeTrip = order => ({ type: REMOVE_TRIP, order })
 const updateTrip = order => ({ type: UPDATE_TRIP, order })
+const updateOrderToCheckedOut = order => ({ type: UPDATE_ORDER_TO_CHECKED_OUT, order})
 
 /**
  * THUNK CREATORS
@@ -55,7 +58,7 @@ export const checkoutCart = userId => dispatch => {
   return axios
     .put(`/api/users/${userId}/orders/checkout`)
     .then(res => res.data)
-    .then(() => dispatch(checkoutOrder()))
+    .then(() => console.log('order paid!'))
     .catch(err => console.error(err))
 }
 
@@ -90,6 +93,17 @@ export const updateNumberOfGuests = (
     .catch(err => console.error(err))
 }
 
+export const updateOrderToCheckedOutThunk = (stripeToken, promoCode, userId) => dispatch => {
+  console.log('reduce', stripeToken, promoCode, userId)
+  return axios
+        .put(`/api/users/${userId}/orders/checkout`, { stripeToken, promoCode })
+        .then(res => res.data)
+        .then(() => {
+          dispatch(checkoutOrder())
+          history.push('/account')
+        })
+        .catch(err => console.log(err))
+}
 /**
  * TRIPS SUB-REDUCER
  */
