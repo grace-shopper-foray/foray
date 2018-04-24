@@ -190,9 +190,9 @@ export class Cart extends React.Component {
                 </form>
               </div>
               <div>
-                <a href="#" className="btn btn-success">
+                <Link to="/checkout" className="btn btn-success">
                   <i className="fa fa-angle-right" /> Proceed to Checkout
-                </a>
+                </Link>
               </div>
             </div>
           </ol>
