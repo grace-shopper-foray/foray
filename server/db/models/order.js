@@ -35,10 +35,10 @@ Order.prototype.totalPrice = function(promoCode) {
   .then(tripOrderArr => {
    return Promise.all(tripOrderArr.map(tripOrder => {
       return Trip.findById(tripOrder.tripId)
-            .then(foundTrip => foundTrip.price)
+            .then(foundTrip => [foundTrip.price, tripOrder.numberOfGuests])
     }))
   })
-  .then(foundTripPrices => foundTripPrices.reduce((acc, elem) => acc + elem))
+  .then(foundTripPrices => foundTripPrices.reduce(((acc, elem) => acc + (elem[0] * elem[1])), 0))
   .then(total => {
     return PromoCode.findOne({
         where: {

@@ -38,6 +38,7 @@ export class Cart extends React.Component {
       }
     }
     let subTotal = arrayOfAllTripInCart.reduce((prev, curr) => {
+      console.log(subTotalPercentage, curr.price, curr.tripOrder.numberOfGuests, '+++++++++++++++++++++')
       return +prev + +curr.price * curr.tripOrder.numberOfGuests;
     }, 0);
 
@@ -59,7 +60,6 @@ export class Cart extends React.Component {
     const promoCodeInput = event.target.promoCode.value;
     if (promoCodeInput) {
       this.props.applyPromoCode(promoCodeInput);
-      
     } else {
       alert('Please enter a Valid Promo Code');
     }
@@ -166,7 +166,7 @@ export class Cart extends React.Component {
               <h4>
                 Subtotal : {this.subTotalItem(order.trips)} ${this.addUpSubTotal(
                   this.props.order.trips,
-                  promoCode.percentage
+                  promoCode
                 )}
               </h4>
             </div>
@@ -215,7 +215,8 @@ const mapState = state => {
   return {
     order: state.order,
     user: state.user,
-    promoCode: state.promoCode
+    promoCode: state.promoCode,
+    dontusePromoCode: state.promoCode.error
   };
 };
 
