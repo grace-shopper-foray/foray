@@ -43,6 +43,7 @@ class Routes extends Component {
         <Route exact path="/trips/:tripId" component={SingleTrip} />
         <Route exact path="/order-history" component={OrderHistoryDetail} />
         <Route exact path="/" component={TripsHome} />
+
         <StripeProvider apiKey="pk_test_jHnlCXdlJJf0KQk5xvXChCxa">
           <Route exact path="/checkout" component={Checkout} />
         </StripeProvider>
@@ -61,7 +62,6 @@ class Routes extends Component {
             <Redirect to="/login" />
           </Switch>
         )}
-        {/* Displays our Login component as a fallback */}
       </Switch>
     );
   }
