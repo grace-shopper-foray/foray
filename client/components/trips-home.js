@@ -27,15 +27,15 @@ class TripsHome extends React.Component {
     return (
       <div className="container">
         <div className="text-center">
-          <h1>Ready for liftoff? Book your lunar escape!</h1>
+          <h2>Ready for liftoff? Book your lunar escape!</h2>
           {this.renderMoonSearch()}
         </div>
         <ul className="row list-unstyled list-inline">
           {this.props.trips.filter(this.filterMoon).map(trip => {
             return (
-              <div className="col-md-3" id="homePageCard" key={trip.id}>
+              <div key={trip.moonName} className="col-md-3" id="homePageCard">
                 <div className="card text-center">
-                  <li key={trip.id}>
+                  <li>
                     <img
                       src={trip.imagePath}
                       height="240"

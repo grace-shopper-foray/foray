@@ -33,7 +33,7 @@ const updateOrderToCheckedOut = order => ({ type: UPDATE_ORDER_TO_CHECKED_OUT, o
  */
 export const fetchOrder = userId => dispatch => {
   return axios
-    .get(`/api/users/${userId}/orders?cart=active`)
+    .get(`/api/users/${userId}/cart`)
     .then(res => res.data)
     .then(order => {
       return dispatch(getOrder(order));
