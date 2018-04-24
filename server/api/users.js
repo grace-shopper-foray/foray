@@ -196,10 +196,25 @@ router.delete('/:userId/orders', (req, res, next) => {
 
 router.delete(`/:userId/trip/:tripId`, (req, res, next) => {
   const { userId, tripId } = req.params
-  Order.findOne({ where: { userId, isCheckedOut: false } })
-    .then(order => TripOrder.destroy({ where: { orderId: order.id, tripId } }))
-    .then(() => res.status(200).json({ message: 'successful' }))
-    .catch(next)
+  if (userId !== 'undefined') {
+    //User del item in cart
+    Order.findOne({ where: { userId, isCheckedOut: false } })
+      .then(order =>
+        TripOrder.destroy({ where: { orderId: order.id, tripId } })
+      )
+      .then(() => res.status(200).json({ message: 'successful' }))
+      .catch(next)
+  } else {
+    // Guest checkout
+    // clear session trips[]
+    let deletedTripsInCart = req.session.cart.trips.filter(
+      each => each.id !== +tripId
+    )
+    req.session.cart.trips = deletedTripsInCart
+    console.log(req.session.cart.trips)
+    //find the delete one , return and del it from state and session
+    // send json back req.session.cart
+  }
 })
 
 // User wants to see Order history or cart (/orders?cart=active).

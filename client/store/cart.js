@@ -39,11 +39,7 @@ export const fetchOrder = userId => dispatch => {
     .get(`/api/users/${userId}/cart`)
     .then(res => res.data)
     .then(order => {
-      if (order.order) {
-        // Guest session
-      } else {
-        return dispatch(getOrder(order))
-      }
+      return dispatch(getOrder(order))
     })
     .catch(err => console.error(err))
 }
@@ -78,9 +74,14 @@ export const removeTripFromCart = (tripId, userId) => dispatch => {
     .then(res => res.data)
     .then(result => {
       //since destroy doesnt return anything
+      console.log(result)
       if (result.message === 'successful') {
+        //login user
         //update the order state to rerender the cart page
         dispatch(fetchOrder(userId))
+      } else {
+        //fetch order return new data
+        //should we drop everything in state and send a new one?
       }
     })
     .catch(err => console.error(err))
