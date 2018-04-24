@@ -10,7 +10,6 @@ const REMOVE_USER = 'REMOVE_USER'
 const UPDATE_USER = 'UPDATE_USER'
 const GET_USERS = 'GET_USERS'
 
-
 /**
  * INITIAL STATE
  */
@@ -21,9 +20,8 @@ const initialState = {}
  */
 const getUser = user => ({ type: GET_USER, user })
 const removeUser = () => ({ type: REMOVE_USER })
-const updateUser = (user) => ({ type: UPDATE_USER, user })
+const updateUser = user => ({ type: UPDATE_USER, user })
 // const getUsers = (users) => ({ type: GET_USERS, users })
-
 
 /**
  * THUNK CREATORS
@@ -35,7 +33,6 @@ const updateUser = (user) => ({ type: UPDATE_USER, user })
 //     .then(res => res.data)
 //     .then(allUsers => dispatch(getUsers(allUsers)))
 //     .catch(err => console.log(err))
-
 
 export const me = () => dispatch =>
   axios
@@ -87,19 +84,15 @@ export const logout = () => dispatch =>
     })
     .catch(err => console.log(err))
 
-
-
 export const updateUserThunk = (entry, userId) => dispatch =>
-        axios
-          .put(`/api/users/${userId}`, entry)
-          .then(res => res.data)
-          .then(updatedUser => {
-            dispatch(updateUser(updatedUser))
-            history.push('/account')
-          })
-          .catch(err => console.log(err))
-
-
+  axios
+    .put(`/api/users/${userId}`, entry)
+    .then(res => res.data)
+    .then(updatedUser => {
+      dispatch(updateUser(updatedUser))
+      history.push('/account')
+    })
+    .catch(err => console.log(err))
 
 /**
  * REDUCER
@@ -111,7 +104,7 @@ export default function(state = initialState, action) {
     // case GET_USERS:
     //   return Object.assign({}, state, action.users)
     case REMOVE_USER:
-      return state.user
+      return initialState
     case UPDATE_USER:
       return action.user
     default:

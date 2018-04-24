@@ -27,7 +27,7 @@ export class Cart extends React.Component {
 
   //add subTotal for all item in cart
   //change total if promo code is valid
-  addUpSubTotal(arrayOfAllTripInCart, promoCodeObjFromServer) {
+  addUpSubTotal(promoCodeObjFromServer) {
     let subTotalPercentage = 100
     if (promoCodeObjFromServer.error) {
       // alert('Invalid promo Code');
@@ -37,10 +37,11 @@ export class Cart extends React.Component {
         // alert('Coupon has been successfully applied to the following events');
       }
     }
-    let subTotal = arrayOfAllTripInCart.reduce((prev, curr) => {
+    console.log('Trips - expect an array', this.props.order.trips)
+    let subTotal = this.props.order.trips.reduce((prev, curr) => {
+      console.log('Current term - expect trip', curr)
       return +prev + +curr.price * curr.tripOrder.numberOfGuests
     }, 0)
-
     return subTotal * (subTotalPercentage / 100)
   }
 
@@ -52,15 +53,11 @@ export class Cart extends React.Component {
     }
   }
 
-  handlePromoCode(event, userId) {
-    //change all the price in state order base on the promo percentage
-    //update order.trips
+  handlePromoCode(event) {
     event.preventDefault()
     const promoCodeInput = event.target.promoCode.value
     if (promoCodeInput) {
-      this.props.promoCodeThunk(promoCodeInput, userId)
-    } else {
-      alert('Pleast enter a Valid Promo Code')
+      this.props.applyPromoCode(promoCodeInput)
     }
   }
 
@@ -73,6 +70,7 @@ export class Cart extends React.Component {
 
   render() {
     const { user, order, promoCode } = this.props
+    console.log(order)
     return (
       <div>
         <h2>Shopping Cart</h2>
@@ -130,7 +128,9 @@ export class Cart extends React.Component {
                                   order.id
                                 )
                               }
-                              value={trip.tripOrder.numberOfGuests}
+                              value={
+                                trip.tripOrder && trip.tripOrder.numberOfGuests
+                              }
                             >
                               <option value="1">1</option>
                               <option value="2">2</option>
@@ -164,8 +164,7 @@ export class Cart extends React.Component {
             <div className="in-line input-group mb-3">
               <h4>
                 Subtotal : {this.subTotalItem(order.trips)} ${this.addUpSubTotal(
-                  this.props.order.trips,
-                  promoCode
+                  promoCode.percentage
                 )}
               </h4>
             </div>
@@ -187,6 +186,9 @@ export class Cart extends React.Component {
                       />
                     </div>
                   </div>
+                  {this.props.promoCode.error && (
+                    <p>Please enter a valid promo code.</p>
+                  )}
                 </form>
               </div>
               <div>
@@ -231,7 +233,7 @@ const mapDispatch = dispatch => {
     checkoutThunk: orderId => {
       return dispatch(checkoutOrder(orderId))
     },
-    promoCodeThunk: (promoCode, userId) => {
+    applyPromoCode: (promoCode, userId) => {
       return dispatch(addPromoCode(promoCode, userId))
     }
   }

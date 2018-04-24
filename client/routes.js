@@ -1,6 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { BrowserRouter, withRouter, Route, Switch } from 'react-router-dom'
+import {
+  BrowserRouter,
+  withRouter,
+  Route,
+  Switch,
+  Redirect
+} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import {
   Login,
@@ -27,6 +33,7 @@ class Routes extends Component {
 
   render() {
     const { isLoggedIn } = this.props
+    console.log('User is logged in:', isLoggedIn)
     return (
       <Switch>
         {/* Routes placed here are available to all visitors */}
@@ -35,21 +42,26 @@ class Routes extends Component {
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/trips/:tripId" component={SingleTrip} />
         <Route exact path="/order-history" component={OrderHistoryDetail} />
+
         <Route exact path="/" component={TripsHome} />
-       
-        <StripeProvider apiKey="pk_test_jHnlCXdlJJf0KQk5xvXChCxa">
+        {/* <StripeProvider apiKey="pk_test_jHnlCXdlJJf0KQk5xvXChCxa">
           <Route exact path="/checkout" component={Checkout} />
-        </StripeProvider>
+        </StripeProvider> */}
 
         {isLoggedIn && (
           <Switch>
             {/* Routes placed here are only available after logging in */}
             <Route exact path="/account" component={Account} />
             <Route exact path="/edit-account" component={EditAccount} />
+            <Redirect to="/account" />
           </Switch>
         )}
-        {/* Displays our Login component as a fallback */}
-        <Route component={Login} />
+        {!isLoggedIn && (
+          <Switch>
+            {/* Routes placed here are only available to guests */}
+            <Redirect to="/login" />
+          </Switch>
+        )}
       </Switch>
     )
   }
@@ -92,4 +104,3 @@ Routes.propTypes = {
   loadInitialData: PropTypes.func.isRequired,
   isLoggedIn: PropTypes.bool.isRequired
 }
-
