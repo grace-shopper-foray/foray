@@ -44,9 +44,9 @@ class Routes extends Component {
         <Route exact path="/order-history" component={OrderHistoryDetail} />
 
         <Route exact path="/" component={TripsHome} />
-        <StripeProvider apiKey="pk_test_jHnlCXdlJJf0KQk5xvXChCxa">
+        {/* <StripeProvider apiKey="pk_test_jHnlCXdlJJf0KQk5xvXChCxa">
           <Route exact path="/checkout" component={Checkout} />
-        </StripeProvider>
+        </StripeProvider> */}
 
         {isLoggedIn && (
           <Switch>

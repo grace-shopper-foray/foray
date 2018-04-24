@@ -54,10 +54,12 @@ const createApp = () => {
   app.use(passport.initialize())
   app.use(passport.session())
 
+  // if user never login , set {} to session
   app.use('/', (req, res, next) => {
     if (!req.session.cart) {
       req.session.cart = {}
     }
+    next()
   })
 
   // auth and api routes

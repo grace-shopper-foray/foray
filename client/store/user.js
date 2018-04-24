@@ -104,7 +104,7 @@ export default function(state = initialState, action) {
     // case GET_USERS:
     //   return Object.assign({}, state, action.users)
     case REMOVE_USER:
-      return state.user
+      return initialState
     case UPDATE_USER:
       return action.user
     default:

@@ -84,9 +84,16 @@ router.post('/:userId/orders', (req, res, next) => {
   const userId = req.params.userId
   const { tripId, numberOfGuests } = req.body
 
-  Order.addTripToOrder(tripId, userId, numberOfGuests)
-    .then(trip => res.status(201).json(trip))
-    .catch(next)
+  if (userId !== 'undefined') {
+    Order.addTripToOrder(tripId, userId, numberOfGuests)
+      .then(trip => res.status(201).json(trip))
+      .catch(next)
+  } else {
+    console.log(tripId, numberOfGuests)
+    let cart = req.session.cart
+    cart[tripId] = numberOfGuests
+    res.status(200).json({ [tripId]: cart[tripId] })
+  }
 })
 
 // User wants to update the number of guests on an item in cart
@@ -165,30 +172,51 @@ router.delete(`/:userId/:tripId`, (req, res, next) => {
 })
 
 // User wants to see Order history or cart (/orders?cart=active).
-
+//fix
 router.get('/:userId/cart', (req, res, next) => {
-  Order.findOne({
-    where: {
-      userId: req.params.userId,
-      isCheckedOut: false
-    },
-    include: [Trip, User]
-  })
-    .then(order => res.json(order))
-    .catch(next)
+  if (req.params.userId !== 'undefined') {
+    //Login  add to cart
+    Order.findOne({
+      where: {
+        userId: req.params.userId,
+        isCheckedOut: false
+      },
+      include: [Trip, User]
+    })
+      .then(order => res.json(order))
+      .catch(next)
+  } else {
+    // Guest fetch session item id to cart
+    console.log('HERERE')
+    console.log(req.session.cart)
+    req.session.cart = Object.assign({}, req.session.cart, { 2: '4' })
+    let cart = req.session.cart
+    console.log(req.session.cart)
+    res.status(200).json({ order: cart })
+  }
 })
 
+//fix
 router.get('/:userId/orders', (req, res, next) => {
-  Order.findAll({
-    where: {
-      userId: req.params.userId,
-      isCheckedOut: true
-    },
-    include: [Trip, User]
-  })
-    .then(orders => res.json(orders))
-    .catch(err => {
-      res.status(404).send('Not Found')
-      next(err)
+  if (req.params.userId !== 'undefined') {
+    Order.findAll({
+      where: {
+        userId: req.params.userId,
+        isCheckedOut: true
+      },
+      include: [Trip, User]
     })
+      .then(orders => res.json(orders))
+      .catch(err => {
+        res.status(404).send('Not Found')
+        next(err)
+      })
+  } else {
+    console.log('HOOO')
+    console.log(req.session.cart)
+
+    req.session.cart = Object.assign({}, req.session.cart, { 1: '5' })
+    console.log(req.session.cart)
+    res.status(200).json({ order: req.session.json })
+  }
 })
