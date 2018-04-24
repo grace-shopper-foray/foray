@@ -1,6 +1,6 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import {
   fetchOrder,
@@ -8,71 +8,71 @@ import {
   updateNumberOfGuests,
   addPromoCode,
   checkoutOrder
-} from '../store'
+} from '../store';
 
 /**
  * COMPONENT
  */
 export class Cart extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       numberOfGuests: 0
-    }
-    this.addUpSubTotal = this.addUpSubTotal.bind(this)
-    this.handleChange = this.handleChange.bind(this)
-    this.subTotalItem = this.subTotalItem.bind(this)
-    this.handlePromoCode = this.handlePromoCode.bind(this)
+    };
+    this.addUpSubTotal = this.addUpSubTotal.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.subTotalItem = this.subTotalItem.bind(this);
+    this.handlePromoCode = this.handlePromoCode.bind(this);
   }
 
   //add subTotal for all item in cart
   //change total if promo code is valid
   addUpSubTotal(arrayOfAllTripInCart, promoCodeObjFromServer) {
-    let subTotalPercentage = 100
+    let subTotalPercentage = 100;
     if (promoCodeObjFromServer.error) {
       // alert('Invalid promo Code');
     } else {
       if (promoCodeObjFromServer.percentage !== undefined) {
-        subTotalPercentage = promoCodeObjFromServer.percentage
+        subTotalPercentage = promoCodeObjFromServer.percentage;
         // alert('Coupon has been successfully applied to the following events');
       }
     }
     let subTotal = arrayOfAllTripInCart.reduce((prev, curr) => {
-      return +prev + +curr.price * curr.tripOrder.numberOfGuests
-    }, 0)
+      return +prev + +curr.price * curr.tripOrder.numberOfGuests;
+    }, 0);
 
-    return subTotal * (subTotalPercentage / 100)
+    return subTotal * (subTotalPercentage / 100);
   }
 
   subTotalItem(allTripInCart) {
     if (allTripInCart.length === 1) {
-      return <strong>{`${allTripInCart.length} item`}</strong>
+      return <strong>{`${allTripInCart.length} item`}</strong>;
     } else {
-      return <strong>{`${allTripInCart.length} items`}</strong>
+      return <strong>{`${allTripInCart.length} items`}</strong>;
     }
   }
 
-  handlePromoCode(event, userId) {
+  handlePromoCode(event) {
     //change all the price in state order base on the promo percentage
     //update order.trips
-    event.preventDefault()
-    const promoCodeInput = event.target.promoCode.value
+    event.preventDefault();
+    const promoCodeInput = event.target.promoCode.value;
     if (promoCodeInput) {
-      this.props.promoCodeThunk(promoCodeInput, userId)
+      this.props.applyPromoCode(promoCodeInput);
     } else {
-      alert('Pleast enter a Valid Promo Code')
+      alert('Please enter a Valid Promo Code');
     }
   }
 
   //send to thunk immediately and reload cart
   handleChange(event, tripId, userId, orderId) {
-    event.persist() //react async for SyntheticEvent
-    let numberOfGuest = +event.target.value
-    this.props.updateQuantityThunk(tripId, userId, numberOfGuest, orderId)
+    event.persist(); //react async for SyntheticEvent
+    let numberOfGuest = +event.target.value;
+    this.props.updateQuantityThunk(tripId, userId, numberOfGuest, orderId);
   }
 
   render() {
-    const { user, order, promoCode } = this.props
+    const { user, order, promoCode } = this.props;
     return (
       <div>
         <h2>Shopping Cart</h2>
@@ -159,13 +159,13 @@ export class Cart extends React.Component {
                     </table>
                   </div>
                 </li>
-              )
+              );
             })}
             <div className="in-line input-group mb-3">
               <h4>
                 Subtotal : {this.subTotalItem(order.trips)} ${this.addUpSubTotal(
                   this.props.order.trips,
-                  promoCode
+                  promoCode.percentage
                 )}
               </h4>
             </div>
@@ -187,6 +187,9 @@ export class Cart extends React.Component {
                       />
                     </div>
                   </div>
+                  {this.props.promoCode.error && (
+                    <p>Please enter a valid promo code.</p>
+                  )}
                 </form>
               </div>
               <div>
@@ -203,7 +206,7 @@ export class Cart extends React.Component {
           <i className="fa fa-angle-left" /> Continue Shopping
         </Link>
       </div>
-    )
+    );
   }
 }
 
@@ -212,33 +215,33 @@ const mapState = state => {
     order: state.order,
     user: state.user,
     promoCode: state.promoCode
-  }
-}
+  };
+};
 
 const mapDispatch = dispatch => {
   return {
     fetchOrderFromServer: userId => {
-      return dispatch(fetchOrder(userId))
+      return dispatch(fetchOrder(userId));
     },
     deleteTripThunk: (tripId, userId) => {
-      return dispatch(removeTripFromCart(tripId, userId))
+      return dispatch(removeTripFromCart(tripId, userId));
     },
     updateQuantityThunk: (tripId, userId, numberOfGuest, orderId) => {
       return dispatch(
         updateNumberOfGuests(tripId, userId, numberOfGuest, orderId)
-      )
+      );
     },
     checkoutThunk: orderId => {
-      return dispatch(checkoutOrder(orderId))
+      return dispatch(checkoutOrder(orderId));
     },
-    promoCodeThunk: (promoCode, userId) => {
-      return dispatch(addPromoCode(promoCode, userId))
+    applyPromoCode: (promoCode, userId) => {
+      return dispatch(addPromoCode(promoCode, userId));
     }
-  }
-}
+  };
+};
 
 //a user can checkout from cart
 //a user can delete/remove trip from cart
 //a user can update quantity number of guests from cart
 
-export default connect(mapState, mapDispatch)(Cart)
+export default connect(mapState, mapDispatch)(Cart);

@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { User, Order, TripOrder, Trip } = require('../db/models');
-const stripe = require("stripe")("sk_test_YJIPtZSqDVixu3EYQRJkAoWI");
+const stripe = require('stripe')('sk_test_YJIPtZSqDVixu3EYQRJkAoWI');
 
 module.exports = router;
 
@@ -55,15 +55,15 @@ router.post('/', (req, res, next) => {
 // Updating a users information.
 
 router.put('/:userId', (req, res, next) => {
+  const { firstName, lastName, password, email, phoneNumber } = req.body;
+  console.log(req.body, ')))))))))))))))))))))))))');
   const id = req.params.userId;
-  User.findById(id).then(user => {
-    return user
-      .update(req.body)
-      .then(updatedUser => {
-        res.status(200).json(updatedUser)
-      })
-      .catch(next);
-  });
+  User.findById(id)
+    .then(user =>
+      user.update({ firstName, lastName, password, email, phoneNumber })
+    )
+    .then(updatedUser => res.status(200).json(updatedUser))
+    .catch(next);
 });
 
 // Removes a user from the database
@@ -73,7 +73,7 @@ router.delete('/:userId', (req, res, next) => {
   User.findById(id)
     .then(user => user.destroy())
     .then(() => {
-      res.status(204).send('No content');
+      res.status(204).end();
     })
     .catch(next);
 });
@@ -84,24 +84,8 @@ router.post('/:userId/orders', (req, res, next) => {
   const userId = req.params.userId;
   const { tripId, numberOfGuests } = req.body;
 
-  Order.findOrCreate({
-    where: { userId: userId, isCheckedOut: false },
-    include: [Trip, User]
-  })
-    .spread((order, _) => {
-      return TripOrder.create({
-        orderId: order.id,
-        tripId,
-        numberOfGuests
-      }).then(() => order);
-    })
-    .then(order => {
-      return Order.findById(order.id, { include: [Trip] });
-    })
-    .then(order => {
-      const trip = order.trips.filter(t => t.id === tripId)[0];
-      res.status(201).json(trip);
-    })
+  Order.addTripToOrder(tripId, userId, numberOfGuests)
+    .then(trip => res.status(201).json(trip))
     .catch(next);
 });
 
@@ -116,8 +100,8 @@ router.put('/:userId/orders', (req, res, next) => {
   })
     .then(order => {
       // TripOrder only exists on trip objects, need to filter to trip with tripId
-      const tripOrder = order.trips.filter(t => t.id === tripId)[0].tripOrder;
-      return tripOrder.update({ orderId: order.id, tripId, numberOfGuests });
+      const tripOrder = order.trips.find(t => t.id === tripId).tripOrder;
+      return tripOrder.update({ numberOfGuests });
     })
     .then(trip => res.status(200).json(trip))
     .catch(next);
@@ -125,9 +109,9 @@ router.put('/:userId/orders', (req, res, next) => {
 
 // User wants to checkout the cart
 router.put(`/:userId/orders/checkout`, (req, res, next) => {
-  const token = req.body.stripeToken
-  const promoCode = req.body.promoCode
-  console.log(req.body, 'hi')
+  const token = req.body.stripeToken;
+  const promoCode = req.body.promoCode;
+  console.log(req.body, 'hi');
   //requires promocode to be passed in
   const { userId } = req.params;
 
@@ -180,36 +164,31 @@ router.delete(`/:userId/:tripId`, (req, res, next) => {
 
 // User wants to see Order history or cart (/orders?cart=active).
 
+router.get('/:userId/cart', (req, res, next) => {
+  Order.findOne({
+    where: {
+      userId: req.params.userId,
+      isCheckedOut: false
+    },
+    include: [Trip, User]
+  })
+    .then(order => {
+      res.json(order);
+    })
+    .catch(next);
+});
+
 router.get('/:userId/orders', (req, res, next) => {
-  const isActive = req.query.cart === 'active';
-  if (req.query.cart !== undefined) {
-    // Non-Checkout Order in Cart
-    // There is a query string for cart
-    Order.findOne({
-      where: {
-        userId: req.params.userId,
-        isCheckedOut: !isActive
-      },
-      include: [Trip, User]
-    })
-      .then(order => {
-        res.json(order);
-      })
-      .catch(next);
-  } else {
-    // No query value, return all orders for user.
-    // same as orders.js?
-    Order.findAll({
-      where: {
-        userId: req.params.userId,
-        isCheckedOut: true
-      },
-      include: [Trip, User]
-    })
-      .then(orders => res.json(orders))
-      .catch(err => {
-        res.status(404).send('Not Found');
-        next(err);
-      });
-  }
+  Order.findAll({
+    where: {
+      userId: req.params.userId,
+      isCheckedOut: true
+    },
+    include: [Trip, User]
+  })
+    .then(orders => res.json(orders))
+    .catch(err => {
+      res.status(404).send('Not Found');
+      next(err);
+    });
 });

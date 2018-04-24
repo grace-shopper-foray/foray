@@ -5,7 +5,6 @@ const { PromoCode } = require('../db/models');
 
 // find active promo code
 router.get('/:promoCode', (req, res, next) => {
-  console.log('in the promo Code');
   const promoCode = req.params.promoCode;
   PromoCode.findOne({
     where: {
@@ -15,7 +14,7 @@ router.get('/:promoCode', (req, res, next) => {
   })
     .then(result => {
       if (result) res.status(200).json(result);
-      else res.status(200).json({ error: 'Not Found' });
+      else res.sendStatus(404);
     })
     .catch(next);
 });
