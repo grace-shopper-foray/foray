@@ -12,7 +12,9 @@ const App = () => {
       <StripeProvider apiKey="pk_test_jHnlCXdlJJf0KQk5xvXChCxa">
         <Routes />
       </StripeProvider>
-      <Footer className="footer"/>
+      <div className="foot">
+      <Footer className="footer" />
+      </div>
     </div>
   );
 };

@@ -32,6 +32,13 @@ form div {
   margin-left: 1in;
 }
 
+.foot {
+     bottom:0px;
+     left:0px;
+     right:0px;
+     width:100%;
+}
+
 @keyframes rocket-logo-spin {
   from {
     transform: rotate(0deg);
