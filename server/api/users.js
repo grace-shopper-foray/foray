@@ -101,7 +101,7 @@ router.post('/:userId/orders', isLoginUser, (req, res, next) => {
   } else {
     let cart = req.session.cart;
     // tripId, numberOfGuests
-    if (!cart.trips[0].id) {
+    if (cart.trips.length < 1) {
       //first time adding to cart
       Trip.getTripDetail(tripId).then(result => {
         let tripOrder = {
@@ -121,7 +121,6 @@ router.post('/:userId/orders', isLoginUser, (req, res, next) => {
         res.status(200).json(tripDetail);
       });
     } else {
-      // add more item to cart
       Trip.getTripDetail(tripId).then(result => {
         let tripOrder = {
           numberOfGuests,
@@ -129,30 +128,41 @@ router.post('/:userId/orders', isLoginUser, (req, res, next) => {
         };
         let tripDetail = result.dataValues;
         tripDetail.tripOrder = tripOrder;
-        cart.trips.push(tripDetail);
-        res.status(200).json(tripDetail);
+        req.session.cart.trips.push(tripDetail);
+        res.status(200).json(req.session.cart.trips);
       });
     }
   }
-})
+});
 
-
-// User wants to update the number of guests on an item in cart
-// Specific to that user
-router.put('/:userId/orders', isLoginUser, (req, res, next) => {
+router.put('/:userId/orders', (req, res, next) => {
   const userId = req.params.userId;
   const { tripId, numberOfGuests } = req.body;
-  Order.findOne({
-    where: { userId: userId, isCheckedOut: false },
-    include: [Trip, User]
-  })
-    .then(order => {
-      // TripOrder only exists on trip objects, need to filter to trip with tripId
-      const tripOrder = order.trips.find(t => t.id === tripId).tripOrder;
-      return tripOrder.update({ numberOfGuests });
+  if (userId !== 'undefined') {
+    Order.findOne({
+      where: { userId: userId, isCheckedOut: false },
+      include: [Trip, User]
     })
-    .then(trip => res.status(200).json(trip))
-    .catch(next);
+      .then(order => {
+        // TripOrder only exists on trip objects, need to filter to trip with tripId
+        const tripOrder = order.trips.find(t => t.id === tripId).tripOrder;
+        return tripOrder.update({ numberOfGuests });
+      })
+      .then(trip => res.status(200).json(trip))
+      .catch(next);
+  } else {
+    //guset
+    let cart = req.session.cart.trips;
+    console.log('145', req.session.cart.trips);
+    cart.filter(each => {
+      if (each.id === +tripId) {
+        each.tripOrder.numberOfGuests = numberOfGuests;
+      }
+    });
+    console.log(cart, '152');
+    console.log(req.session.cart.trips, '153');
+    res.status(200).json(req.session.cart.trips);
+  }
 });
 
 // User wants to checkout the cart
@@ -204,13 +214,28 @@ router.delete('/:userId/orders', isLoginUser, (req, res, next) => {
 // User wants to remove a trip from the cart.
 // router.delete(`api/users/${userId}/${tripId}`)
 //  destroy return 1 , therefore send {message : successful} back to thunk
-// Specific from that user.
-router.delete(`/:userId/:tripId`, isLoginUser, (req, res, next) => {
+
+router.delete(`/:userId/trip/:tripId`, (req, res, next) => {
   const { userId, tripId } = req.params;
-  Order.findOne({ where: { userId, isCheckedOut: false } })
-    .then(order => TripOrder.destroy({ where: { orderId: order.id, tripId } }))
-    .then(() => res.status(200).json({ message: 'successful' }))
-    .catch(next);
+  if (userId !== 'undefined') {
+    //User del item in cart
+    Order.findOne({ where: { userId, isCheckedOut: false } })
+      .then(order =>
+        TripOrder.destroy({ where: { orderId: order.id, tripId } })
+      )
+      .then(() => res.status(200).json({ message: 'successful' }))
+      .catch(next);
+  } else {
+    // Guest checkout
+    // clear session trips[]
+    let deletedTripsInCart = req.session.cart.trips.filter(
+      each => each.id !== +tripId
+    );
+    req.session.cart.trips = deletedTripsInCart;
+    //find the delete one , return and del it from state and session
+    res.status(200).json(req.session.cart);
+    // send json back req.session.cart
+  }
 });
 
 // User wants to see Order history or cart (/orders?cart=active).
@@ -230,9 +255,7 @@ router.get('/:userId/cart', isLoginUser, (req, res, next) => {
       .catch(next);
   } else {
     // Guest fetch session item id to cart
-    if (req.session.cart.trips[0].id) {
-      res.json(req.session.cart);
-    }
+    if (req.session.cart.trips.length > 0) res.json(req.session.cart);
   }
 });
 
@@ -251,6 +274,5 @@ router.get('/:userId/orders', isLoginUser, (req, res, next) => {
         res.status(404).send('Not Found');
         next(err);
       });
-  } else {
   }
 });

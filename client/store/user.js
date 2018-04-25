@@ -33,7 +33,7 @@ export const me = () => dispatch =>
     .then(res => {
       dispatch(getUser(res.data || initialState.user))
       dispatch(fetchOrder(res.data.id))
-      dispatch(fetchOrderHistory(res.data.id))
+      // dispatch(fetchOrderHistory(res.data.id))
     })
     .catch(err => console.log(err))
 
@@ -57,7 +57,7 @@ export const auth = (
       res => {
         dispatch(getUser(res.data))
         dispatch(fetchOrder(res.data.id))
-        dispatch(fetchOrderHistory(res.data.id))
+        // dispatch(fetchOrderHistory(res.data.id))
         history.push('/')
       },
       authError => {
