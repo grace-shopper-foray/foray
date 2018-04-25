@@ -33,7 +33,6 @@ export const addPromoCode = promoCode => dispatch => {
     .then(result => {
       dispatch(notifyInvalid(false));
       dispatch(setCode(result.name))
-      console.log(result, 'result!')
       return dispatch(setPercentage(result.percentage));
     })
     .catch(err => {

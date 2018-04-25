@@ -36,17 +36,15 @@ const updateOrderToCheckedOut = order => ({
  * THUNK CREATORS
  */
 export const fetchOrder = userId => dispatch => {
+  if (userId) {
   return axios
     .get(`/api/users/${userId}/cart`)
     .then(res => res.data)
     .then(order => {
-      if (order.order) {
-        // Guest session
-      } else {
-        return dispatch(getOrder(order))
-      }
+      return dispatch(getOrder(order))
     })
     .catch(err => console.error(err))
+  }
 }
 
 //add trip to cart order
@@ -108,15 +106,27 @@ export const updateOrderToCheckedOutThunk = (
   promoCode,
   userId
 ) => dispatch => {
-  return axios
-    .put(`/api/users/${userId}/orders/checkout`, { stripeToken, promoCode })
+  if(userId) {
+    return axios
+      .put(`/api/users/${userId}/orders/checkout`, { stripeToken, promoCode })
+      .then(res => res.data)
+      .then(() => {
+        dispatch(checkoutOrder())
+        dispatch(fetchOrderHistory(userId))
+        history.push('/order-history')
+      })
+      .catch(err => console.log(err))
+  } else {
+    return axios
+      .post('/api/orders', { stripeToken, promoCode }
+    )
     .then(res => res.data)
     .then(() => {
       dispatch(checkoutOrder())
-      dispatch(fetchOrderHistory(userId))
-      history.push('/order-history')
+      history.push('/signup')
     })
-    .catch(err => console.log(err))
+    .catch(err => console.error(err))
+  }
 }
 /**
  * TRIPS SUB-REDUCER

@@ -134,11 +134,8 @@ router.post('/:userId/orders', isLoginUser, (req, res, next) => {
       });
     }
   }
+})
 
-  // cart[tripId] = numberOfGuests
-  // let newCart = Object.assign({}, cart, { [tripId]: cart[tripId] })
-  // res.status(200).json({ order: { [tripId]: cart[tripId] } })
-});
 
 // User wants to update the number of guests on an item in cart
 // Specific to that user

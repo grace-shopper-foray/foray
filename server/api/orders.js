@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const { TripOrder, Order, Trip, User } = require('../db/models');
+const stripe = require('stripe')('sk_test_YJIPtZSqDVixu3EYQRJkAoWI')
+
 
 //check admin middleware
 function isAdmin(req, res, next) {
@@ -48,5 +50,33 @@ router.get('/:orderId', isLoginUser, (req, res, next) => {
       next(err);
     });
 });
+
+
+router.post('/', (req, res, next) => {
+  const token = req.body.stripeToken
+  const promoCode = req.body.promoCode
+  const arrayTrips = req.session.cart.trips
+  let subTotal = arrayTrips.reduce((prev, curr) => {
+    return +prev + +curr.price * curr.tripOrder.numberOfGuests;
+  }, 0);
+  Order.create({
+    isCheckedOut: true,
+    stripeTokenId: req.body.stripeToken,
+    orderTotal: subTotal,
+    userId: null
+  })
+  // .then(order => order.totalPrice(promoCode))
+  .then(updatedOrder =>
+    stripe.charges.create({
+      amount: updatedOrder.orderTotal,
+      currency: 'usd',
+      description: 'Guest checkout',
+      source: token
+    })
+  )
+  .then(data => res.status(201).json(data))
+  .catch(next)
+})
+
 
 module.exports = router;
