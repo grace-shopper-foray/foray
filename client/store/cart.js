@@ -108,15 +108,27 @@ export const updateOrderToCheckedOutThunk = (
   promoCode,
   userId
 ) => dispatch => {
-  return axios
-    .put(`/api/users/${userId}/orders/checkout`, { stripeToken, promoCode })
+  if(userId) {
+    return axios
+      .put(`/api/users/${userId}/orders/checkout`, { stripeToken, promoCode })
+      .then(res => res.data)
+      .then(() => {
+        dispatch(checkoutOrder())
+        dispatch(fetchOrderHistory(userId))
+        history.push('/order-history')
+      })
+      .catch(err => console.log(err))
+  } else {
+    return axios
+      .post('/api/orders', { stripeToken, promoCode }
+    )
     .then(res => res.data)
     .then(() => {
       dispatch(checkoutOrder())
-      dispatch(fetchOrderHistory(userId))
-      history.push('/order-history')
+      history.push('/signup')
     })
-    .catch(err => console.log(err))
+    .catch(err => console.error(err))
+  }
 }
 /**
  * TRIPS SUB-REDUCER

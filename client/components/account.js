@@ -11,7 +11,6 @@ import { getUsersThunk } from '../store'
 
 const Account = props => {
   const { user } = props
-  console.log(props)
   return user.isAdmin ? (
     <div className="container">
       <div className="row">

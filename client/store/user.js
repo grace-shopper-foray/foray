@@ -27,13 +27,6 @@ const updateUser = user => ({ type: UPDATE_USER, user })
  * THUNK CREATORS
  */
 
-// export const getUsersThunk = () => dispatch =>
-//   axios
-//     .get('/api/users')
-//     .then(res => res.data)
-//     .then(allUsers => dispatch(getUsers(allUsers)))
-//     .catch(err => console.log(err))
-
 export const me = () => dispatch =>
   axios
     .get('/auth/me')

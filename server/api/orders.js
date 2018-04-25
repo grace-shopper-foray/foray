@@ -39,15 +39,20 @@ router.get('/:orderId', isLoginUser, (req, res, next) => {
 });
 
 
-router.post('/orders', (req, res, next) => {
+router.post('/', (req, res, next) => {
   const token = req.body.stripeToken
   const promoCode = req.body.promoCode
+  const arrayTrips = req.session.cart.trips
+  let subTotal = arrayTrips.reduce((prev, curr) => {
+    return +prev + +curr.price * curr.tripOrder.numberOfGuests;
+  }, 0);
   Order.create({
     isCheckedOut: true,
-    stripeTokenId: req.body.stripeTokenId,
-    orderTotal: null
+    stripeTokenId: req.body.stripeToken,
+    orderTotal: subTotal,
+    userId: null
   })
-  .then(order => order.totalPrice(promoCode))
+  // .then(order => order.totalPrice(promoCode))
   .then(updatedOrder =>
     stripe.charges.create({
       amount: updatedOrder.orderTotal,
@@ -59,5 +64,6 @@ router.post('/orders', (req, res, next) => {
   .then(data => res.status(201).json(data))
   .catch(next)
 })
+
 
 module.exports = router;
