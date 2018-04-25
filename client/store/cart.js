@@ -101,16 +101,14 @@ export const updateNumberOfGuests = (
     .put(`/api/users/${userId}/orders`, { tripId, numberOfGuests, orderId })
     .then(res => res.data)
     .then(order => {
-      if (userId) {
+      if (userId !== undefined) {
         dispatch(updateTrip(order));
         dispatch(fetchOrder(userId));
       } else {
         //Guest user
-        //del all order
-        // dispatch(removeTrip())
-        // dispatch(addTrip(order))
-        dispatch(fetchOrder(userId));
-        console.log(order);
+        console.log('HIT HERE');
+        dispatch(removeTrip());
+        dispatch(fetchOrder());
       }
     })
     .catch(err => console.error(err));
@@ -152,7 +150,7 @@ export default function(state = initialState, action) {
     case UPDATE_TRIP:
       return Object.assign({}, state, action.order);
     case REMOVE_TRIP:
-      return state;
+      return initialState;
     case ADD_TRIP:
       return Object.assign({}, state, { trips: [...state.trips, action.trip] });
     case CHECKOUT_ORDER:

@@ -38,6 +38,7 @@ export class Cart extends React.Component {
       }
     }
     let subTotal = arrayOfAllTripInCart.reduce((prev, curr) => {
+      console.log(curr);
       return +prev + +curr.price * curr.tripOrder.numberOfGuests;
     }, 0);
 

@@ -255,7 +255,9 @@ router.get('/:userId/cart', isLoginUser, (req, res, next) => {
       .catch(next);
   } else {
     // Guest fetch session item id to cart
-    if (req.session.cart.trips.length > 0) res.json(req.session.cart);
+    if (req.session.cart.trips.length > 0) {
+      res.json(req.session.cart);
+    }
   }
 });
 
