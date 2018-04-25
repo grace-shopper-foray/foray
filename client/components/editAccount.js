@@ -1,7 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { updateUserThunk } from '../store';
 
 class EditAccount extends React.Component {
@@ -35,7 +33,7 @@ class EditAccount extends React.Component {
   }
 
   render() {
-    let { handleSubmit, user } = this.props;
+    let { user } = this.props;
     return (
       <div>
         <h1>Edit Your Account Information</h1>

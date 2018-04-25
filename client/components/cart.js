@@ -28,14 +28,15 @@ export class Cart extends React.Component {
   //add subTotal for all item in cart
   //change total if promo code is valid
   addUpSubTotal(arrayOfAllTripInCart, promoCodeObjFromServer) {
+    arrayOfAllTripInCart = this.props.order.trips;
+    promoCodeObjFromServer = this.props.promoCode;
     let subTotalPercentage = 100;
-    if (promoCodeObjFromServer.error) {
-      // alert('Invalid promo Code');
-    } else {
-      if (promoCodeObjFromServer.percentage !== undefined) {
-        subTotalPercentage = promoCodeObjFromServer.percentage;
-        // alert('Coupon has been successfully applied to the following events');
-      }
+    if (
+      !promoCodeObjFromServer.error &&
+      promoCodeObjFromServer.percentage !== undefined
+    ) {
+      subTotalPercentage = promoCodeObjFromServer.percentage;
+      // alert('Coupon has been successfully applied to the following events');
     }
     let subTotal = arrayOfAllTripInCart.reduce((prev, curr) => {
       console.log(curr);
@@ -46,6 +47,7 @@ export class Cart extends React.Component {
   }
 
   subTotalItem(allTripInCart) {
+    allTripInCart = this.props.order.trips;
     if (allTripInCart.length === 1) {
       return <strong>{`${allTripInCart.length} item`}</strong>;
     } else {

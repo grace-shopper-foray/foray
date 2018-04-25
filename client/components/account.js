@@ -1,16 +1,15 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-import { getUsersThunk } from '../store'
+import { getUsersThunk } from '../store';
 
 /**
  * COMPONENT
  */
-
 const Account = props => {
-  const { user } = props
+  const { user } = props;
   return user.isAdmin ? (
     <div className="container">
       <div className="row">
@@ -104,8 +103,8 @@ const Account = props => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 /**
  * CONTAINER
@@ -114,22 +113,22 @@ const mapState = state => {
   return {
     user: state.user,
     users: state.users
-  }
-}
+  };
+};
 
 const mapDispatch = function(dispatch) {
   return {
     getUsers: function() {
-      return dispatch(getUsersThunk())
+      return dispatch(getUsersThunk());
     }
-  }
-}
+  };
+};
 
-export default connect(mapState, mapDispatch)(Account)
+export default connect(mapState, mapDispatch)(Account);
 
 /**
  * PROP TYPES
  */
 Account.propTypes = {
   email: PropTypes.string
-}
+};

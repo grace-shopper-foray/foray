@@ -9,17 +9,18 @@ import {
 import { connect } from 'react-redux';
 import { updateOrderToCheckedOutThunk, fetchOrder } from '../store';
 
+// Reserved for future implementation.
 const handleBlur = () => {
-  console.log('[blur]');
+  // console.log('[blur]');
 };
 const handleChange = change => {
-  console.log('[change]', change);
+  // console.log('[change]', change);
 };
 const handleFocus = () => {
-  console.log('[focus]');
+  // console.log('[focus]');
 };
 const handleReady = () => {
-  console.log('[ready]');
+  // console.log('[ready]');
 };
 
 const createOptions = fontSize => {
