@@ -20,9 +20,9 @@ class Sidebar extends React.Component {
         <a>Available trips:</a>
         {this.props.trips.map(trip => {
           return (
-            <a key={trip.moonName} href={`/trips/${trip.id}`}>
+            <Link key={trip.moonName} to={`/trips/${trip.id}`}>
               {trip.moonName}
-            </a>
+            </Link>
           );
         })}
       </div>
@@ -35,7 +35,8 @@ class Sidebar extends React.Component {
  */
 const mapState = state => {
   return {
-    trips: state.trips
+    trips: state.trips,
+    RELOADtrip: state.selectedTrip
   };
 };
 
