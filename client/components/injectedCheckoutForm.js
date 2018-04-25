@@ -6,18 +6,21 @@ import {
   PostalCodeElement,
   injectStripe
 } from 'react-stripe-elements';
+import { connect } from 'react-redux';
+import { updateOrderToCheckedOutThunk, fetchOrder } from '../store';
 
+// Reserved for future implementation.
 const handleBlur = () => {
-  console.log('[blur]');
+  // console.log('[blur]');
 };
 const handleChange = change => {
-  console.log('[change]', change);
+  // console.log('[change]', change);
 };
 const handleFocus = () => {
-  console.log('[focus]');
+  // console.log('[focus]');
 };
 const handleReady = () => {
-  console.log('[ready]');
+  // console.log('[ready]');
 };
 
 const createOptions = fontSize => {
@@ -40,8 +43,8 @@ const createOptions = fontSize => {
 };
 
 class InjectedCheckoutForm extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       name: '',
       address_line1: '',
@@ -51,42 +54,33 @@ class InjectedCheckoutForm extends React.Component {
       address_country: ''
     };
 
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleAddressChange = this.handleAddressChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
-  handleAddressChange = evt => {
-    console.log('name', evt.target.name);
-    console.log('value', evt.target.value);
+  handleChange = evt => {
     this.setState({ [evt.target.name]: evt.target.value });
   };
 
-  handleSubmit = ev => {
-    ev.preventDefault();
-    console.log('submit', this.state);
-    this.props.stripe
-      .createToken(this.state)
-      .then(payload => console.log(payload))
-      .then(() =>
-        this.setState({
-          name: '',
-          address_line1: '',
-          address_line2: '',
-          address_city: '',
-          address_state: '',
-          address_country: ''
-        })
-      );
-  };
   render() {
+    let { handleSubmit } = this.props;
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form
+        onSubmit={event => {
+          event.preventDefault();
+          handleSubmit(
+            this.props.stripe,
+            this.state,
+            this.props.user,
+            this.props.promoCode.code
+          );
+        }}
+      >
         <input
           className="form-control"
           placeholder="Name"
           name="name"
           type="text"
-          onChange={this.handleAddressChange}
+          onChange={this.handleChange}
           value={this.state.name}
         />
         <input
@@ -94,7 +88,7 @@ class InjectedCheckoutForm extends React.Component {
           placeholder="Address Line 1"
           name="address_line1"
           type="text"
-          onChange={this.handleAddressChange}
+          onChange={this.handleChange}
           value={this.state.address_line1}
         />
         <input
@@ -102,7 +96,7 @@ class InjectedCheckoutForm extends React.Component {
           placeholder="Address Line 2"
           name="address_line2"
           type="text"
-          onChange={this.handleAddressChange}
+          onChange={this.handleChange}
           value={this.state.address_line2}
         />
         <input
@@ -110,7 +104,7 @@ class InjectedCheckoutForm extends React.Component {
           placeholder="State"
           name="address_state"
           type="text"
-          onChange={this.handleAddressChange}
+          onChange={this.handleChange}
           value={this.state.address_state}
         />
         <input
@@ -118,7 +112,7 @@ class InjectedCheckoutForm extends React.Component {
           placeholder="City"
           name="address_city"
           type="text"
-          onChange={this.handleAddressChange}
+          onChange={this.handleChange}
           value={this.state.address_city}
         />
         <input
@@ -126,7 +120,7 @@ class InjectedCheckoutForm extends React.Component {
           placeholder="Country"
           name="address_country"
           type="text"
-          onChange={this.handleAddressChange}
+          onChange={this.handleChange}
           value={this.state.address_country}
         />
 
@@ -170,10 +164,36 @@ class InjectedCheckoutForm extends React.Component {
             {...createOptions(this.props.fontSize)}
           />
         </label>
-        <button>Pay</button>
+        <button type="submit">Pay</button>
       </form>
     );
   }
 }
 
-export default injectStripe(InjectedCheckoutForm);
+const mapState = state => {
+  return {
+    order: state.order,
+    user: state.user,
+    promoCode: state.promoCode,
+    total: state.total
+  };
+};
+
+const mapDispatch = function(dispatch) {
+  return {
+    fetchOrderFromServer: userId => {
+      return dispatch(fetchOrder(userId));
+    },
+    handleSubmit: (stripe, state, user, code) => {
+      stripe.createToken(state).then(stripeToken => {
+        dispatch(
+          updateOrderToCheckedOutThunk(stripeToken.token.id, code, user.id)
+        );
+      });
+    }
+  };
+};
+
+export default injectStripe(
+  connect(mapState, mapDispatch)(InjectedCheckoutForm)
+);

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -19,7 +18,11 @@ class Sidebar extends React.Component {
       <div className="sidenav">
         <a>Available trips:</a>
         {this.props.trips.map(trip => {
-          return <a href={`/trips/${trip.id}`}>{trip.moonName}</a>;
+          return (
+            <Link key={trip.moonName} to={`/trips/${trip.id}`}>
+              {trip.moonName}
+            </Link>
+          );
         })}
       </div>
     );

@@ -35,7 +35,7 @@ class SingleTrip extends React.Component {
         <img src={this.props.trip.imagePath} />
         <p>${this.props.trip.price}</p>
         <p>Start Date: {this.props.trip.startDate}</p>
-        <p>Duration: {this.props.trip.numberOfNghts} Nights</p>
+        <p>Duration: {this.props.trip.numberOfNights} Nights</p>
         <p>Description: {this.props.trip.description}</p>
         <form
           onSubmit={event => {

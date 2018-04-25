@@ -30,7 +30,6 @@ async function seed() {
   // Wowzers! We can even `await` on the right-hand side of the assignment operator
   // and store the result that the promise resolves to in a variable! This is nice!
   console.log(`seeded ${users.length} users`);
-  console.log(`seeded user successfully`);
 
   //create Seed for Trip
   const trip = await Promise.all([
@@ -47,7 +46,6 @@ async function seed() {
   ]);
 
   console.log(`seeded ${trip.length} trip`);
-  console.log(`seeded trip successfully`);
 
   //create Seed for Order
   const order = await Promise.all([
@@ -55,7 +53,6 @@ async function seed() {
   ]);
 
   console.log(`seeded ${order.length} order`);
-  console.log(`seeded order successfully`);
 
   //create Seed for tripOrder
   const tripOrder = await Promise.all([
@@ -63,7 +60,6 @@ async function seed() {
   ]);
 
   console.log(`seeded ${tripOrder.length} trip Order*`);
-  console.log(`seeded trip Order successfully`);
 }
 
 module.exports = seed;

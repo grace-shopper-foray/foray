@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const { User, Order, TripOrder, Trip } = require('../db/models');
+const stripe = require('stripe')('sk_test_YJIPtZSqDVixu3EYQRJkAoWI');
+
 module.exports = router;
 
 //check admin middleware
@@ -10,6 +12,18 @@ function isAdmin(req, res, next) {
   });
 }
 
+// Check logged in user is the one requesting.
+function isLoginUser(req, res, next) {
+  const userId = req.params.userId;
+  let loggedInUser;
+  if (req.session.passport) loggedInUser = req.session.passport.user;
+  if (userId === 'undefined' || +userId === +loggedInUser) {
+    next();
+  } else {
+    res.sendStatus(401);
+  }
+}
+
 // Getting a list of all users.
 // Requires Admin Permission
 router.get('/', isAdmin, (req, res, next) => {
@@ -18,24 +32,23 @@ router.get('/', isAdmin, (req, res, next) => {
     attributes: ['id', 'email']
   })
     .then(users => {
-      console.log(users);
       res.json(users);
     })
     .catch(next);
 });
 
 // Find a single user
-
-router.get('/:userId', (req, res, next) => {
+// Only return for that user
+router.get('/:userId', isLoginUser, (req, res, next) => {
   User.findById(req.params.userId, {
     attributes: ['id', 'firstName', 'lastName', 'email']
   })
-    .then(user => res.json(user))
+    .then(user => res.status(200).send(user))
     .catch(next);
 });
 
 // Creating new user
-
+// No protection necessary
 router.post('/', (req, res, next) => {
   const { firstName, lastName, phoneNumber, email } = req.body;
   User.create({
@@ -51,88 +64,135 @@ router.post('/', (req, res, next) => {
 });
 
 // Updating a users information.
-
-router.put('/:userId', (req, res, next) => {
+// Specific to that user
+router.put('/:userId', isLoginUser, (req, res, next) => {
+  const { firstName, lastName, password, email, phoneNumber } = req.body;
   const id = req.params.userId;
-  User.findById(id).then(user => {
-    return user
-      .update(req.body)
-      .then(updatedUser => {
-        res.status(200).json(updatedUser);
-      })
-      .catch(next);
-  });
+  User.findById(id)
+    .then(user =>
+      user.update({ firstName, lastName, password, email, phoneNumber })
+    )
+    .then(updatedUser => res.status(200).json(updatedUser))
+    .catch(next);
 });
 
 // Removes a user from the database
-
-router.delete('/:userId', (req, res, next) => {
+// Admin only
+router.delete('/:userId', isAdmin, (req, res, next) => {
   const id = req.params.userId;
   User.findById(id)
     .then(user => user.destroy())
     .then(() => {
-      res.status(204).send('No content');
+      res.status(204).end();
     })
     .catch(next);
 });
 
 // User adds trip to cart.
-
-router.post('/:userId/orders', (req, res, next) => {
+// Specific to that user
+router.post('/:userId/orders', isLoginUser, (req, res, next) => {
   const userId = req.params.userId;
   const { tripId, numberOfGuests } = req.body;
 
-  Order.findOrCreate({
-    where: { userId: userId, isCheckedOut: false },
-    include: [Trip, User]
-  })
-    .spread((order, _) => {
-      return TripOrder.create({
-        orderId: order.id,
-        tripId,
-        numberOfGuests
-      }).then(() => order);
-    })
-    .then(order => {
-      return Order.findById(order.id, { include: [Trip] });
-    })
-    .then(order => {
-      const trip = order.trips.filter(t => t.id === tripId)[0];
-      res.status(201).json(trip);
-    })
-    .catch(next);
+  if (userId !== 'undefined') {
+    Order.addTripToOrder(tripId, userId, numberOfGuests)
+      .then(trip => res.status(200).json(trip))
+      .catch(next);
+  } else {
+    let cart = req.session.cart;
+    // tripId, numberOfGuests
+    if (cart.trips.length < 1) {
+      //first time adding to cart
+      Trip.getTripDetail(tripId).then(result => {
+        let tripOrder = {
+          numberOfGuests,
+          tripId
+        };
+        let tripDetail = result.dataValues;
+        tripDetail.tripOrder = tripOrder;
+        cart = {
+          orderId: null,
+          trips: [tripDetail],
+          isCheckout: false,
+          stripeTokenId: null,
+          orderTotal: 0
+        };
+        req.session.cart = cart;
+        res.status(200).json(tripDetail);
+      });
+    } else {
+      Trip.getTripDetail(tripId).then(result => {
+        let tripOrder = {
+          numberOfGuests,
+          tripId
+        };
+        let tripDetail = result.dataValues;
+        tripDetail.tripOrder = tripOrder;
+        req.session.cart.trips.push(tripDetail);
+        res.status(200).json(tripDetail);
+      });
+    }
+  }
 });
-
-// User wants to update the number of guests on an item in cart
 
 router.put('/:userId/orders', (req, res, next) => {
   const userId = req.params.userId;
   const { tripId, numberOfGuests } = req.body;
-  Order.findOne({
-    where: { userId: userId, isCheckedOut: false },
-    include: [Trip, User]
-  })
-    .then(order => {
-      // TripOrder only exists on trip objects, need to filter to trip with tripId
-      const tripOrder = order.trips.filter(t => t.id === tripId)[0].tripOrder;
-      return tripOrder.update({ orderId: order.id, tripId, numberOfGuests });
+  if (userId !== 'undefined') {
+    Order.findOne({
+      where: { userId: userId, isCheckedOut: false },
+      include: [Trip, User]
     })
-    .then(trip => res.status(200).json(trip))
-    .catch(next);
+      .then(order => {
+        // TripOrder only exists on trip objects, need to filter to trip with tripId
+        const tripOrder = order.trips.find(t => t.id === tripId).tripOrder;
+        return tripOrder.update({ numberOfGuests });
+      })
+      .then(trip => res.status(200).json(trip))
+      .catch(next);
+  } else {
+    //guest
+    let cart = req.session.cart.trips;
+    cart.filter(each => {
+      if (each.id === +tripId) {
+        each.tripOrder.numberOfGuests = numberOfGuests;
+      }
+    });
+    res.status(200).json(req.session.cart.trips);
+  }
 });
 
 // User wants to checkout the cart
-router.put(`/:userId/orders/checkout`, (req, res, next) => {
+//Specific to that user
+router.put(`/:userId/orders/checkout`, isLoginUser, (req, res, next) => {
+  const token = req.body.stripeToken;
+  const promoCode = req.body.promoCode;
+  //requires promocode to be passed in
   const { userId } = req.params;
-  Order.findOne({ where: { userId, isCheckedOut: false } })
-    .then(order => order.update({ isCheckedOut: true }))
-    .then(order => res.status(201).json(order))
+
+  Order.findOne({ where: { userId: +userId, isCheckedOut: false } })
+    .then(order =>
+      order.update({
+        isCheckedOut: true,
+        stripeTokenId: token
+      })
+    )
+    .then(order => order.totalPrice(promoCode))
+    .then(updatedOrder => {
+      return stripe.charges.create({
+        amount: updatedOrder.orderTotal,
+        currency: 'usd',
+        description: 'Example charge',
+        source: token
+      });
+    })
+    .then(data => res.status(201).json(data))
     .catch(next);
 });
 
 // User wants to delete a trip from the cart
-
-router.delete('/:userId/orders', (req, res, next) => {
+// Specific from that user.
+router.delete('/:userId/orders', isLoginUser, (req, res, next) => {
   const userId = req.params.userId;
   const { tripId } = req.body;
   Order.findOne({
@@ -152,35 +212,55 @@ router.delete('/:userId/orders', (req, res, next) => {
 // router.delete(`api/users/${userId}/${tripId}`)
 //  destroy return 1 , therefore send {message : successful} back to thunk
 
-router.delete(`/:userId/:tripId`, (req, res, next) => {
+router.delete(`/:userId/trip/:tripId`, (req, res, next) => {
   const { userId, tripId } = req.params;
-  Order.findOne({ where: { userId, isCheckedOut: false } })
-    .then(order => TripOrder.destroy({ where: { orderId: order.id, tripId } }))
-    .then(() => res.status(200).json({ message: 'successful' }))
-    .catch(next);
+  if (userId !== 'undefined') {
+    //User del item in cart
+    Order.findOne({ where: { userId, isCheckedOut: false } })
+      .then(order =>
+        TripOrder.destroy({ where: { orderId: order.id, tripId } })
+      )
+      .then(() => res.status(200).json({ message: 'successful' }))
+      .catch(next);
+  } else {
+    // Guest checkout
+    // clear session trips[]
+    let deletedTripsInCart = req.session.cart.trips.filter(
+      each => each.id !== +tripId
+    );
+    req.session.cart.trips = deletedTripsInCart;
+    //find the delete one , return and del it from state and session
+    res.status(200).json(req.session.cart);
+    // send json back req.session.cart
+  }
 });
 
 // User wants to see Order history or cart (/orders?cart=active).
-
-router.get('/:userId/orders', (req, res, next) => {
-  const isActive = req.query.cart === 'active';
-  if (req.query.cart !== undefined) {
-    // Non-Checkout Order in Cart
-    // There is a query string for cart
+//fix
+// Specific from that user.
+router.get('/:userId/cart', isLoginUser, (req, res, next) => {
+  if (req.params.userId !== 'undefined') {
+    //Login  add to cart
     Order.findOne({
       where: {
         userId: req.params.userId,
-        isCheckedOut: !isActive
+        isCheckedOut: false
       },
       include: [Trip, User]
     })
-      .then(order => {
-        res.json(order);
-      })
+      .then(order => res.json(order))
       .catch(next);
   } else {
-    // No query value, return all orders for user.
-    // same as orders.js?
+    // Guest fetch session item id to cart
+    if (req.session.cart.trips.length > 0) {
+      res.json(req.session.cart);
+    }
+  }
+});
+
+//fix
+router.get('/:userId/orders', isLoginUser, (req, res, next) => {
+  if (req.params.userId !== 'undefined') {
     Order.findAll({
       where: {
         userId: req.params.userId,

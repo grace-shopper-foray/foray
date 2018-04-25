@@ -54,6 +54,27 @@ const createApp = () => {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  // if user never login , set {} to session
+  app.use('/', (req, res, next) => {
+    if (!req.session.cart) {
+      let tripOrder = {
+        numberOfGuests: 0,
+        tripId: 0
+      };
+      let tripDetail = {};
+      tripDetail.tripOrder = tripOrder;
+      req.session.cart = {
+        orderId: 'guest',
+        trips: [],
+        isCheckout: false,
+        stripeTokenId: null,
+        orderTotal: 0
+      };
+    }
+    // req.session.destroy();
+    next();
+  });
+
   // auth and api routes
   app.use('/auth', require('./auth'));
   app.use('/api', require('./api'));
