@@ -109,6 +109,7 @@ router.post('/:userId/orders', (req, res, next) => {
         res.status(200).json(tripDetail)
       })
     } else {
+      console.log('EROOOOOOOO')
       Trip.getTripDetail(tripId).then(result => {
         let tripOrder = {
           numberOfGuests,
@@ -116,8 +117,10 @@ router.post('/:userId/orders', (req, res, next) => {
         }
         let tripDetail = result.dataValues
         tripDetail.tripOrder = tripOrder
+
         req.session.cart.trips.push(tripDetail)
-        res.status(200).json(req.session.cart.trips)
+        console.log(req.session.cart.trips, '122')
+        res.status(200).json(tripDetail)
       })
     }
   }

@@ -52,8 +52,14 @@ export const postOrderThunk = (tripStateInfo, userId) => dispatch => {
     .post(`/api/users/${userId}/orders`, { tripId, numberOfGuests })
     .then(res => res.data)
     .then(trip => {
+      console.log(trip, '55')
       //if trip is the same then update it
-      dispatch(addTrip(trip))
+      if (userId) {
+        dispatch(addTrip(trip))
+      } else {
+        console.log('HIT HERERERE')
+        dispatch(addTrip(trip))
+      }
       history.push('/cart')
     })
     .catch(err => console.error(err))
@@ -99,13 +105,13 @@ export const updateNumberOfGuests = (
     .put(`/api/users/${userId}/orders`, { tripId, numberOfGuests, orderId })
     .then(res => res.data)
     .then(order => {
-      if (userId !== undefined) {
+      if (userId) {
         dispatch(updateTrip(order))
         dispatch(fetchOrder(userId))
       } else {
         //Guest user
-        console.log('HIT HERE')
-        dispatch(removeTrip())
+        // dispatch(removeTrip())
+        dispatch(updateTrip(order))
         dispatch(fetchOrder())
       }
     })
@@ -137,7 +143,7 @@ export default function(state = initialState, action) {
     case UPDATE_TRIP:
       return Object.assign({}, state, action.order)
     case REMOVE_TRIP:
-      return state
+      return initialState
     case ADD_TRIP:
       return Object.assign({}, state, { trips: [...state.trips, action.trip] })
     case CHECKOUT_ORDER:
