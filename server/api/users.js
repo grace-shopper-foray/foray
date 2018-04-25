@@ -121,28 +121,19 @@ router.post('/:userId/orders', isLoginUser, (req, res, next) => {
         res.status(200).json(tripDetail);
       });
     } else {
-      console.log('EROOOOOOOO')
+      console.log('EROOOOOOOO');
       Trip.getTripDetail(tripId).then(result => {
         let tripOrder = {
           numberOfGuests,
           tripId
-<<<<<<< HEAD
         };
         let tripDetail = result.dataValues;
         tripDetail.tripOrder = tripOrder;
-        req.session.cart.trips.push(tripDetail);
-        res.status(200).json(req.session.cart.trips);
-      });
-=======
-        }
-        let tripDetail = result.dataValues
-        tripDetail.tripOrder = tripOrder
 
-        req.session.cart.trips.push(tripDetail)
-        console.log(req.session.cart.trips, '122')
-        res.status(200).json(tripDetail)
-      })
->>>>>>> 54449fec5508ba234a8db7633dabe13d857fdb3a
+        req.session.cart.trips.push(tripDetail);
+        console.log(req.session.cart.trips, '122');
+        res.status(200).json(tripDetail);
+      });
     }
   }
 });

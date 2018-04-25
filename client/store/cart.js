@@ -36,15 +36,13 @@ const updateOrderToCheckedOut = order => ({
  * THUNK CREATORS
  */
 export const fetchOrder = userId => dispatch => {
-  if (userId) {
-    return axios
-      .get(`/api/users/${userId}/cart`)
-      .then(res => res.data)
-      .then(order => {
-        return dispatch(getOrder(order));
-      })
-      .catch(err => console.error(err));
-  }
+  return axios
+    .get(`/api/users/${userId}/cart`)
+    .then(res => res.data)
+    .then(order => {
+      return dispatch(getOrder(order));
+    })
+    .catch(err => console.error(err));
 };
 
 //add trip to cart order
