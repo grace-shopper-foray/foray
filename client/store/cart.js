@@ -99,16 +99,14 @@ export const updateNumberOfGuests = (
     .put(`/api/users/${userId}/orders`, { tripId, numberOfGuests, orderId })
     .then(res => res.data)
     .then(order => {
-      if (userId) {
+      if (userId !== undefined) {
         dispatch(updateTrip(order))
         dispatch(fetchOrder(userId))
       } else {
         //Guest user
-        //del all order
-        // dispatch(removeTrip())
-        // dispatch(addTrip(order))
-        dispatch(fetchOrder(userId))
-        console.log(order)
+        console.log('HIT HERE')
+        dispatch(removeTrip())
+        dispatch(fetchOrder())
       }
     })
     .catch(err => console.error(err))
