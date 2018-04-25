@@ -1,11 +1,24 @@
 const router = require('express').Router();
 const { TripOrder, Order, Trip, User } = require('../db/models');
 
+//check admin middleware
+function isAdmin(req, res, next) {
+  User.findById(req.session.passport.user).then(user => {
+    if (user.isAdmin) next();
+    else res.sendStatus(401);
+  });
+}
 
-// Only admin can view it
+// Check logged in user is the one requesting.
 function isLoginUser(req, res, next) {
-  if (!req.user) res.sendStatus(401);
-  else next();
+  const userId = req.params.userId;
+  let loggedInUser;
+  if (req.session.passport) loggedInUser = req.session.passport.user;
+  if (userId === 'undefined' || +userId === +loggedInUser) next();
+  else {
+    console.log('HERERE');
+    res.sendStatus(401);
+  }
 }
 
 // Get a specific order.
