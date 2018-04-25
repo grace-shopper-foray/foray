@@ -123,53 +123,63 @@ router.post('/:userId/orders', (req, res, next) => {
     }
   }
 
+
   // cart[tripId] = numberOfGuests
   // let newCart = Object.assign({}, cart, { [tripId]: cart[tripId] })
   // res.status(200).json({ order: { [tripId]: cart[tripId] } })
 })
 
+
 // User wants to update the number of guests on an item in cart
 
 router.put('/:userId/orders', (req, res, next) => {
-  const userId = req.params.userId
   const { tripId, numberOfGuests } = req.body
-  Order.findOne({
-    where: { userId: userId, isCheckedOut: false },
-    include: [Trip, User]
-  })
-    .then(order => {
-      // TripOrder only exists on trip objects, need to filter to trip with tripId
-      const tripOrder = order.trips.find(t => t.id === tripId).tripOrder
-      return tripOrder.update({ numberOfGuests })
+  if (req.params.userId !== 'undefined') {
+    const userId = req.params.userId
+    Order.findOne({
+      where: { userId: userId, isCheckedOut: false },
+      include: [Trip, User]
     })
-    .then(trip => res.status(200).json(trip))
-    .catch(next)
+      .then(order => {
+        // TripOrder only exists on trip objects, need to filter to trip with tripId
+        const tripOrder = order.trips.find(t => t.id === tripId).tripOrder
+        return tripOrder.update({ numberOfGuests })
+      })
+      .then(trip => res.status(200).json(trip))
+      .catch(next)
+  } else {
+    const cart = req.session.cart
+    const tripToEdit = cart.trips.find((trip) => tripId === trip.id)
+    tripToEdit.tripOrder.numberOfGuests = numberOfGuests
+    console.log(cart)
+    res.json(tripToEdit)
+  }
 })
 
 // User wants to checkout the cart
 router.put(`/:userId/orders/checkout`, (req, res, next) => {
-  const token = req.body.stripeToken
-  const promoCode = req.body.promoCode
-  //requires promocode to be passed in
-  const { userId } = req.params
-  Order.findOne({ where: { userId, isCheckedOut: false } })
-    .then(order =>
-      order.update({
-        isCheckedOut: true,
-        stripeTokenId: req.body.stripeTokenId
-      })
-    )
-    .then(order => order.totalPrice(promoCode))
-    .then(updatedOrder =>
-      stripe.charges.create({
-        amount: updatedOrder.orderTotal,
-        currency: 'usd',
-        description: 'Example charge',
-        source: token
-      })
-    )
-    .then(data => res.status(201).json(data))
-    .catch(next)
+    const token = req.body.stripeToken
+    const promoCode = req.body.promoCode
+    //requires promocode to be passed in
+    const { userId } = req.params
+    Order.findOne({ where: { userId, isCheckedOut: false } })
+      .then(order =>
+        order.update({
+          isCheckedOut: true,
+          stripeTokenId: req.body.stripeTokenId
+        })
+      )
+      .then(order => order.totalPrice(promoCode))
+      .then(updatedOrder =>
+        stripe.charges.create({
+          amount: updatedOrder.orderTotal,
+          currency: 'usd',
+          description: 'Example charge',
+          source: token
+        })
+      )
+      .then(data => res.status(201).json(data))
+      .catch(next)
 })
 
 // User wants to delete a trip from the cart

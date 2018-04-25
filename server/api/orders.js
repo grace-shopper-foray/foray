@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const { TripOrder, Order, Trip, User } = require('../db/models');
+const stripe = require('stripe')('sk_test_YJIPtZSqDVixu3EYQRJkAoWI')
+
 
 
 // Only admin can view it
@@ -35,5 +37,27 @@ router.get('/:orderId', isLoginUser, (req, res, next) => {
       next(err);
     });
 });
+
+
+router.post('/orders', (req, res, next) => {
+  const token = req.body.stripeToken
+  const promoCode = req.body.promoCode
+  Order.create({
+    isCheckedOut: true,
+    stripeTokenId: req.body.stripeTokenId,
+    orderTotal: null
+  })
+  .then(order => order.totalPrice(promoCode))
+  .then(updatedOrder =>
+    stripe.charges.create({
+      amount: updatedOrder.orderTotal,
+      currency: 'usd',
+      description: 'Guest checkout',
+      source: token
+    })
+  )
+  .then(data => res.status(201).json(data))
+  .catch(next)
+})
 
 module.exports = router;
