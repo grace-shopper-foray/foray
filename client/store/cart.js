@@ -52,12 +52,10 @@ export const postOrderThunk = (tripStateInfo, userId) => dispatch => {
     .post(`/api/users/${userId}/orders`, { tripId, numberOfGuests })
     .then(res => res.data)
     .then(trip => {
-      console.log(trip, '55');
       //if trip is the same then update it
       if (userId) {
         dispatch(addTrip(trip));
       } else {
-        console.log('HIT HERERERE');
         dispatch(addTrip(trip));
       }
       history.push('/cart');
@@ -132,7 +130,7 @@ export const updateOrderToCheckedOutThunk = (
         dispatch(fetchOrderHistory(userId));
         history.push('/order-history');
       })
-      .catch(err => console.log(err));
+      .catch(err => console.error(err));
   } else {
     return axios
       .post('/api/orders', { stripeToken, promoCode })

@@ -1,15 +1,6 @@
 const router = require('express').Router();
-const { TripOrder, Order, Trip, User } = require('../db/models');
-const stripe = require('stripe')('sk_test_YJIPtZSqDVixu3EYQRJkAoWI')
-
-
-//check admin middleware
-function isAdmin(req, res, next) {
-  User.findById(req.session.passport.user).then(user => {
-    if (user.isAdmin) next();
-    else res.sendStatus(401);
-  });
-}
+const { Order, Trip, User } = require('../db/models');
+const stripe = require('stripe')('sk_test_YJIPtZSqDVixu3EYQRJkAoWI');
 
 // Check logged in user is the one requesting.
 function isLoginUser(req, res, next) {
@@ -18,7 +9,6 @@ function isLoginUser(req, res, next) {
   if (req.session.passport) loggedInUser = req.session.passport.user;
   if (userId === 'undefined' || +userId === +loggedInUser) next();
   else {
-    console.log('HERERE');
     res.sendStatus(401);
   }
 }
@@ -51,11 +41,10 @@ router.get('/:orderId', isLoginUser, (req, res, next) => {
     });
 });
 
-
 router.post('/', (req, res, next) => {
-  const token = req.body.stripeToken
-  const promoCode = req.body.promoCode
-  const arrayTrips = req.session.cart.trips
+  const token = req.body.stripeToken;
+  const promoCode = req.body.promoCode;
+  const arrayTrips = req.session.cart.trips;
   let subTotal = arrayTrips.reduce((prev, curr) => {
     return +prev + +curr.price * curr.tripOrder.numberOfGuests;
   }, 0);
@@ -65,18 +54,17 @@ router.post('/', (req, res, next) => {
     orderTotal: subTotal,
     userId: null
   })
-  // .then(order => order.totalPrice(promoCode))
-  .then(updatedOrder =>
-    stripe.charges.create({
-      amount: updatedOrder.orderTotal,
-      currency: 'usd',
-      description: 'Guest checkout',
-      source: token
-    })
-  )
-  .then(data => res.status(201).json(data))
-  .catch(next)
-})
-
+    // .then(order => order.totalPrice(promoCode))
+    .then(updatedOrder =>
+      stripe.charges.create({
+        amount: updatedOrder.orderTotal,
+        currency: 'usd',
+        description: 'Guest checkout',
+        source: token
+      })
+    )
+    .then(data => res.status(201).json(data))
+    .catch(next);
+});
 
 module.exports = router;

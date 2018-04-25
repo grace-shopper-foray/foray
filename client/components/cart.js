@@ -39,7 +39,6 @@ export class Cart extends React.Component {
       // alert('Coupon has been successfully applied to the following events');
     }
     let subTotal = arrayOfAllTripInCart.reduce((prev, curr) => {
-      console.log(curr);
       return +prev + +curr.price * curr.tripOrder.numberOfGuests;
     }, 0);
 

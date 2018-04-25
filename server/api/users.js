@@ -121,7 +121,6 @@ router.post('/:userId/orders', isLoginUser, (req, res, next) => {
         res.status(200).json(tripDetail);
       });
     } else {
-      console.log('EROOOOOOOO');
       Trip.getTripDetail(tripId).then(result => {
         let tripOrder = {
           numberOfGuests,
@@ -129,9 +128,7 @@ router.post('/:userId/orders', isLoginUser, (req, res, next) => {
         };
         let tripDetail = result.dataValues;
         tripDetail.tripOrder = tripOrder;
-
         req.session.cart.trips.push(tripDetail);
-        console.log(req.session.cart.trips, '122');
         res.status(200).json(tripDetail);
       });
     }
@@ -154,16 +151,13 @@ router.put('/:userId/orders', (req, res, next) => {
       .then(trip => res.status(200).json(trip))
       .catch(next);
   } else {
-    //guset
+    //guest
     let cart = req.session.cart.trips;
-    console.log('145', req.session.cart.trips);
     cart.filter(each => {
       if (each.id === +tripId) {
         each.tripOrder.numberOfGuests = numberOfGuests;
       }
     });
-    console.log(cart, '152');
-    console.log(req.session.cart.trips, '153');
     res.status(200).json(req.session.cart.trips);
   }
 });

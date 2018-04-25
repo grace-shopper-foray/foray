@@ -102,7 +102,6 @@ describe('Order routes', () => {
         await request(app)
           .post(`/api/users/1/orders`)
           .send({ userId: 2, tripId: 2 });
-        console.log('Finished');
       });
 
       it('Returns an error if posting a trip already on the order with POST api/users/{{usersId}}/orders', () => {
