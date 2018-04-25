@@ -64,8 +64,8 @@ const createApp = () => {
       let tripDetail = {}
       tripDetail.tripOrder = tripOrder
       req.session.cart = {
-        orderId: null,
-        trips: [tripDetail],
+        orderId: 'guest',
+        trips: [],
         isCheckout: false,
         stripeTokenId: null,
         orderTotal: 0

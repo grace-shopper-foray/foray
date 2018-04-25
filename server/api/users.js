@@ -110,6 +110,15 @@ router.post('/:userId/orders', (req, res, next) => {
       })
     } else {
       // add more item to cart
+      // if (cart.trips.find(trip => trip.id === tripId)) {
+      //   cart.trips = cart.trips.map(trip => {
+      //     if (trip.id === tripId) {
+      //       trip.numberOfGuests = numberOfGuests
+      //     }
+      //     return trip
+      //   })
+      //   res.status(200).json(cart.trips)
+      // }
       Trip.getTripDetail(tripId).then(result => {
         let tripOrder = {
           numberOfGuests,
@@ -117,9 +126,8 @@ router.post('/:userId/orders', (req, res, next) => {
         }
         let tripDetail = result.dataValues
         tripDetail.tripOrder = tripOrder
-        console.log(req.session.cart)
         req.session.cart.trips.push(tripDetail)
-        res.status(200).json(tripDetail)
+        res.status(200).json(req.session.cart.trips)
       })
     }
   }
@@ -235,7 +243,6 @@ router.get('/:userId/cart', (req, res, next) => {
       .catch(next)
   } else {
     // Guest fetch session item id to cart
-    console.log(req.session.cart)
     if (req.session.cart.trips.length > 0) {
       res.json(req.session.cart)
     }
