@@ -25,26 +25,36 @@ const Order = db.define('order', {
   }
 });
 
-Order.prototype.totalPrice = (promoCode) => {
+Order.prototype.totalPrice = function(promoCode) {
+  const self = this
   return TripOrder.findAll({
     where: {
-      orderId: this.getDataValue('id')
+      orderId: self.id
     }
-  }).then(tripOrderArr => {
-    return tripOrderArr.reduce((acc, tripOrder) => {
-      return acc + tripOrder.price;
-    })
   })
+  .then(tripOrderArr => {
+   return Promise.all(tripOrderArr.map(tripOrder => {
+      return Trip.findById(tripOrder.tripId)
+            .then(foundTrip => [foundTrip.price, tripOrder.numberOfGuests])
+    }))
+  })
+  .then(foundTripPrices => foundTripPrices.reduce(((acc, elem) => acc + (elem[0] * elem[1])), 0))
   .then(total => {
     return PromoCode.findOne({
         where: {
-          name: promoCode,
-          isActive: true
+          isActive: true,
+          name: promoCode
         }
     })
     .then(promo => {
-      this.setDataValue('orderTotal', promo.percentage * total)
-      return promo.percentage * total
+      if (promo) {
+        self.setDataValue('orderTotal', promo.percentage * total / 100)
+      }
+      else {
+        self.setDataValue('orderTotal', total)
+      }
+      self.save()
+      return self
     })
   })
 }

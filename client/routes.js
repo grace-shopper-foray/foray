@@ -19,7 +19,6 @@ import {
   OrderHistoryDetail,
   EditAccount
 } from './components'
-import { StripeProvider } from 'react-stripe-elements'
 import { me, fetchTrips, fetchOrder } from './store'
 
 /**
@@ -44,9 +43,7 @@ class Routes extends Component {
         <Route exact path="/order-history" component={OrderHistoryDetail} />
 
         <Route exact path="/" component={TripsHome} />
-        {/* <StripeProvider apiKey="pk_test_jHnlCXdlJJf0KQk5xvXChCxa">
-          <Route exact path="/checkout" component={Checkout} />
-        </StripeProvider> */}
+        <Route exact path="/checkout" component={Checkout} />
 
         {isLoggedIn && (
           <Switch>
