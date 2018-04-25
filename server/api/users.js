@@ -109,16 +109,6 @@ router.post('/:userId/orders', (req, res, next) => {
         res.status(200).json(tripDetail)
       })
     } else {
-      // add more item to cart
-      // if (cart.trips.find(trip => trip.id === tripId)) {
-      //   cart.trips = cart.trips.map(trip => {
-      //     if (trip.id === tripId) {
-      //       trip.numberOfGuests = numberOfGuests
-      //     }
-      //     return trip
-      //   })
-      //   res.status(200).json(cart.trips)
-      // }
       Trip.getTripDetail(tripId).then(result => {
         let tripOrder = {
           numberOfGuests,
@@ -131,10 +121,6 @@ router.post('/:userId/orders', (req, res, next) => {
       })
     }
   }
-
-  // cart[tripId] = numberOfGuests
-  // let newCart = Object.assign({}, cart, { [tripId]: cart[tripId] })
-  // res.status(200).json({ order: { [tripId]: cart[tripId] } })
 })
 
 // User wants to update the number of guests on an item in cart
@@ -142,17 +128,31 @@ router.post('/:userId/orders', (req, res, next) => {
 router.put('/:userId/orders', (req, res, next) => {
   const userId = req.params.userId
   const { tripId, numberOfGuests } = req.body
-  Order.findOne({
-    where: { userId: userId, isCheckedOut: false },
-    include: [Trip, User]
-  })
-    .then(order => {
-      // TripOrder only exists on trip objects, need to filter to trip with tripId
-      const tripOrder = order.trips.find(t => t.id === tripId).tripOrder
-      return tripOrder.update({ numberOfGuests })
+  if (userId !== 'undefined') {
+    Order.findOne({
+      where: { userId: userId, isCheckedOut: false },
+      include: [Trip, User]
     })
-    .then(trip => res.status(200).json(trip))
-    .catch(next)
+      .then(order => {
+        // TripOrder only exists on trip objects, need to filter to trip with tripId
+        const tripOrder = order.trips.find(t => t.id === tripId).tripOrder
+        return tripOrder.update({ numberOfGuests })
+      })
+      .then(trip => res.status(200).json(trip))
+      .catch(next)
+  } else {
+    //guset
+    let cart = req.session.cart.trips
+    console.log('145', req.session.cart.trips)
+    cart.filter(each => {
+      if (each.id === +tripId) {
+        each.tripOrder.numberOfGuests = numberOfGuests
+      }
+    })
+    console.log(cart, '152')
+    console.log(req.session.cart.trips, '153')
+    res.status(200).json(req.session.cart.trips)
+  }
 })
 
 // User wants to checkout the cart
@@ -243,9 +243,7 @@ router.get('/:userId/cart', (req, res, next) => {
       .catch(next)
   } else {
     // Guest fetch session item id to cart
-    if (req.session.cart.trips.length > 0) {
-      res.json(req.session.cart)
-    }
+    if (req.session.cart.trips.length > 0) res.json(req.session.cart)
   }
 })
 

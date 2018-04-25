@@ -25,7 +25,7 @@ const getOrder = order => ({ type: GET_ORDER, order })
 const addTrip = trip => ({ type: ADD_TRIP, trip })
 export const logoutCart = () => ({ type: LOGOUT_CART })
 const checkoutOrder = () => ({ type: CHECKOUT_ORDER })
-const removeTrip = order => ({ type: REMOVE_TRIP, order })
+const removeTrip = () => ({ type: REMOVE_TRIP })
 const updateTrip = order => ({ type: UPDATE_TRIP, order })
 const updateOrderToCheckedOut = order => ({
   type: UPDATE_ORDER_TO_CHECKED_OUT,
@@ -75,7 +75,6 @@ export const removeTripFromCart = (tripId, userId) => dispatch => {
     .then(res => res.data)
     .then(result => {
       //since destroy doesnt return anything
-      console.log(result)
       if (result.message === 'successful') {
         //login user
         //update the order state to rerender the cart page
@@ -100,8 +99,17 @@ export const updateNumberOfGuests = (
     .put(`/api/users/${userId}/orders`, { tripId, numberOfGuests, orderId })
     .then(res => res.data)
     .then(order => {
-      dispatch(updateTrip(order))
-      dispatch(fetchOrder(userId))
+      if (userId) {
+        dispatch(updateTrip(order))
+        dispatch(fetchOrder(userId))
+      } else {
+        //Guest user
+        //del all order
+        // dispatch(removeTrip())
+        // dispatch(addTrip(order))
+        dispatch(fetchOrder(userId))
+        console.log(order)
+      }
     })
     .catch(err => console.error(err))
 }
@@ -131,7 +139,7 @@ export default function(state = initialState, action) {
     case UPDATE_TRIP:
       return Object.assign({}, state, action.order)
     case REMOVE_TRIP:
-      return Object.assign({}, state, action.order)
+      return state
     case ADD_TRIP:
       return Object.assign({}, state, { trips: [...state.trips, action.trip] })
     case CHECKOUT_ORDER:
