@@ -53,7 +53,6 @@ export default function(state = defaultTrip, action) {
   switch (action.type) {
     case GET_TRIP:
       return Object.assign({}, state, action.trip);
-
     case REMOVE_TRIP:
       return defaultTrip;
     default:

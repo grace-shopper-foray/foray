@@ -7,11 +7,9 @@ import { fetchOrderHistory } from './order-history';
  */
 const GET_ORDER = 'GET_ORDER';
 const ADD_TRIP = 'ADD_TRIP';
-const REMOVE_TRIP = 'DELETE_TRIP';
-const UPDATE_TRIP = 'UPDATE_TRIP';
-const CHECKOUT_ORDER = 'CHECKOUT_TRIP';
 const LOGOUT_CART = 'LOGOUT_CART';
-const UPDATE_ORDER_TO_CHECKED_OUT = 'UPDATE_ORDER_TO_CHECKED_OUT';
+const CHECKOUT_ORDER = 'CHECKOUT_TRIP';
+const UPDATE_TRIP = 'UPDATE_TRIP';
 
 /**
  * INITIAL STATE
@@ -25,12 +23,7 @@ const getOrder = order => ({ type: GET_ORDER, order });
 const addTrip = trip => ({ type: ADD_TRIP, trip });
 export const logoutCart = () => ({ type: LOGOUT_CART });
 const checkoutOrder = () => ({ type: CHECKOUT_ORDER });
-const removeTrip = () => ({ type: REMOVE_TRIP });
 const updateTrip = order => ({ type: UPDATE_TRIP, order });
-const updateOrderToCheckedOut = order => ({
-  type: UPDATE_ORDER_TO_CHECKED_OUT,
-  order
-});
 
 /**
  * THUNK CREATORS
@@ -63,31 +56,21 @@ export const postOrderThunk = (tripStateInfo, userId) => dispatch => {
     .catch(err => console.error(err));
 };
 
-//user want to checkout in cart
-export const checkoutCart = userId => dispatch => {
-  return axios
-    .put(`/api/users/${userId}/orders/checkout`)
-    .then(res => res.data)
-    .then(() => dispatch(checkoutOrder()))
-    .catch(err => console.error(err));
-};
-
 //user remove item from cart
 export const removeTripFromCart = (tripId, userId) => dispatch => {
   return axios
     .delete(`/api/users/${userId}/trip/${tripId}`)
     .then(res => res.data)
     .then(result => {
-      //since destroy doesnt return anything
+      // destroy item returs a custom success message
       if (result.message === 'successful') {
-        //login user
+        //logged in user
         //update the order state to rerender the cart page
         dispatch(fetchOrder(userId));
       } else {
         //Guest User
         dispatch(getOrder(result));
         //fetch order return new data
-        //should we drop everything in state and send a new one?
       }
     })
     .catch(err => console.error(err));
@@ -108,7 +91,6 @@ export const updateNumberOfGuests = (
         dispatch(fetchOrder(userId));
       } else {
         //Guest user
-        // dispatch(removeTrip())
         dispatch(updateTrip(order));
         dispatch(fetchOrder());
       }
@@ -149,16 +131,14 @@ export default function(state = initialState, action) {
   switch (action.type) {
     case GET_ORDER:
       return Object.assign({}, state, action.order);
-    case UPDATE_TRIP:
-      return Object.assign({}, state, action.order);
-    case REMOVE_TRIP:
-      return initialState;
     case ADD_TRIP:
       return Object.assign({}, state, { trips: [...state.trips, action.trip] });
-    case CHECKOUT_ORDER:
-      return initialState;
     case LOGOUT_CART:
       return initialState;
+    case CHECKOUT_ORDER:
+      return initialState;
+    case UPDATE_TRIP:
+      return Object.assign({}, state, action.order);
     default:
       return state;
   }
