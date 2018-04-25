@@ -6,8 +6,8 @@ import {
   PostalCodeElement,
   injectStripe
 } from 'react-stripe-elements';
-import { connect } from 'react-redux'
-import { updateOrderToCheckedOutThunk, fetchOrder } from '../store'
+import { connect } from 'react-redux';
+import { updateOrderToCheckedOutThunk, fetchOrder } from '../store';
 
 const handleBlur = () => {
   console.log('[blur]');
@@ -42,8 +42,8 @@ const createOptions = fontSize => {
 };
 
 class InjectedCheckoutForm extends React.Component {
-  constructor(props){
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
       name: '',
       address_line1: '',
@@ -53,25 +53,33 @@ class InjectedCheckoutForm extends React.Component {
       address_country: ''
     };
 
-    this.handleAddressChange = this.handleAddressChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
-  handleAddressChange = evt => {
+  handleChange = evt => {
     this.setState({ [evt.target.name]: evt.target.value });
   };
 
   render() {
-    let {handleSubmit} = this.props;
+    let { handleSubmit } = this.props;
     return (
-      <form onSubmit={event => {
-        event.preventDefault();
-        handleSubmit(this.props.stripe, this.state, this.props.user, this.props.promoCode.code)}}>
+      <form
+        onSubmit={event => {
+          event.preventDefault();
+          handleSubmit(
+            this.props.stripe,
+            this.state,
+            this.props.user,
+            this.props.promoCode.code
+          );
+        }}
+      >
         <input
           className="form-control"
           placeholder="Name"
           name="name"
           type="text"
-          onChange={this.handleAddressChange}
+          onChange={this.handleChange}
           value={this.state.name}
         />
         <input
@@ -79,7 +87,7 @@ class InjectedCheckoutForm extends React.Component {
           placeholder="Address Line 1"
           name="address_line1"
           type="text"
-          onChange={this.handleAddressChange}
+          onChange={this.handleChange}
           value={this.state.address_line1}
         />
         <input
@@ -87,7 +95,7 @@ class InjectedCheckoutForm extends React.Component {
           placeholder="Address Line 2"
           name="address_line2"
           type="text"
-          onChange={this.handleAddressChange}
+          onChange={this.handleChange}
           value={this.state.address_line2}
         />
         <input
@@ -95,7 +103,7 @@ class InjectedCheckoutForm extends React.Component {
           placeholder="State"
           name="address_state"
           type="text"
-          onChange={this.handleAddressChange}
+          onChange={this.handleChange}
           value={this.state.address_state}
         />
         <input
@@ -103,7 +111,7 @@ class InjectedCheckoutForm extends React.Component {
           placeholder="City"
           name="address_city"
           type="text"
-          onChange={this.handleAddressChange}
+          onChange={this.handleChange}
           value={this.state.address_city}
         />
         <input
@@ -111,7 +119,7 @@ class InjectedCheckoutForm extends React.Component {
           placeholder="Country"
           name="address_country"
           type="text"
-          onChange={this.handleAddressChange}
+          onChange={this.handleChange}
           value={this.state.address_country}
         />
 
@@ -176,12 +184,15 @@ const mapDispatch = function(dispatch) {
       return dispatch(fetchOrder(userId));
     },
     handleSubmit: (stripe, state, user, code) => {
-      stripe.createToken(state)
-      .then(stripeToken => {
-        dispatch(updateOrderToCheckedOutThunk(stripeToken.token.id, code, user.id))
-      })
+      stripe.createToken(state).then(stripeToken => {
+        dispatch(
+          updateOrderToCheckedOutThunk(stripeToken.token.id, code, user.id)
+        );
+      });
     }
-  }
-}
+  };
+};
 
-export default injectStripe(connect(mapState, mapDispatch)(InjectedCheckoutForm))
+export default injectStripe(
+  connect(mapState, mapDispatch)(InjectedCheckoutForm)
+);
